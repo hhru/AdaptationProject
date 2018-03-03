@@ -1,0 +1,14 @@
+target
+*~
+#*
+*.iws
+*.ipr
+*.iml
+.idea
+.settings
+.project
+*/.classpath
+nb-configuration.xml
+dependency-reduced-pom.xml
+*.properties.dev
+*.log
