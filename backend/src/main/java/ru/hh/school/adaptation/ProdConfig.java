@@ -15,6 +15,7 @@ import ru.hh.nab.hibernate.HibernateProdConfig;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.nab.hibernate.datasource.DataSourceType;
 import ru.hh.nab.hibernate.datasource.RoutingDataSource;
+import ru.hh.school.adaptation.hard.work.HardWorker;
 
 import javax.sql.DataSource;
 
@@ -22,8 +23,9 @@ import javax.sql.DataSource;
 @Import({
     CoreProdConfig.class,
     HibernateProdConfig.class,
+    HardWorker.class,
     DistributorDao.class,
-    ExampleResource.class
+    ExampleResource.class,
 })
 public class ProdConfig {
 
