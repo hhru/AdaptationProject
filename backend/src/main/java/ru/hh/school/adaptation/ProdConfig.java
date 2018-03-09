@@ -23,18 +23,18 @@ import javax.sql.DataSource;
 })
 public class ProdConfig {
 
-    @Bean
-    String serviceName() {
-        return "adaptation";
-    }
+  @Bean
+  String serviceName() {
+    return "adaptation";
+  }
 
-    @Bean
-    MappingConfig mappingConfig() {
-        return new MappingConfig(Example.class);
-    }
+  @Bean
+  MappingConfig mappingConfig() {
+    return new MappingConfig(Example.class);
+  }
 
-    @Bean
-    DataSource dataSource(DataSourceFactory dataSourceFactory) {
-        return dataSourceFactory.create(DataSourceType.DEFAULT);
-    }
+  @Bean
+  DataSource dataSource(DataSourceFactory dataSourceFactory) {
+    return dataSourceFactory.create(DataSourceType.DEFAULT);
+  }
 }

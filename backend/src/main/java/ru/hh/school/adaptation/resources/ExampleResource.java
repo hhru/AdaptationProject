@@ -11,18 +11,18 @@ import ru.hh.school.adaptation.dao.ExampleDao;
 @Singleton
 public class ExampleResource {
 
-    private final ExampleDao exampleDao;
+  private final ExampleDao exampleDao;
 
-    @Inject
-    public ExampleResource(ExampleDao exampleDao) {
-        this.exampleDao = exampleDao;
-    }
+  @Inject
+  public ExampleResource(ExampleDao exampleDao) {
+    this.exampleDao = exampleDao;
+  }
 
-    @GET
-    @Path("/hello")
-    @Transactional
-    public String hello() {
-        String name = exampleDao.getRecordById(1).getName();
-        return String.format("Hello, %s!", name);
-    }
+  @GET
+  @Path("/hello")
+  @Transactional
+  public String hello() {
+    String name = exampleDao.getRecordById(1).getName();
+    return String.format("Hello, %s!", name);
+  }
 }
