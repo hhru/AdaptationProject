@@ -1,3 +1,7 @@
+addons:
+  apt:
+    packages:
+      - sshpass
 branches:
   only:
   - master
@@ -5,21 +9,17 @@ branches:
 language: java
 sudo: false
 before_install:
-- openssl aes-256-cbc -K $encrypted_05866b48848b_key -iv $encrypted_05866b48848b_iv
-  -in deploy_rsa.enc -out deploy_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 ./deploy_rsa
-- ssh-add ./deploy_rsa
 - cd backend
 install:
 - mvn clean install
 - mvn flyway:migrate
 after_success:
-- ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST fuser -n tcp -k 9999
-- ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
-- scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-- scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-- scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
+- export SSHPASS=$DEPLOY_PASS
+- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST fuser -n tcp -k 9999
+- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
+- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
+- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
+- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
   $DEPLOY_USER@$DEPLOY_HOST:~/app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
-- ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/
+- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/
   -jar app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
