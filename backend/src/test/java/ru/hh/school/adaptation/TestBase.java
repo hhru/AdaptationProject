@@ -6,7 +6,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import javax.inject.Inject;
 
 @ContextConfiguration(classes = {TestConfig.class})
-public class TestBase extends AbstractJUnit4SpringContextTests {
+public abstract class TestBase extends AbstractJUnit4SpringContextTests {
 
     @Inject
     ExampleResource resource;
