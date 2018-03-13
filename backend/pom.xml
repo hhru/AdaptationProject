@@ -14,7 +14,9 @@
     <properties>
         <jdk.version>1.8</jdk.version>
         <nab.version>3.2</nab.version>
+        <jackson.version>2.5.1</jackson.version>
         <postgres.jdbc.version>42.2.1</postgres.jdbc.version>
+        <jersey.version>2.22.2</jersey.version>
     </properties>
 
 
@@ -67,15 +69,20 @@
             <version>${postgres.jdbc.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.22.2</version>
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
             <id>dev</id>
             <properties>
-                <jdbc.url>${env.JDBC_URL}</jdbc.url>
-                <jdbc.user>${env.JDBC_USER}</jdbc.user>
-                <jdbc.password>${env.JDBC_PASSWORD}</jdbc.password>
+                <jdbc.url>jdbc:postgresql://localhost:5432/postgres</jdbc.url>
+                <jdbc.user>root</jdbc.user>
+                <jdbc.password>q1</jdbc.password>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -174,9 +181,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.0.7</version>
                 <configuration>
-                    <url>${env.JDBC_URL}</url>
-                    <user>${env.JDBC_USER}</user>
-                    <password>${env.JDBC_PASSWORD}</password>
+                    <url>jdbc:postgresql://localhost:5432/postgres</url>
+                    <user>root</user>
+                    <password>q1</password>
                 </configuration>
                 <dependencies>
                     <dependency>
