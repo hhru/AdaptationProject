@@ -7,7 +7,12 @@ import static org.junit.Assert.assertEquals;
 public class ExampleResourceTest extends TestBase{
 
     @Test
-    public void dumbTest() throws InterruptedException {
-        resource.doHardWork();
+    public void DistributorDaoTest() {
+        DistributorDao bean = applicationContext.getBean(DistributorDao.class);
+
+        Distributor distributor = bean.addDistributor("test");
+        Distributor distributorById = bean.getDistributorById(distributor.getDid());
+
+        assertEquals("test", distributorById.getName());
     }
 }

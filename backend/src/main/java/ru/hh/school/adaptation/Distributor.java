@@ -2,6 +2,7 @@ package ru.hh.school.adaptation;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -9,10 +10,18 @@ import javax.persistence.Table;
 @Table(name = "distributors")
 public class Distributor {
   @Id
+  @GeneratedValue
   private Integer did;
 
   @Column(name = "name")
   private String name;
+
+  public Distributor() {
+  }
+
+  public Distributor(String name) {
+    this.name = name;
+  }
 
   public Integer getDid() {
     return did;
