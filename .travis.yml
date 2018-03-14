@@ -2,24 +2,39 @@ addons:
   apt:
     packages:
       - sshpass
-branches:
-  only:
-  - master
-  - TASK-3
-language: java
-sudo: false
-before_install:
-- cd backend
-install:
-- mvn clean install
-- mvn flyway:migrate
-after_success:
-- export SSHPASS=$DEPLOY_PASS
-- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST fuser -n tcp -k 9999
-- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
-- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-- sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
-  $DEPLOY_USER@$DEPLOY_HOST:~/app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
-- sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/
-  -jar app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
+
+matrix:
+  include:
+    - language: java
+      if: branch IN (master, TASK-3)
+      sudo: false
+      before_install:
+        - cd backend
+      install:
+        - mvn clean install
+        - mvn flyway:migrate
+      after_success:
+        - export SSHPASS=$DEPLOY_PASS
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST fuser -n tcp -k 9999
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
+        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
+        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
+        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
+          $DEPLOY_USER@$DEPLOY_HOST:~/app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/
+          -jar app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
+
+    - language: node_js
+      if: branch IN (master, TASK-10)
+      sudo: false
+      node_js:
+        - "lts/*"
+      cache: yarn
+      before_install:
+        - cd frontend
+      script:
+        - yarn build
+      after_success:
+        - export SSHPASS=$DEPLOY_PASS
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf /var/www/adaptation
+        - sshpass -e scp -o StrictHostKeyChecking=no -r $TRAVIS_BUILD_DIR/frontend/dist $DEPLOY_USER@$DEPLOY_HOST:/var/www/adaptation
