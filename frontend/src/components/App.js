@@ -4,7 +4,7 @@ import { p } from './App.css';
 const App = () => {
   return (
     <p className={p}>
-      Hello
+      Hell
     </p>
   );
 };
