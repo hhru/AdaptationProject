@@ -47,12 +47,10 @@ public class Employee {
 
     @Column(name = "employment_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ProdConfig.JSON_DATE_TIME_FORMAT)
     private Date employmentTimestamp;
 
     @Column(name = "update_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ProdConfig.JSON_DATE_TIME_FORMAT)
     private Date updateTimestamp;
 
     @ManyToOne(cascade={CascadeType.ALL})
