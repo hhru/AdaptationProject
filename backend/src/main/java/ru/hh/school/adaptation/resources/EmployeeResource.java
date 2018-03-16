@@ -1,16 +1,24 @@
 package ru.hh.school.adaptation.resources;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.Employee;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/")
 @Singleton
@@ -26,33 +34,33 @@ public class EmployeeResource {
     @Produces("application/json")
     @Path("/employee")
     @Transactional
-    public @ResponseBody ResponseEntity<List<Employee>> getAll() {
-        return ResponseEntity.ok(employeeDao.getAllRecords());
+    public @ResponseBody List<EmployeeDto> getAll() {
+        List<Employee> employeeList = employeeDao.getAllRecords();
+        return employeeList.stream().map(EmployeeDto::new).collect(Collectors.toList());
     }
 
     @GET
     @Produces("application/json")
     @Path("/employee/{id}")
     @Transactional
-    public @ResponseBody ResponseEntity<Employee> get(@PathParam("id") String id) {
-        return ResponseEntity.ok(employeeDao.getRecordById(Integer.valueOf(id)));
+    public @ResponseBody EmployeeDto get(@PathParam("id") String id) {
+        return new EmployeeDto(employeeDao.getRecordById(Integer.valueOf(id)));
     }
 
     @PUT
     @Produces("application/json")
     @Path("/employee")
+    @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public @ResponseBody ResponseEntity<Employee> create(@RequestBody Employee employee) {
-        employeeDao.save(employee);
-        return ResponseEntity.ok(employee);
+    public @ResponseBody void create(@RequestBody EmployeeDto employeeDto) {
+        employeeDao.save(employeeDto);
     }
 
     @POST
     @Produces("application/json")
     @Path("/employee")
     @Transactional
-    public @ResponseBody ResponseEntity<Employee> update(@RequestBody Employee employee) {
-        employeeDao.update(employee);
-        return ResponseEntity.ok(employee);
+    public @ResponseBody void update(@RequestBody EmployeeDto employeeDto) {
+        employeeDao.update(employeeDto);
     }
 }
