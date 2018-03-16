@@ -12,3 +12,5 @@ nb-configuration.xml
 dependency-reduced-pom.xml
 *.properties.dev
 *.log
+node_modules
+frontend/dist
