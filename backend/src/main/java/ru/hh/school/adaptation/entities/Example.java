@@ -18,7 +18,7 @@ public class Example {
     return id;
   }
 
-  public void setid(Integer id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 

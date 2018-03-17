@@ -6,11 +6,8 @@ import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.CoreProdConfig;
 import ru.hh.nab.hibernate.DataSourceFactory;
 import ru.hh.nab.hibernate.HibernateProdConfig;
-import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.nab.hibernate.datasource.DataSourceType;
-import ru.hh.school.adaptation.dao.ExampleDao;
-import ru.hh.school.adaptation.entities.Example;
-import ru.hh.school.adaptation.resources.ExampleResource;
+import ru.hh.school.adaptation.services.MailService;
 
 import javax.sql.DataSource;
 
@@ -18,19 +15,14 @@ import javax.sql.DataSource;
 @Import({
         CoreProdConfig.class,
         HibernateProdConfig.class,
-        ExampleDao.class,
-        ExampleResource.class
+        MailService.class,
+        AdaptationCommonConfig.class
 })
 public class ProdConfig {
 
   @Bean
   String serviceName() {
     return "adaptation";
-  }
-
-  @Bean
-  MappingConfig mappingConfig() {
-    return new MappingConfig(Example.class);
   }
 
   @Bean
