@@ -1,8 +1,5 @@
 package ru.hh.school.adaptation.resources;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -11,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.ExampleDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.services.MailService;
-
 
 @Path("/")
 @Singleton
@@ -26,7 +22,6 @@ public class ExampleResource {
     this.exampleDao = exampleDao;
     this.mailTemplateDao = mailTemplateDao;
     this.mailService = mail;
-  }
 
   @GET
   @Path("/hello")
