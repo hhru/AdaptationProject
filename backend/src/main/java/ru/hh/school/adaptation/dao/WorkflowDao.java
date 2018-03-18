@@ -6,14 +6,14 @@ import ru.hh.school.adaptation.entities.Workflow;
 import javax.inject.Inject;
 
 public class WorkflowDao {
-    private final SessionFactory sessionFactory;
+  private final SessionFactory sessionFactory;
 
-    @Inject
-    public WorkflowDao(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+  @Inject
+  public WorkflowDao(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
 
-    public Workflow getRecordById(Integer id) {
-        return sessionFactory.getCurrentSession().get(Workflow.class, id);
-    }
+  public Workflow getRecordById(Integer id) {
+    return sessionFactory.getCurrentSession().get(Workflow.class, id);
+  }
 }

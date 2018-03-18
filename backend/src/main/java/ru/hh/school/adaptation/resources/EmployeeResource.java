@@ -11,56 +11,55 @@ import ru.hh.school.adaptation.entities.Employee;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("/")
 @Singleton
 public class EmployeeResource {
-    private final EmployeeDao employeeDao;
+  private final EmployeeDao employeeDao;
 
-    @Inject
-    public EmployeeResource(EmployeeDao employeeDao) {
-        this.employeeDao = employeeDao;
-    }
+  @Inject
+  public EmployeeResource(EmployeeDao employeeDao) {
+    this.employeeDao = employeeDao;
+  }
 
-    @GET
-    @Produces("application/json")
-    @Path("/employee")
-    @Transactional
-    public @ResponseBody List<EmployeeDto> getAll() {
-        List<Employee> employeeList = employeeDao.getAllRecords();
-        return employeeList.stream().map(EmployeeDto::new).collect(Collectors.toList());
-    }
+  @GET
+  @Produces("application/json")
+  @Path("/employee")
+  @Transactional
+  public @ResponseBody
+  List<EmployeeDto> getAll() {
+    List<Employee> employeeList = employeeDao.getAllRecords();
+    return employeeList.stream().map(EmployeeDto::new).collect(Collectors.toList());
+  }
 
-    @GET
-    @Produces("application/json")
-    @Path("/employee/{id}")
-    @Transactional
-    public @ResponseBody EmployeeDto get(@PathParam("id") String id) {
-        return new EmployeeDto(employeeDao.getRecordById(Integer.valueOf(id)));
-    }
+  @GET
+  @Produces("application/json")
+  @Path("/employee/{id}")
+  @Transactional
+  public @ResponseBody
+  EmployeeDto get(@PathParam("id") String id) {
+    return new EmployeeDto(employeeDao.getRecordById(Integer.valueOf(id)));
+  }
 
-    @PUT
-    @Produces("application/json")
-    @Path("/employee")
-    @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
-    public @ResponseBody void create(@RequestBody EmployeeDto employeeDto) {
-        employeeDao.save(employeeDto);
-    }
+  @PUT
+  @Produces("application/json")
+  @Path("/employee")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Transactional
+  public @ResponseBody
+  void create(@RequestBody EmployeeDto employeeDto) {
+    employeeDao.save(employeeDto);
+  }
 
-    @POST
-    @Produces("application/json")
-    @Path("/employee")
-    @Transactional
-    public @ResponseBody void update(@RequestBody EmployeeDto employeeDto) {
-        employeeDao.update(employeeDto);
-    }
+  @POST
+  @Produces("application/json")
+  @Path("/employee")
+  @Transactional
+  public @ResponseBody
+  void update(@RequestBody EmployeeDto employeeDto) {
+    employeeDao.update(employeeDto);
+  }
 }

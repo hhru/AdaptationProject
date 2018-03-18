@@ -1,31 +1,70 @@
 package ru.hh.school.adaptation.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-    @Id
-    @Column(name = "hhid")
-    private String hhid;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Integer id;
 
-    public String getHhid() {
-        return hhid;
-    }
+  @Column(name = "hhid", nullable = false)
+  private String hhid;
 
-    public void setHhid(String hhid) {
-        this.hhid = hhid;
-    }
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
 
-    public User(){
+  @Column(name = "last_name", nullable = false)
+  private String lastName;
 
-    }
+  @Column(name = "middle_name")
+  private String middleName;
 
-    public User(String hhid){
-        this.hhid = hhid;
-    }
+
+  public User() {
+
+  }
+
+  public User(Integer id) {
+    this.id = id;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public String getHhid() {
+    return hhid;
+  }
+
+  public void setHhid(String hhid) {
+    this.hhid = hhid;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getMiddleName() {
+    return middleName;
+  }
+
+  public void setMiddleName(String middleName) {
+    this.middleName = middleName;
+  }
 }

@@ -1,150 +1,158 @@
 package ru.hh.school.adaptation.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import ru.hh.school.adaptation.ProdConfig;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "employee")
 public class Employee {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable=false)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", updatable = false)
+  private Integer id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+  @Column(name = "last_name", nullable = false)
+  private String lastName;
 
-    @Column(name = "middle_name")
-    private String middleName;
+  @Column(name = "middle_name")
+  private String middleName;
 
-    @Column(name = "position", nullable = false)
-    private String position;
+  @Column(name = "position", nullable = false)
+  private String position;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+  @Column(name = "email", nullable = false)
+  private String email;
 
-    @Column(name = "gender")
-    private String gender;
+  @Column(name = "mobile_phone")
+  private Long mobilePhone;
 
-    @Column(name = "employment_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date employmentTimestamp;
+  @Column(name = "internal_phone")
+  private Integer internalPhone;
 
-    @Column(name = "update_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTimestamp;
+  @Column(name = "gender")
+  private String gender;
 
-    @ManyToOne(cascade={CascadeType.ALL})
-    @JoinColumn(name = "curator_id")
-    private User curatorId;
+  @Column(name = "employment_timestamp")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date employmentTimestamp;
 
-    @ManyToOne(cascade={CascadeType.ALL})
-    @JoinColumn(name = "workflow_id")
-    private Workflow workflowId;
+  @Column(name = "update_timestamp")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date updateTimestamp;
 
-    public Employee(){
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "curator_id")
+  private User curator;
 
-    }
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "workflow_id")
+  private Workflow workflow;
 
-    public Integer getId() {
-        return id;
-    }
+  public Employee() {
 
-    public String getFirstName() {
-        return firstName;
-    }
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public String getMiddleName() {
-        return middleName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public String getPosition() {
-        return position;
-    }
+  public String getMiddleName() {
+    return middleName;
+  }
 
-    public void setPosition(String position) {
-        this.position = position;
-    }
+  public void setMiddleName(String middleName) {
+    this.middleName = middleName;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getPosition() {
+    return position;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setPosition(String position) {
+    this.position = position;
+  }
 
-    public Date getEmploymentTimestamp() {
-        return employmentTimestamp;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmploymentTimestamp(Date employmentTimestamp) {
-        this.employmentTimestamp = employmentTimestamp;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public Date getUpdateTimestamp() {
-        return updateTimestamp;
-    }
+  public Date getEmploymentTimestamp() {
+    return employmentTimestamp;
+  }
 
-    public void setUpdateTimestamp(Date updateTimestamp) {
-        this.updateTimestamp = updateTimestamp;
-    }
+  public void setEmploymentTimestamp(Date employmentTimestamp) {
+    this.employmentTimestamp = employmentTimestamp;
+  }
 
-    public String getGender() {
-        return gender;
-    }
+  public Date getUpdateTimestamp() {
+    return updateTimestamp;
+  }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+  public void setUpdateTimestamp(Date updateTimestamp) {
+    this.updateTimestamp = updateTimestamp;
+  }
 
-    public User getCuratorId() {
-        return curatorId;
-    }
+  public String getGender() {
+    return gender;
+  }
 
-    public void setCuratorId(User curatorId) {
-        this.curatorId = curatorId;
-    }
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
 
-    public Workflow getWorkflowId() {
-        return workflowId;
-    }
+  public User getCurator() {
+    return curator;
+  }
 
-    public void setWorkflowId(Workflow workflowId) {
-        this.workflowId = workflowId;
-    }
+  public void setCurator(User curator) {
+    this.curator = curator;
+  }
+
+  public Workflow getWorkflow() {
+    return workflow;
+  }
+
+  public void setWorkflow(Workflow workflow) {
+    this.workflow = workflow;
+  }
+
+  public Long getMobilePhone() {
+    return mobilePhone;
+  }
+
+  public void setMobilePhone(Long mobilePhone) {
+    this.mobilePhone = mobilePhone;
+  }
+
+  public Integer getInternalPhone() {
+    return internalPhone;
+  }
+
+  public void setInternalPhone(Integer internalPhone) {
+    this.internalPhone = internalPhone;
+  }
 }
