@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.services.UserService;
+import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.dao.ExampleDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.UserDao;
@@ -13,6 +15,7 @@ import ru.hh.school.adaptation.entities.Example;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.ExampleResource;
 import ru.hh.school.adaptation.services.EmployeeService;
 
@@ -22,9 +25,12 @@ import ru.hh.school.adaptation.services.EmployeeService;
         MailTemplateDao.class,
         EmployeeDao.class,
         UserDao.class,
+        UserService.class,
         ExampleResource.class,
         EmployeeResource.class,
-        EmployeeService.class
+        EmployeeService.class,
+        AuthService.class,
+        AuthResource.class
 })
 public class AdaptationCommonConfig {
 

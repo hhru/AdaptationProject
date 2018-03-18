@@ -50,12 +50,12 @@ public class TestConfig {
   
   @Bean(destroyMethod = "shutdown")
   static EmbeddedDatabase dataSource() {
-      return createEmbeddedDatabase(DataSourceType.REPLICA);
+      return createEmbeddedDatabase(DataSourceType.MASTER);
   }
 
   private static EmbeddedDatabase createEmbeddedDatabase(DataSourceType dataSourceType) {
     return new EmbeddedDatabaseBuilder()
-      .setName(dataSourceType.getId())
+      .setName(dataSourceType.getName())
       .setType(EmbeddedDatabaseType.HSQL)
       .build();
   }

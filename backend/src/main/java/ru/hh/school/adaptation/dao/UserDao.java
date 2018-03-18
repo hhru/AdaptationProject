@@ -1,9 +1,12 @@
 package ru.hh.school.adaptation.dao;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.User;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class UserDao {
   private final SessionFactory sessionFactory;
@@ -15,5 +18,23 @@ public class UserDao {
 
   public User getRecordById(Integer id) {
     return sessionFactory.getCurrentSession().get(User.class, id);
+  }
+
+  public List<User> getAllRecords() {
+    try {
+      Session session = sessionFactory.getCurrentSession();
+      return session.createQuery("from User", User.class).list();
+    } catch (HibernateException  hexp) {
+      hexp.printStackTrace();
+    }
+    return null;
+  }
+
+  public void save(User user) {
+    sessionFactory.getCurrentSession().persist(user);
+  }
+
+  public void update(User user) {
+    sessionFactory.getCurrentSession().update(user);
   }
 }

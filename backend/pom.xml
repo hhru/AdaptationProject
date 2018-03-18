@@ -13,9 +13,11 @@
 
     <properties>
         <jdk.version>1.8</jdk.version>
-        <nab.version>3.2</nab.version>
+        <nab.version>3.5.0</nab.version>
         <postgres.jdbc.version>42.2.1</postgres.jdbc.version>
         <jersey.version>2.22.2</jersey.version>
+        <jackson.version>2.5.0</jackson.version>
+        <scribejava.version>5.3.0</scribejava.version>
     </properties>
 
 
@@ -72,6 +74,18 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+            <version>${scribejava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
