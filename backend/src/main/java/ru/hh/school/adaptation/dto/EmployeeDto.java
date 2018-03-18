@@ -1,8 +1,9 @@
 package ru.hh.school.adaptation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import ru.hh.school.adaptation.ProdConfig;
+import ru.hh.school.adaptation.AdaptationCommonConfig;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.GenderType;
 
 import java.util.Date;
 
@@ -24,12 +25,12 @@ public class EmployeeDto {
 
   public Integer internalPhone;
 
-  public String gender;
+  public GenderType gender;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ProdConfig.JSON_DATE_TIME_FORMAT)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
   public Date employmentTimestamp;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ProdConfig.JSON_DATE_TIME_FORMAT)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
   public Date updateTimestamp;
 
   public Integer curatorId;

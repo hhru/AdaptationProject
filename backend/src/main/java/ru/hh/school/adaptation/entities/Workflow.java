@@ -20,14 +20,6 @@ public class Workflow {
   @Column(name = "description")
   private String description;
 
-  public Workflow() {
-
-  }
-
-  public Workflow(int id) {
-    this.id = id;
-  }
-
   public Integer getId() {
     return id;
   }

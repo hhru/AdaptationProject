@@ -3,7 +3,7 @@ package ru.hh.school.adaptation.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "`user`")
 public class User {
 
   @Id
@@ -12,7 +12,7 @@ public class User {
   private Integer id;
 
   @Column(name = "hhid", nullable = false)
-  private String hhid;
+  private Integer hhid;
 
   @Column(name = "first_name", nullable = false)
   private String firstName;
@@ -23,24 +23,15 @@ public class User {
   @Column(name = "middle_name")
   private String middleName;
 
-
-  public User() {
-
-  }
-
-  public User(Integer id) {
-    this.id = id;
-  }
-
   public Integer getId() {
     return id;
   }
 
-  public String getHhid() {
+  public Integer getHhid() {
     return hhid;
   }
 
-  public void setHhid(String hhid) {
+  public void setHhid(Integer hhid) {
     this.hhid = hhid;
   }
 

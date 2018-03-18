@@ -33,8 +33,9 @@ public class Employee {
   @Column(name = "internal_phone")
   private Integer internalPhone;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "gender")
-  private String gender;
+  private GenderType gender;
 
   @Column(name = "employment_timestamp")
   @Temporal(TemporalType.TIMESTAMP)
@@ -51,10 +52,6 @@ public class Employee {
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "workflow_id")
   private Workflow workflow;
-
-  public Employee() {
-
-  }
 
   public Integer getId() {
     return id;
@@ -116,11 +113,11 @@ public class Employee {
     this.updateTimestamp = updateTimestamp;
   }
 
-  public String getGender() {
+  public GenderType getGender() {
     return gender;
   }
 
-  public void setGender(String gender) {
+  public void setGender(GenderType gender) {
     this.gender = gender;
   }
 
