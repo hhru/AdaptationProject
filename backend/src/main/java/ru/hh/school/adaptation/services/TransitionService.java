@@ -16,26 +16,35 @@ import java.util.stream.Collectors;
 @Singleton
 public class TransitionService {
   private TransitionDao transitionDao;
+  private WorkflowService workflowService;
 
-  public TransitionService(TransitionDao transitionDao){
+  public TransitionService(TransitionDao transitionDao, WorkflowService workflowService){
     this.transitionDao = transitionDao;
+    this.workflowService = workflowService;
   }
 
   @Transactional(readOnly = true)
   public TransitionDto getCurrentTransitionByEmployeeId(Integer employeeId) {
-    return new TransitionDto(transitionDao.getCurrentTransitionByEmployeeId(employeeId));
+    Transition transition = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
+    if (transition==null) {
+      return null;
+    }
+    return new TransitionDto(transition);
   }
 
   @Transactional
-  public void setEmployeeNextTransition(Integer employeeId) {
-    Transition transitionCurrent = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
-    Transition transitionNext = transitionDao.getRecordById(transitionCurrent.getNext().getId());
-
+  public void setEmployeeNextTransition(Employee employee) {
+    Transition transitionCurrent = transitionDao.getCurrentTransitionByEmployeeId(employee.getId());
     transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
-    transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
-
     transitionDao.update(transitionCurrent);
-    transitionDao.update(transitionNext);
+
+    Transition transitionNext = null;
+    if (transitionCurrent.getNext()!=null) {
+      transitionNext = transitionDao.getRecordById(transitionCurrent.getNext().getId());
+      transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
+      transitionDao.update(transitionNext);
+      workflowService.stepAction(employee, transitionNext.getStepType());
+    }
   }
 
   @Transactional(readOnly = true)
@@ -46,23 +55,18 @@ public class TransitionService {
   @Transactional
   public List<Transition> createTransitionsForNewEmployee(Employee employee) {
     List<Transition> transitions = new LinkedList<>();
+    Transition prev = null;
     for(WorkflowStepType workflowStepType : WorkflowStepType.values()){
       Transition transition = new Transition();
+      transition.setNext(prev);
       transition.setEmployee(employee);
       transition.setStepType(workflowStepType);
-      switch (workflowStepType){
-        case ADD:
-          transition.setStepStatus(WorkflowStepStatus.DONE);
-          break;
-        case TASK_LIST:
-          transition.setStepStatus(WorkflowStepStatus.CURRENT);
-          break;
-        default:
-          transition.setStepStatus(WorkflowStepStatus.NOT_DONE);
-      }
+      transition.setStepStatus(workflowStepType == WorkflowStepType.ADD ? WorkflowStepStatus.CURRENT : WorkflowStepStatus.NOT_DONE);
       transitionDao.save(transition);
       transitions.add(transition);
+      prev = transition;
     }
+    workflowService.stepAction(employee, WorkflowStepType.ADD);
     return transitions;
   }
 }

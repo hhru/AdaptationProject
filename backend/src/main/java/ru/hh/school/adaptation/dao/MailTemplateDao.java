@@ -18,13 +18,14 @@ public class MailTemplateDao {
     return sessionFactory.getCurrentSession().get(MailTemplate.class, id);
   }
 
+  @Transactional(readOnly = true)
   public MailTemplate getRecordByName(String name) {
-    return (MailTemplate) sessionFactory.getCurrentSession()
-            .createQuery("from MailTemplate where name=:name")
+    return sessionFactory.getCurrentSession()
+            .createQuery("from MailTemplate where name=:name", MailTemplate.class)
             .setParameter("name", name)
             .uniqueResult();
   }
-  
+
   @Transactional
   public MailTemplate createRecord(String nameTemplate, String htmlTemplate) {
     MailTemplate template = new MailTemplate(nameTemplate, htmlTemplate);

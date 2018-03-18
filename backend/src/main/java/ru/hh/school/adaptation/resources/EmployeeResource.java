@@ -12,7 +12,6 @@ import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,7 +27,6 @@ public class EmployeeResource {
   private final EmployeeService employeeService;
   private final TransitionService transitionService;
 
-  @Inject
   public EmployeeResource(EmployeeService employeeService, TransitionService transitionService) {
     this.employeeService = employeeService;
     this.transitionService = transitionService;
@@ -47,7 +45,7 @@ public class EmployeeResource {
   @Path("/employee/{id}/step/next")
   @ResponseBody
   public void setEmployeeTransition(@PathParam("id") Integer id) {
-    transitionService.setEmployeeNextTransition(id);
+    transitionService.setEmployeeNextTransition(employeeService.getEmployee(id));
   }
 
   @GET

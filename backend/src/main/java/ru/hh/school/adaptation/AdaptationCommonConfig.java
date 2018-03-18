@@ -26,6 +26,7 @@ import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.TransitionService;
 import ru.hh.school.adaptation.services.UserService;
+import ru.hh.school.adaptation.services.WorkflowService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
 
@@ -44,6 +45,7 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
     TransitionService.class,
     AuthService.class,
     PersonalInfoService.class,
+    WorkflowService.class,
 
     AuthResource.class,
     MainResource.class,
@@ -61,7 +63,8 @@ public class AdaptationCommonConfig {
                              MailTemplate.class,
                              Employee.class,
                              User.class,
-                            PersonalInfo.class, Transition.class
+                             PersonalInfo.class,
+                             Transition.class
     );
   }
 
