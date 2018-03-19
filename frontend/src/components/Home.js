@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
 
 
 class Home extends React.Component {
@@ -13,13 +14,17 @@ class Home extends React.Component {
     }
   
     handleLoginLogout () {
-        this.setState(
-            prevState => ({
-                isLoggedIn: !prevState.isLoggedIn
-            })
-        );
-
-        this.props.history.push('/home');
+        var url = '/api/login/';
+        var data = this.state;
+//        $.get(url, data, function (response) {
+//            console.log(response);
+            this.setState(
+                prevState => ({
+                    isLoggedIn: !prevState.isLoggedIn
+                })
+            );
+            this.props.history.push('/home');
+//        }.bind(this));
     }
 
     render() {

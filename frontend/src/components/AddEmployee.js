@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery'; 
 
 class AddEmployee extends React.Component {
     constructor(props) {
@@ -29,8 +30,13 @@ class AddEmployee extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A form was submitted');
-        console.log(this.state);
+        var url = '/api/employee/';
+        var data = this.state;
+//        $.post(url, data, function (response) {
+//            console.log(response);
+//        }.bind(this));
+console.log(data);
+        alert('Employee ' + this.state.firstName + ' '  + this.state.lastName + ' was added');
         event.preventDefault();
     }
 
