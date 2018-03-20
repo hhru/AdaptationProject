@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactTable from 'react-table';
-
-import 'react-table/react-table.css';
+import SortableTbl from 'react-sort-search-table';
 
 
 class ListEmployees extends React.Component {
@@ -11,7 +9,6 @@ class ListEmployees extends React.Component {
         
         this.state = {
             employeeList: [],
-            columns: [{Header: 'First Name', accessor: 'firstName'}, {Header: 'Last Name', accessor: 'lastName'}, {Header: 'email', accessor: 'email'}, {Header: 'employment date', accessor: 'employmentTimestamp'}],
         };
 
         this.handleEmployeeCallback = this.handleEmployeeCallback.bind(this);
@@ -23,7 +20,7 @@ class ListEmployees extends React.Component {
         })
     };
 
-    componentWillMount () {
+    componentDidMount () {
 //        $.get('/api/employee/', this.handleEmployeeCallback);
         this.setState({
             employeeList: [
@@ -35,10 +32,13 @@ class ListEmployees extends React.Component {
 
     render() {
         return (
-            <ReactTable
-                data={this.state.employeeList}
-                columns={this.state.columns}
-            />
+            <div>
+               <SortableTbl
+                   tblData={this.state.employeeList}
+                   tHead={['First Name', 'Last Name', 'email', 'employment date']}
+                   dKey={['firstName', 'lastName', 'email', 'employmentTimestamp']}
+               />
+           </div>
         )
     }
 }
