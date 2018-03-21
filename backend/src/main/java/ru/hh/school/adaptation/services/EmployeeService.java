@@ -5,8 +5,6 @@ import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
 import java.util.List;
