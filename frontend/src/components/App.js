@@ -4,7 +4,7 @@ import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
 import AddEmployee from './AddEmployee';
 import ListEmployees from './ListEmployees';
-import Home from './Home';
+import HomePage from './HomePage';
 import NotFound from './NotFound';
 import LogedInHome from './LogedInHome';
 
@@ -16,8 +16,7 @@ const App = () => {
    <Router>
      <div>
        <Switch>
-         <Route exact path="/" component={Home} />
-         <Route exact path="/home" component={LogedInHome} />
+         <Route exact path="/" component={HomePage} />
          <Route exact path="/add_employee" component={AddEmployee} />
          <Route exact path="/list_employees" component={ListEmployees} />
          <Route component={NotFound} />

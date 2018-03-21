@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery'; 
+
 
 class AddEmployee extends React.Component {
     constructor(props) {
