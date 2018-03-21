@@ -9,7 +9,6 @@ import NotFound from './NotFound';
 
 import { p } from './App.css';
 
-
 const App = () => {
   return (
    <Router>
@@ -27,4 +26,3 @@ const App = () => {
 
 
 export default App;
-

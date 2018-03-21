@@ -35,7 +35,6 @@ class AddEmployee extends React.Component {
 //        $.post(url, data, function (response) {
 //            console.log(response);
 //        }.bind(this));
-console.log(data);
         alert('Employee ' + this.state.firstName + ' '  + this.state.lastName + ' was added');
         event.preventDefault();
     }
