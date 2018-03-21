@@ -30,8 +30,8 @@ class AddEmployee extends React.Component {
     }
 
     handleSubmit(event) {
-        var url = '/api/employee/';
-        var data = this.state;
+        let url = '/api/employee/';
+        let data = this.state;
 //        $.post(url, data, function (response) {
 //            console.log(response);
 //        }.bind(this));
