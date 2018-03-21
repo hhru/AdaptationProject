@@ -24,10 +24,10 @@ public class EmployeeResource {
 
   @GET
   @Produces("application/json")
-  @Path("/employee")
+  @Path("/employee/all")
   @ResponseBody
   public List<EmployeeDto> getAll() {
-    return employeeService.getAllEmployees();
+    return employeeService.getAllEmployeesDto();
   }
 
   @GET
@@ -35,12 +35,12 @@ public class EmployeeResource {
   @Path("/employee/{id}")
   @ResponseBody
   public EmployeeDto get(@PathParam("id") Integer id) {
-    return employeeService.getEmployee(id);
+    return employeeService.getEmployeeDto(id);
   }
 
   @POST
   @Produces("application/json")
-  @Path("/employee")
+  @Path("/employee/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public void create(@RequestBody EmployeeDto employeeDto) {
@@ -49,7 +49,7 @@ public class EmployeeResource {
 
   @PUT
   @Produces("application/json")
-  @Path("/employee")
+  @Path("/employee/update")
   @ResponseBody
   public void update(@RequestBody EmployeeDto employeeDto) {
     employeeService.updateEmployee(employeeDto);

@@ -22,8 +22,6 @@ CREATE TABLE employee
   mentor_id INT REFERENCES "user" (id) NOT NULL,
   chief_id INT REFERENCES "user" (id) NOT NULL
 );
-CREATE INDEX employee_mentor_id_index ON employee (mentor_id);
-CREATE INDEX employee_chief_id_index ON employee (chief_id);
 
 -- Some data for simplify testing of user cases
 INSERT INTO "user" (hhid, first_name, last_name) VALUES (1, 'Билл', 'Гейтс');

@@ -6,7 +6,7 @@ import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.exceptions.EntityDoesNotExistException;
+import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -23,20 +23,31 @@ public class EmployeeService {
     this.userDao = userDao;
   }
 
-  @Transactional
-  public List<EmployeeDto> getAllEmployees() {
-    List<Employee> employeeList = employeeDao.getAllRecords();
-    return employeeList.stream().map(EmployeeDto::new).collect(Collectors.toList());
+  @Transactional(readOnly = true)
+  public List<EmployeeDto> getAllEmployeesDto() {
+    return getAllEmployees().stream().map(EmployeeDto::new).collect(Collectors.toList());
   }
 
-  @Transactional
-  public EmployeeDto getEmployee(Integer id) {
+  @Transactional(readOnly = true)
+  public List<Employee> getAllEmployees() {
+    return employeeDao.getAllRecords();
+  }
+
+  @Transactional(readOnly = true)
+  public EmployeeDto getEmployeeDto(Integer id) {
+    return new EmployeeDto(getEmployee(id));
+  }
+
+  @Transactional(readOnly = true)
+  public Employee getEmployee(Integer id) {
     Employee employee = employeeDao.getRecordById(id);
     if (employee == null) {
-      throw new EntityDoesNotExistException(String.format("Employee with id = %d does not exist", id));
+      throw new EntityNotFoundException(String.format("Employee with id = %d does not exist", id));
     }
-    return new EmployeeDto(employee);
+    return employee;
   }
+
+
 
   @Transactional
   public void saveEmployee(EmployeeDto employeeDto) {
@@ -53,7 +64,7 @@ public class EmployeeService {
 
     User mentor = userDao.getRecordById(employeeDto.mentorId);
     if (mentor == null) {
-      throw new EntityDoesNotExistException(
+      throw new EntityNotFoundException(
           String.format("Mentor with id = %d does not exist", employeeDto.mentorId)
       );
     }
@@ -61,7 +72,7 @@ public class EmployeeService {
 
     User chief = userDao.getRecordById(employeeDto.chiefId);
     if (chief == null) {
-      throw new EntityDoesNotExistException(
+      throw new EntityNotFoundException(
           String.format("Chief with id = %d does not exist", employeeDto.chiefId)
       );
     }
@@ -85,7 +96,7 @@ public class EmployeeService {
 
     User mentor = userDao.getRecordById(employeeDto.mentorId);
     if (mentor == null) {
-      throw new EntityDoesNotExistException(
+      throw new EntityNotFoundException(
           String.format("Mentor with id = %d does not exist", employeeDto.mentorId)
       );
     }
