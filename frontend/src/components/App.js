@@ -6,7 +6,6 @@ import AddEmployee from './AddEmployee';
 import ListEmployees from './ListEmployees';
 import HomePage from './HomePage';
 import NotFound from './NotFound';
-import LogedInHome from './LogedInHome';
 
 import { p } from './App.css';
 

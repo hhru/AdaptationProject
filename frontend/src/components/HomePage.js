@@ -10,10 +10,10 @@ class HomePage extends React.Component {
             isLoggedIn: false,
         };
 
-        this.handleLoginLogout = this.handleLoginLogout.bind(this);
+        this.handleLoginLogoutButtonPressed = this.handleLoginLogoutButtonPressed.bind(this);
     }
   
-    handleLoginLogout () {
+    handleLoginLogoutButtonPressed () {
         let url = '/api/login/';
         let data = this.state;
 //        axios.get(url)
@@ -37,12 +37,12 @@ class HomePage extends React.Component {
                     Welcome to adaptation homepage!
                 </p>
                 
-                <button onClick={this.handleLoginLogout}>
+                <button onClick={this.handleLoginLogoutButtonPressed}>
                     {this.state.isLoggedIn ? 'Logout' : 'Login'}
                 </button>
 
                 {this.state.isLoggedIn
-                    ? <LogedInHomePage/>
+                    ? <HomePageForLogedInUser history={this.props.history} />
                     : null
                 }
  
@@ -53,7 +53,7 @@ class HomePage extends React.Component {
 
 
 
-class LogedInHomePage extends React.Component {
+class HomePageForLogedInUser extends React.Component {
     constructor(props) {
         super(props);
 
