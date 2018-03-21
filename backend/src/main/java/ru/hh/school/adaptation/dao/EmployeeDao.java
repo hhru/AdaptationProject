@@ -5,19 +5,14 @@ import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.Employee;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.List;
 
 public class EmployeeDao {
   private final SessionFactory sessionFactory;
-  private final UserDao userDao;
-  private final WorkflowDao workflowDao;
 
   @Inject
-  public EmployeeDao(SessionFactory sessionFactory, UserDao userDao, WorkflowDao workflowDao) {
+  public EmployeeDao(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
-    this.userDao = userDao;
-    this.workflowDao = workflowDao;
   }
 
   public Employee getRecordById(Integer id) {
@@ -34,7 +29,6 @@ public class EmployeeDao {
   }
 
   public void update(Employee employee) {
-    employee.setUpdateTimestamp(new Date());
     sessionFactory.getCurrentSession().update(employee);
   }
 

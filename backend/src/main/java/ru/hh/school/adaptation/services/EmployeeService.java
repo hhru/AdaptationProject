@@ -3,7 +3,6 @@ package ru.hh.school.adaptation.services;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
-import ru.hh.school.adaptation.dao.WorkflowDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.User;
@@ -18,12 +17,10 @@ public class EmployeeService {
 
   private EmployeeDao employeeDao;
   private UserDao userDao;
-  private WorkflowDao workflowDao;
 
-  public EmployeeService(EmployeeDao employeeDao, UserDao userDao, WorkflowDao workflowDao){
+  public EmployeeService(EmployeeDao employeeDao, UserDao userDao){
     this.employeeDao = employeeDao;
     this.userDao = userDao;
-    this.workflowDao = workflowDao;
   }
 
   @Transactional
@@ -36,7 +33,7 @@ public class EmployeeService {
   public EmployeeDto getEmployee(Integer id) {
     Employee employee = employeeDao.getRecordById(id);
     if (employee == null) {
-      throw new EntityDoesNotExistException("Employee with id = " + id + " does not exist");
+      throw new EntityDoesNotExistException(String.format("Employee with id = %d does not exist", id));
     }
     return new EmployeeDto(employee);
   }
@@ -53,52 +50,47 @@ public class EmployeeService {
     employee.setEmploymentTimestamp(employeeDto.employmentTimestamp);
     employee.setMobilePhone(employeeDto.mobilePhone);
     employee.setInternalPhone(employeeDto.internalPhone);
-    User user = userDao.getRecordById(employeeDto.curatorId);
-    if (user == null) {
-      throw new EntityDoesNotExistException("Curator with id = " + employeeDto.curatorId + " does not exist");
+
+    User mentor = userDao.getRecordById(employeeDto.mentorId);
+    if (mentor == null) {
+      throw new EntityDoesNotExistException(
+          String.format("Mentor with id = %d does not exist", employeeDto.mentorId)
+      );
     }
-    employee.setCurator(user);
-    employee.setWorkflow(workflowDao.getRecordById(1));
+    employee.setMentor(mentor);
+
+    User chief = userDao.getRecordById(employeeDto.chiefId);
+    if (chief == null) {
+      throw new EntityDoesNotExistException(
+          String.format("Chief with id = %d does not exist", employeeDto.chiefId)
+      );
+    }
+    employee.setChief(chief);
+
     employeeDao.save(employee);
   }
 
   @Transactional
   public void updateEmployee(EmployeeDto employeeDto) {
     Employee employee = employeeDao.getRecordById(employeeDto.id);
-    if (employeeDto.firstName != null) {
-      employee.setFirstName(employeeDto.firstName);
+    employee.setFirstName(employeeDto.firstName);
+    employee.setLastName(employeeDto.lastName);
+    employee.setMiddleName(employeeDto.middleName);
+    employee.setEmail(employeeDto.email);
+    employee.setGender(employeeDto.gender);
+    employee.setPosition(employeeDto.position);
+    employee.setEmploymentTimestamp(employeeDto.employmentTimestamp);
+    employee.setMobilePhone(employeeDto.mobilePhone);
+    employee.setInternalPhone(employeeDto.internalPhone);
+
+    User mentor = userDao.getRecordById(employeeDto.mentorId);
+    if (mentor == null) {
+      throw new EntityDoesNotExistException(
+          String.format("Mentor with id = %d does not exist", employeeDto.mentorId)
+      );
     }
-    if (employeeDto.lastName != null) {
-      employee.setLastName(employeeDto.lastName);
-    }
-    if (employeeDto.middleName != null) {
-      employee.setMiddleName(employeeDto.middleName);
-    }
-    if (employeeDto.email != null) {
-      employee.setEmail(employeeDto.email);
-    }
-    if (employeeDto.mobilePhone != null) {
-      employee.setMobilePhone(employeeDto.mobilePhone);
-    }
-    if (employeeDto.internalPhone != null) {
-      employee.setInternalPhone(employeeDto.internalPhone);
-    }
-    if (employeeDto.gender != null) {
-      employee.setGender(employeeDto.gender);
-    }
-    if (employeeDto.position != null) {
-      employee.setPosition(employeeDto.position);
-    }
-    if (employeeDto.employmentTimestamp != null) {
-      employee.setEmploymentTimestamp(employeeDto.employmentTimestamp);
-    }
-    if (employeeDto.curatorId != null) {
-      User user = userDao.getRecordById(employeeDto.curatorId);
-      if (user == null) {
-        throw new EntityDoesNotExistException("Curator with id = " + employeeDto.curatorId + " does not exist");
-      }
-      employee.setCurator(user);
-    }
+    employee.setMentor(mentor);
+
     employeeDao.update(employee);
   }
 

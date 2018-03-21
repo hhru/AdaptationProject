@@ -7,10 +7,34 @@ import javax.ws.rs.core.Response;
 
 public class EntityDoesNotExistException extends WebApplicationException {
 
+  private static final Response.Status responseStatus = Response.Status.BAD_REQUEST;
+
+  public EntityDoesNotExistException(String message, Throwable cause) {
+    super(
+        message,
+        cause,
+        Response.status(responseStatus).entity(
+          new ErrorDto(message, responseStatus.getStatusCode())
+        ).build()
+    );
+  }
+
   public EntityDoesNotExistException(String message){
-    super(Response.status(Response.Status.BAD_REQUEST).entity(
-        new ErrorDto(message)
-    ).build());
+    super(
+        message,
+        Response.status(responseStatus).entity(
+          new ErrorDto(message, responseStatus.getStatusCode())
+        ).build()
+    );
+  }
+
+  public EntityDoesNotExistException(Throwable cause){
+    super(
+        cause,
+        Response.status(responseStatus).entity(
+          new ErrorDto(cause.getMessage(), responseStatus.getStatusCode())
+        ).build()
+    );
   }
 
 }

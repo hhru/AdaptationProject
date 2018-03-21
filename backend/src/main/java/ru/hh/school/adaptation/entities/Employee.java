@@ -35,23 +35,19 @@ public class Employee {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
-  private GenderType gender;
+  private Gender gender;
 
   @Column(name = "employment_timestamp")
   @Temporal(TemporalType.TIMESTAMP)
   private Date employmentTimestamp;
 
-  @Column(name = "update_timestamp")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date updateTimestamp;
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "mentor_id")
+  private User mentor;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "curator_id")
-  private User curator;
-
-  @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_id")
-  private Workflow workflow;
+  @JoinColumn(name = "chief_id")
+  private User chief;
 
   public Integer getId() {
     return id;
@@ -105,36 +101,20 @@ public class Employee {
     this.employmentTimestamp = employmentTimestamp;
   }
 
-  public Date getUpdateTimestamp() {
-    return updateTimestamp;
-  }
-
-  public void setUpdateTimestamp(Date updateTimestamp) {
-    this.updateTimestamp = updateTimestamp;
-  }
-
-  public GenderType getGender() {
+  public Gender getGender() {
     return gender;
   }
 
-  public void setGender(GenderType gender) {
+  public void setGender(Gender gender) {
     this.gender = gender;
   }
 
-  public User getCurator() {
-    return curator;
+  public User getMentor() {
+    return mentor;
   }
 
-  public void setCurator(User curator) {
-    this.curator = curator;
-  }
-
-  public Workflow getWorkflow() {
-    return workflow;
-  }
-
-  public void setWorkflow(Workflow workflow) {
-    this.workflow = workflow;
+  public void setMentor(User mentor) {
+    this.mentor = mentor;
   }
 
   public Long getMobilePhone() {
@@ -151,5 +131,13 @@ public class Employee {
 
   public void setInternalPhone(Integer internalPhone) {
     this.internalPhone = internalPhone;
+  }
+
+  public User getChief() {
+    return chief;
+  }
+
+  public void setChief(User chief) {
+    this.chief = chief;
   }
 }
