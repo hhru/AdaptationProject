@@ -42,7 +42,6 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/workflow")
   @ResponseBody
-  @Transactional
   public ResponseEntity<Void> setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody Integer next) {
     Employee employee = employeeService.getEmployee(id);
     Workflow workflow = workflowService.getWorkflow(next);
@@ -55,7 +54,6 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/all_workflow")
   @ResponseBody
-  @Transactional
   public List<WorkflowDto> getAllWorkflow(@PathParam("id") Integer id) {
     Employee employee = employeeService.getEmployee(id);
     return workflowService.getAllWorkflows(employee.getWorkflowSet().getId());

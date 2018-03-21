@@ -22,6 +22,7 @@ public class WorkflowService {
     this.workflowDao = workflowDao;
   }
 
+  @Transactional
   public Workflow getWorkflow(Integer id) {
     return workflowDao.getRecordById(id);
   }

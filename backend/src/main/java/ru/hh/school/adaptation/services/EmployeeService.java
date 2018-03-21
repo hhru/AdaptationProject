@@ -15,6 +15,7 @@ public class EmployeeService {
     this.employeeDao = employeeDao;
   }
 
+  @Transactional
   public Employee getEmployee(Integer id) {
     return employeeDao.getRecordById(id);
   }
