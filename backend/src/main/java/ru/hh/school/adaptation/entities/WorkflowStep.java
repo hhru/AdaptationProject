@@ -3,8 +3,8 @@ package ru.hh.school.adaptation.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "workflow_leonid")
-public class Workflow {
+@Table(name = "workflow_step")
+public class WorkflowStep {
 
   @Id
   @Column(name = "id")

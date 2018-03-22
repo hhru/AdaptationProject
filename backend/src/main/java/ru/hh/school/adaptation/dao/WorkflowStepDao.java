@@ -3,26 +3,26 @@ package ru.hh.school.adaptation.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import ru.hh.school.adaptation.entities.Workflow;
+import ru.hh.school.adaptation.entities.WorkflowStep;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class WorkflowDao {
+public class WorkflowStepDao {
   private final SessionFactory sessionFactory;
 
   @Inject
-  public WorkflowDao(SessionFactory sessionFactory) {
+  public WorkflowStepDao(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 
-  public Workflow getRecordById(Integer id) {
-    return sessionFactory.getCurrentSession().get(Workflow.class, id);
+  public WorkflowStep getRecordById(Integer id) {
+    return sessionFactory.getCurrentSession().get(WorkflowStep.class, id);
   }
 
-  public List<Workflow> getAllRecords() {
+  public List<WorkflowStep> getAllRecords() {
     Session session = sessionFactory.getCurrentSession();
-    return session.createQuery("from Workflow", Workflow.class).list();
+    return session.createQuery("from WorkflowStep", WorkflowStep.class).list();
   }
 }

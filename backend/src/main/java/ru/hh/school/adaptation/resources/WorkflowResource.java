@@ -2,7 +2,7 @@ package ru.hh.school.adaptation.resources;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.hh.school.adaptation.dto.WorkflowDto;
+import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.services.WorkflowService;
 
 import java.util.List;
@@ -23,9 +23,9 @@ public class WorkflowResource {
 
   @GET
   @Produces("application/json")
-  @Path("/workflow")
+  @Path("/step/all")
   @ResponseBody
-  public List<WorkflowDto> getAll() {
-    return workflowService.getAllWorkflows();
+  public List<WorkflowStepDto> getAllWorkflowSteps() {
+    return workflowService.getAllWorkflowSteps();
   }
 }

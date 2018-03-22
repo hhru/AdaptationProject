@@ -3,8 +3,8 @@ package ru.hh.school.adaptation.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "workflow_set")
-public class WorkflowSet {
+@Table(name = "workflow")
+public class Workflow {
 
   @Id
   @Column(name = "id")
@@ -22,11 +22,11 @@ public class WorkflowSet {
     this.id = id;
   }
 
-  public String getDescription() {
+  public String getName() {
     return name;
   }
 
-  public void setDescription(String name) {
+  public void setName(String name) {
     this.name = name;
   }
 }
