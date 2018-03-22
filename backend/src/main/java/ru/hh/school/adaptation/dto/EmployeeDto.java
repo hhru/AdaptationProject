@@ -33,9 +33,9 @@ public class EmployeeDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
   public Date updateTimestamp;
 
-  public Integer workflowId;
+  public Integer workflowStepId;
 
-  public Integer workflowSetId;
+  public Integer workflowId;
 
   public EmployeeDto() {
 
@@ -51,8 +51,8 @@ public class EmployeeDto {
     gender = employee.getGender();
     employmentTimestamp = employee.getEmploymentTimestamp();
     updateTimestamp = employee.getUpdateTimestamp();
+    workflowStepId = employee.getWorkflowStep().getId();
     workflowId = employee.getWorkflow().getId();
-    workflowSetId = employee.getWorkflowSet().getId();
   }
 
 }

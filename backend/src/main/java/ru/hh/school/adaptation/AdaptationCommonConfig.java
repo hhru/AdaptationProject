@@ -17,8 +17,8 @@ import ru.hh.school.adaptation.services.WorkflowService;
         ExampleDao.class,
         MailTemplateDao.class,
         EmployeeDao.class,
+        WorkflowStepDao.class,
         WorkflowDao.class,
-        WorkflowSetDao.class,
         TransitionDao.class,
         ExampleResource.class,
         EmployeeResource.class,
@@ -32,7 +32,12 @@ public class AdaptationCommonConfig {
 
   @Bean
     MappingConfig mappingConfig() {
-      return new MappingConfig(Example.class, MailTemplate.class, Employee.class, 
-          Workflow.class, WorkflowSet.class, Transition.class);
+      return new MappingConfig(Example.class,
+                               MailTemplate.class,
+                               Employee.class,
+                               WorkflowStep.class,
+                               Workflow.class,
+                               Transition.class
+      );
     }
 }

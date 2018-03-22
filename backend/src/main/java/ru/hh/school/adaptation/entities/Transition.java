@@ -11,16 +11,16 @@ public class Transition {
   private Integer id;
 
   @ManyToOne
-  @JoinColumn(name = "workflow_set_id")
-  private WorkflowSet workflowSet;
-
-  @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "workflow_id")
   private Workflow workflow;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_next_id")
-  private Workflow workflowNext;
+  @JoinColumn(name = "workflow_step_id")
+  private WorkflowStep workflowStep;
+
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "workflow_step_next_id")
+  private WorkflowStep workflowStepNext;
 
   public Integer getId() {
     return id;
@@ -28,14 +28,6 @@ public class Transition {
 
   public void setId(Integer id) {
     this.id = id;
-  }
-
-  public WorkflowSet getWorkflowSet() {
-    return workflowSet;
-  }
-
-  public void setWorkflowSet(WorkflowSet workflowSet) {
-    this.workflowSet = workflowSet;
   }
 
   public Workflow getWorkflow() {
@@ -46,11 +38,19 @@ public class Transition {
     this.workflow = workflow;
   }
 
-  public Workflow getWorkflowNext() {
-    return workflowNext;
+  public WorkflowStep getWorkflowStep() {
+    return workflowStep;
   }
 
-  public void setWorkflowNext(Workflow workflowNext) {
-    this.workflowNext = workflowNext;
+  public void setWorkflowStep(WorkflowStep workflowStep) {
+    this.workflowStep = workflowStep;
+  }
+
+  public WorkflowStep getWorkflowStepNext() {
+    return workflowStepNext;
+  }
+
+  public void setWorkflowStepNext(WorkflowStep workflowStepNext) {
+    this.workflowStepNext = workflowStepNext;
   }
 }

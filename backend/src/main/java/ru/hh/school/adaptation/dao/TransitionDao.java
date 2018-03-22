@@ -3,7 +3,7 @@ package ru.hh.school.adaptation.dao;
 import org.hibernate.SessionFactory;
 
 import ru.hh.school.adaptation.entities.Transition;
-import ru.hh.school.adaptation.entities.Workflow;
+import ru.hh.school.adaptation.entities.WorkflowStep;
 
 import java.util.List;
 
@@ -22,11 +22,11 @@ public class TransitionDao {
   }
 
   @SuppressWarnings({ "unchecked", "deprecation" })
-  public List<Workflow> getAllRecordsBySetId(Integer workflowSetId) {
+  public List<WorkflowStep> getAllRecords(Integer workflowId) {
     return sessionFactory.getCurrentSession().createQuery(
-        "SELECT T.workflow from Transition T "
-        + "where T.workflowSet=:workflowSetId order by T.workflow")
-        .setInteger("workflowSetId", workflowSetId)
+        "SELECT T.workflowStep from Transition T "
+        + "where T.workflow=:workflowId order by T.workflowStep")
+        .setInteger("workflowId", workflowId)
         .list();
   }
 }

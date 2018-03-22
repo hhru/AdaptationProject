@@ -46,12 +46,12 @@ public class Employee {
   private Date updateTimestamp;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_id")
-  private Workflow workflow;
+  @JoinColumn(name = "workflow_step_id")
+  private WorkflowStep workflowStep;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_set_id")
-  private WorkflowSet workflowSet;
+  @JoinColumn(name = "workflow_id")
+  private Workflow workflow;
 
   public Integer getId() {
     return id;
@@ -121,20 +121,20 @@ public class Employee {
     this.gender = gender;
   }
 
+  public WorkflowStep getWorkflowStep() {
+    return workflowStep;
+  }
+
+  public void setWorkflowStep(WorkflowStep workflowStep) {
+    this.workflowStep = workflowStep;
+  }
+
   public Workflow getWorkflow() {
     return workflow;
   }
 
   public void setWorkflow(Workflow workflow) {
     this.workflow = workflow;
-  }
-
-  public WorkflowSet getWorkflowSet() {
-    return workflowSet;
-  }
-
-  public void setWorkflow(WorkflowSet workflowSet) {
-    this.workflowSet = workflowSet;
   }
 
   public Long getMobilePhone() {

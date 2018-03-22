@@ -15,7 +15,7 @@ public class EmployeeService {
     this.employeeDao = employeeDao;
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Employee getEmployee(Integer id) {
     return employeeDao.getRecordById(id);
   }
