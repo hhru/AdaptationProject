@@ -3,18 +3,16 @@ package ru.hh.school.adaptation.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "workflow")
-public class Workflow {
+@Table(name = "workflow_set")
+public class WorkflowSet {
 
   @Id
   @Column(name = "id")
+  @GeneratedValue( strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "name", nullable = false)
+  @Column(name = "name")
   private String name;
-
-  @Column(name = "description")
-  private String description;
 
   public Integer getId() {
     return id;
@@ -24,19 +22,11 @@ public class Workflow {
     this.id = id;
   }
 
-  public String getName() {
+  public String getDescription() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setDescription(String name) {
     this.name = name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 }
