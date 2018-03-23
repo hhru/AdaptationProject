@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
@@ -36,7 +37,8 @@ import ru.hh.school.adaptation.services.EmployeeService;
         EmployeeService.class,
         HhApiService.class,
         AuthService.class,
-        AuthResource.class
+        AuthResource.class,
+        MainResource.class
 })
 public class AdaptationCommonConfig {
 
