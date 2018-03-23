@@ -61,6 +61,8 @@ public class EmployeeResource {
     return workflowService.getAllWorkflowSteps(employee.getWorkflow().getId());
   }
 
+  @GET
+  @Produces("application/json")
   @Path("/employee/all")
   @ResponseBody
   public List<EmployeeDto> getAll() {

@@ -35,7 +35,6 @@ public class Employee {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
-
   private Gender gender;
 
   @Column(name = "employment_timestamp")
@@ -57,7 +56,6 @@ public class Employee {
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "chief_id")
   private User chief;
-
 
   public Integer getId() {
     return id;
