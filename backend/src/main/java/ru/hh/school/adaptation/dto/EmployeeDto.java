@@ -3,7 +3,7 @@ package ru.hh.school.adaptation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.hh.school.adaptation.AdaptationCommonConfig;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.GenderType;
+import ru.hh.school.adaptation.entities.Gender;
 
 import java.util.Date;
 
@@ -25,17 +25,18 @@ public class EmployeeDto {
 
   public Integer internalPhone;
 
-  public GenderType gender;
+  public Gender gender;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
   public Date employmentTimestamp;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
-  public Date updateTimestamp;
-
   public Integer workflowStepId;
 
   public Integer workflowId;
+
+  public Integer mentorId;
+
+  public Integer chiefId;
 
   public EmployeeDto() {
 
@@ -50,9 +51,10 @@ public class EmployeeDto {
     email = employee.getEmail();
     gender = employee.getGender();
     employmentTimestamp = employee.getEmploymentTimestamp();
-    updateTimestamp = employee.getUpdateTimestamp();
     workflowStepId = employee.getWorkflowStep().getId();
     workflowId = employee.getWorkflow().getId();
+    mentorId = employee.getMentor().getId();
+    chiefId = employee.getChief().getId();
   }
 
 }

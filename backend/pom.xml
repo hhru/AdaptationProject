@@ -73,7 +73,6 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey.version}</version>
         </dependency>
-
     </dependencies>
 
     <profiles>

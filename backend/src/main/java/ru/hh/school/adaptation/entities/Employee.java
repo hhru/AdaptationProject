@@ -35,15 +35,12 @@ public class Employee {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
-  private GenderType gender;
+
+  private Gender gender;
 
   @Column(name = "employment_timestamp")
   @Temporal(TemporalType.TIMESTAMP)
   private Date employmentTimestamp;
-
-  @Column(name = "update_timestamp")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date updateTimestamp;
 
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "workflow_step_id")
@@ -52,6 +49,15 @@ public class Employee {
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "workflow_id")
   private Workflow workflow;
+
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "mentor_id")
+  private User mentor;
+
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "chief_id")
+  private User chief;
+
 
   public Integer getId() {
     return id;
@@ -105,22 +111,6 @@ public class Employee {
     this.employmentTimestamp = employmentTimestamp;
   }
 
-  public Date getUpdateTimestamp() {
-    return updateTimestamp;
-  }
-
-  public void setUpdateTimestamp(Date updateTimestamp) {
-    this.updateTimestamp = updateTimestamp;
-  }
-
-  public GenderType getGender() {
-    return gender;
-  }
-
-  public void setGender(GenderType gender) {
-    this.gender = gender;
-  }
-
   public WorkflowStep getWorkflowStep() {
     return workflowStep;
   }
@@ -137,6 +127,22 @@ public class Employee {
     this.workflow = workflow;
   }
 
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
+
+  public User getMentor() {
+    return mentor;
+  }
+
+  public void setMentor(User mentor) {
+    this.mentor = mentor;
+  }
+
   public Long getMobilePhone() {
     return mobilePhone;
   }
@@ -151,5 +157,13 @@ public class Employee {
 
   public void setInternalPhone(Integer internalPhone) {
     this.internalPhone = internalPhone;
+  }
+
+  public User getChief() {
+    return chief;
+  }
+
+  public void setChief(User chief) {
+    this.chief = chief;
   }
 }

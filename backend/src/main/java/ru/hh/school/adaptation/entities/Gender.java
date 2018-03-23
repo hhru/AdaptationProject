@@ -1,5 +1,5 @@
 package ru.hh.school.adaptation.entities;
 
-public enum GenderType {
+public enum Gender {
   MALE, FEMALE
 }
