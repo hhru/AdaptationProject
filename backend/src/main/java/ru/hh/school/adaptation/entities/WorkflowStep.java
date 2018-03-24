@@ -1,6 +1,9 @@
 package ru.hh.school.adaptation.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "workflow_step")
