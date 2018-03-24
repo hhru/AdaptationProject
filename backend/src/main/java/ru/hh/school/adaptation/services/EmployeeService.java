@@ -7,6 +7,7 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.entities.WorkflowStep;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
@@ -48,6 +49,11 @@ public class EmployeeService {
     return employee;
   }
 
+  public WorkflowStep getEmployeeWorkflowStep(Integer id) {
+    WorkflowStep workflowStep = employeeDao.getEmployeeWorkflowStepById(id);
+    return workflowStep;
+  }
+
   @Transactional
   public void saveEmployee(EmployeeDto employeeDto) {
     Employee employee = new Employee();
@@ -79,7 +85,7 @@ public class EmployeeService {
 
     employeeDao.save(employee);
   }
-  
+
   @Transactional
   public void updateEmployee(Employee employee) {
     employeeDao.update(employee);

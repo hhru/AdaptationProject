@@ -1,8 +1,6 @@
 package ru.hh.school.adaptation.resources;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,7 +14,13 @@ import ru.hh.school.adaptation.dto.EmployeeDto;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
 import java.util.List;
 
 @Path("/")
@@ -35,21 +39,19 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/step")
   @ResponseBody
-  @Transactional
   public WorkflowStepDto getEmployeeWorkflow(@PathParam("id") Integer id) {
-    return new WorkflowStepDto(employeeService.getEmployee(id).getWorkflowStep());
+    return new WorkflowStepDto(employeeService.getEmployeeWorkflowStep(id));
   }
 
   @PUT
   @Produces("application/json")
   @Path("/employee/{id}/step")
   @ResponseBody
-  public ResponseEntity<Void> setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody Integer to) {
+  public void setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody Integer to) {
     Employee employee = employeeService.getEmployee(id);
     WorkflowStep workflowStep = workflowService.getWorkflowStep(to);
     employee.setWorkflowStep(workflowStep);
     employeeService.updateEmployee(employee);
-    return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
   @GET
@@ -57,8 +59,7 @@ public class EmployeeResource {
   @Path("/employee/{id}/step/all")
   @ResponseBody
   public List<WorkflowStepDto> getAllWorkflow(@PathParam("id") Integer id) {
-    Employee employee = employeeService.getEmployee(id);
-    return workflowService.getAllWorkflowSteps(employee.getWorkflow().getId());
+    return workflowService.getAllWorkflowStepsByEmployeeId(id);
   }
 
   @GET

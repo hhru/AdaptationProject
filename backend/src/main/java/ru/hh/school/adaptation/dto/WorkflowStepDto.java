@@ -8,6 +8,10 @@ public class WorkflowStepDto {
   public String name;
   public String description;
 
+  public WorkflowStepDto() {
+
+  }
+
   public WorkflowStepDto(WorkflowStep workflowStep) {
     id = workflowStep.getId();
     name = workflowStep.getName();
