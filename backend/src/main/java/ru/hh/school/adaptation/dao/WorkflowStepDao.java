@@ -33,9 +33,8 @@ public class WorkflowStepDao {
     Session session = sessionFactory.openSession();
     session.beginTransaction();
     Employee employee = (Employee) session.load(Employee.class, employeeId);
-    @SuppressWarnings("unchecked")
 	List<WorkflowStep> workflowStepList = session.createQuery("SELECT T.workflowStep from Transition T "
-                    + "where T.workflow=:workflow order by T.workflowStep")
+                    + "where T.workflow=:workflow order by T.workflowStep", WorkflowStep.class)
                     .setParameter("workflow", employee.getWorkflow())
                     .list();
     session.getTransaction().commit();
