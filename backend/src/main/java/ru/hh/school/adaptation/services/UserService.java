@@ -44,7 +44,7 @@ public class UserService {
         return user;
       }
     }
-    return null;
+    throw new EntityNotFoundException(String.format("User with hhid = %d does not exist", hhid));
   }
 
   @Transactional

@@ -40,17 +40,12 @@ public class AuthService {
       // User info.
       HhUserInfoDto userInfo = apiService.getUserInfo(code);
       if (userInfo == null) {
-        logger.error("Oops! Something goes wrong.");
+        logger.error("Oops! Something goes wrong while get hh user info.");
         return;
       }
 
       // Obtain user by hhid.
       User user = userService.getUserByHhid(userInfo.getId());
-      if (user == null) {
-        // Access denied for the user.
-        logger.error("There is no user with hhid {}", userInfo.getId());
-        return;
-      }
 
       // Update user.
       UserDto userDto = userService.getUserDto(user.getId());

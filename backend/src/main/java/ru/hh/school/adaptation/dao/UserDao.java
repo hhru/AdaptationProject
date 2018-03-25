@@ -21,13 +21,8 @@ public class UserDao {
   }
 
   public List<User> getAllRecords() {
-    try {
-      Session session = sessionFactory.getCurrentSession();
-      return session.createQuery("from User", User.class).list();
-    } catch (HibernateException  hexp) {
-      hexp.printStackTrace();
-    }
-    return null;
+    Session session = sessionFactory.getCurrentSession();
+    return session.createQuery("from User", User.class).list();
   }
 
   public void save(User user) {

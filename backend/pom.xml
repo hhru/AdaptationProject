@@ -16,7 +16,6 @@
         <nab.version>3.5.0</nab.version>
         <postgres.jdbc.version>42.2.1</postgres.jdbc.version>
         <jersey.version>2.22.2</jersey.version>
-        <jackson.version>2.5.0</jackson.version>
         <scribejava.version>5.3.0</scribejava.version>
     </properties>
 
@@ -81,12 +80,6 @@
             <artifactId>scribejava-apis</artifactId>
             <version>${scribejava.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
     </dependencies>
 
     <profiles>
@@ -96,6 +89,10 @@
                 <jdbc.url>${env.JDBC_URL}</jdbc.url>
                 <jdbc.user>${env.JDBC_USER}</jdbc.user>
                 <jdbc.password>${env.JDBC_PASSWORD}</jdbc.password>
+
+                <oauth.url>${env.OAUTH_URL}</oauth.url>
+                <oauth.client.id>${env.OAUTH_CLIENT_ID}</oauth.client.id>
+                <oauth.client.secret>${env.OAUTH_CLIENT_SECRET}</oauth.client.secret>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
