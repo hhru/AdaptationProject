@@ -81,11 +81,6 @@ public class EmployeeService {
   }
 
   @Transactional
-  public void updateEmployee(Employee employee) {
-    employeeDao.update(employee);
-  }
-
-  @Transactional
   public void updateEmployee(EmployeeDto employeeDto) {
     Employee employee = employeeDao.getRecordById(employeeDto.id);
     employee.setFirstName(employeeDto.firstName);
