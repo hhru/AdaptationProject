@@ -1,8 +1,10 @@
 package ru.hh.school.adaptation.services;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
+import ru.hh.school.adaptation.entities.WorkflowStepType;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -15,14 +17,19 @@ public class TransitionService {
     this.transitionDao = transitionDao;
   }
 
-  public Transition getTransitionByEmployeeId(Integer id, WorkflowStepStatus status) {
-    return transitionDao.getTransitionByEmployeeId(id, status);
+  public Transition getCurrentTransitionByEmployeeId(Integer id) {
+    return transitionDao.getCurrentTransitionByEmployeeId(id);
   }
 
-  public void setEmployeeTransition(Integer employeeId, WorkflowStepStatus statusTo, WorkflowStepStatus statusFrom) {
-    //tekushi nado sdelat DONE
-    //to nado sdelat coming
-    transitionDao.setTransitionByEmployeeId(employeeId, statusTo);
+  @Transactional
+  public void setEmployeeTransition(Integer employeeId, WorkflowStepType typeTo, WorkflowStepStatus setStatusFrom) {
+    Transition transitionFrom = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
+    transitionFrom.setStepStatus(setStatusFrom);
+    transitionDao.update(transitionFrom);
+
+    Transition transitionTo = transitionDao.getTransitionByEmployeeIdwithStepType(employeeId, typeTo);
+    transitionTo.setStepStatus(WorkflowStepStatus.COMING);
+    transitionDao.update(transitionTo);
   }
 
   public List<Transition> getAllTransitionByEmployeeId(Integer employeeId) {

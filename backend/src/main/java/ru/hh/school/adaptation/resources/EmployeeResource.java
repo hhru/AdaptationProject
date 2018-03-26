@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
+import ru.hh.school.adaptation.entities.WorkflowStepType;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,29 +37,29 @@ public class EmployeeResource {
 
   @GET
   @Produces("application/json")
-  @Path("/employee/{id}/step/{status}")
+  @Path("/employee/{id}/step")
   @ResponseBody
-  public Transition getEmployeeWorkflow(@PathParam("id") Integer id, @PathParam("status") WorkflowStepStatus status) {
-    return transitionService.getTransitionByEmployeeId(id, status);
+  public Transition getCurrentEmployeeTransition(@PathParam("id") Integer id) {
+    return transitionService.getCurrentTransitionByEmployeeId(id);
   }
 
   @PUT
   @Produces("application/json")
   @Path("/employee/{id}/step")
   @ResponseBody
-  public void setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody WorkflowStepStatus to,
-                                  @RequestBody WorkflowStepStatus from) {
-    if (from==null) {
-      from = WorkflowStepStatus.DONE;
+  public void setEmployeeTransition(@PathParam("id") Integer id, @RequestBody WorkflowStepType typeTo,
+                                    @RequestBody WorkflowStepStatus setStatusFrom) {
+    if (setStatusFrom==null) {
+      setStatusFrom = WorkflowStepStatus.DONE;
     }
-    transitionService.setEmployeeTransition(id, to, from);
+    transitionService.setEmployeeTransition(id, typeTo, setStatusFrom);
   }
 
   @GET
   @Produces("application/json")
   @Path("/employee/{id}/step/all")
   @ResponseBody
-  public List<Transition> getAllWorkflow(@PathParam("id") Integer id) {
+  public List<Transition> getAllTransition(@PathParam("id") Integer id) {
     return transitionService.getAllTransitionByEmployeeId(id);
   }
 

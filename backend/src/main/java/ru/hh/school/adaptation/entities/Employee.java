@@ -63,10 +63,6 @@ public class Employee {
   @JoinColumn(name = "chief_id")
   private User chief;
 
-  @OneToOne
-  @JoinColumn(name = "transition_id")
-  private Transition transition;
-
   public Integer getId() {
     return id;
   }
@@ -159,11 +155,4 @@ public class Employee {
     this.chief = chief;
   }
 
-  public Transition getTransition() {
-    return transition;
-  }
-
-  public void setTransition(Transition transition) {
-    this.transition = transition;
-  }
 }
