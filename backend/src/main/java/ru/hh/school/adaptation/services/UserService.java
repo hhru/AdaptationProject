@@ -7,67 +7,39 @@ import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
-import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class UserService {
-  UserDao userDao;
+  private final UserDao userDao;
 
   public UserService(UserDao userDao) {
     this.userDao = userDao;
   }
 
   @Transactional(readOnly = true)
-  public List<User> getAllUsers() {
-    return userDao.getAllRecords();
+  public Optional<UserDto> getUserDto(Integer id) {
+    return getUser(id).map(UserDto::new);
   }
 
   @Transactional(readOnly = true)
-  public UserDto getUserDto(Integer id) {
-    return new UserDto(getUser(id));
+  public Optional<User> getUser(Integer id) {
+    return Optional.ofNullable(userDao.getRecordById(id));
   }
 
   @Transactional(readOnly = true)
-  public User getUser(Integer id) {
-    User user = userDao.getRecordById(id);
-    if (user == null) {
-      throw new EntityNotFoundException(String.format("User with id = %d does not exist", id));
-    }
-    return user;
-  }
-
-  @Transactional(readOnly = true)
-  public User getUserByHhid(Integer hhid) {
-    List<User> users = userDao.getAllRecords();
-    for (User user : users) {
-      if (user.getHhid().equals(hhid)) {
-        return user;
-      }
-    }
-    throw new EntityNotFoundException(String.format("User with hhid = %d does not exist", hhid));
-  }
-
-  @Transactional
-  public void saveUser(UserDto userDto) {
-    User user = new User();
-    user.setHhid(userDto.hhid);
-    user.setFirstName(userDto.firstName);
-    user.setLastName(userDto.lastName);
-    user.setMiddleName(userDto.middleName);
-    user.setEmail(userDto.email);
-
-    userDao.save(user);
+  public Optional<User> getUserByHhid(Integer hhid) {
+    return Optional.ofNullable(userDao.getRecordByHhid(hhid));
   }
 
   @Transactional
   public void updateUser(UserDto userDto) {
-    User user = userDao.getRecordById(userDto.id);
+    User user = getUser(userDto.id).orElseThrow(() -> new EntityNotFoundException(String.format("User with id = %d does not exist", userDto.id)));
     user.setHhid(userDto.hhid);
     user.setFirstName(userDto.firstName);
     user.setLastName(userDto.lastName);
     user.setMiddleName(userDto.middleName);
     user.setEmail(userDto.email);
-
     userDao.update(user);
   }
 }

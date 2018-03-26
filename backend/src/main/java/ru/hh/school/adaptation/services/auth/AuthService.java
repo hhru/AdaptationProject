@@ -2,31 +2,28 @@ package ru.hh.school.adaptation.services.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hh.nab.core.util.FileSettings;
+
 import ru.hh.school.adaptation.dto.HhUserInfoDto;
 import ru.hh.school.adaptation.dto.UserDto;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
-import ru.hh.school.adaptation.services.MailService;
 import ru.hh.school.adaptation.services.UserService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.Optional;
 
 public class AuthService {
-  private static final Logger logger = LoggerFactory.getLogger(MailService.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
   private HhApiService apiService;
   private UserService userService;
 
   @Inject
-  public AuthService(FileSettings fileSettings, UserService userService) {
-    FileSettings oauthSettings = fileSettings.getSubSettings("oauth");
-    final String clientId = oauthSettings.getString("client.id");
-    final String clientSecret = oauthSettings.getString("client.secret");
-    final String redirectUri = oauthSettings.getString("redirect-uri");
-    apiService = new HhApiService(clientId, clientSecret, redirectUri);
-
+  public AuthService(HhApiService apiService, UserService userService) {
+    this.apiService = apiService;
     this.userService = userService;
   }
 
@@ -37,28 +34,26 @@ public class AuthService {
   public void authorize(HttpServletRequest request) {
     String code = request.getParameter("code");
     try {
-      // User info.
       HhUserInfoDto userInfo = apiService.getUserInfo(code);
       if (userInfo == null) {
         logger.error("Oops! Something goes wrong while get hh user info.");
         return;
       }
 
-      // Obtain user by hhid.
-      User user = userService.getUserByHhid(userInfo.getId());
+      User user = userService.getUserByHhid(userInfo.getId()).orElseThrow(
+              () -> new AccessDeniedException(String.format("Access denied for user with id %d", userInfo.getId()))
+      );
 
-      // Update user.
-      UserDto userDto = userService.getUserDto(user.getId());
-      userDto.firstName = userInfo.getFirstName();
-      userDto.lastName = userInfo.getLastName();
-      userDto.middleName = userInfo.getMiddleName();
-      userDto.email = userInfo.getEmail();
-      userService.updateUser(userDto);
+      userService.getUserDto(user.getId()).ifPresent(userDto -> {
+        userDto.firstName = userInfo.getFirstName();
+        userDto.lastName = userInfo.getLastName();
+        userDto.middleName = userInfo.getMiddleName();
+        userDto.email = userInfo.getEmail();
+        userService.updateUser(userDto);
 
-
-      // Add user id to session.
-      UserSession userSession = getUserSession(request);
-      userSession.setId(user.getId());
+        UserSession userSession = getUserSession(request);
+        userSession.setId(user.getId());
+      });
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
@@ -74,7 +69,7 @@ public class AuthService {
     return getUserSession(request).getId() != null;
   }
 
-  public User getUser(HttpServletRequest request) throws EntityNotFoundException {
+  public Optional<User> getUser(HttpServletRequest request) {
     Integer userId = getUserSession(request).getId();
     return userService.getUser(userId);
   }

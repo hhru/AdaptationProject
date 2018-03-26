@@ -26,8 +26,7 @@ public class AuthResource {
   @POST
   @Path("/login")
   public Response login(@Context HttpServletRequest request) {
-    URI uri = authService.isUserLoggedIn(request)
-            ? URI.create("index") : authService.getAuthorizationUri();
+    URI uri = authService.isUserLoggedIn(request) ? URI.create("index") : authService.getAuthorizationUri();
     return Response.seeOther(uri).build();
   }
 
