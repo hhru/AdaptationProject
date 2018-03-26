@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import java.util.Optional;
 
 @Path("/")
 @Singleton
@@ -28,9 +29,14 @@ public class MainResource {
     if (!authService.isUserLoggedIn(request)) {
       content = "<div><form action=\"/login\" method=\"post\"><button>Login</></form></div>";
     } else {
-      User user = authService.getUser(request);
-      content = "<div>Hello, " + user.getFirstName() + " " + user.getLastName() + "</div>" +
-              "<div><form action=\"/logout\" method=\"post\"><button>Logout</></form></div>";
+      Optional<User> optUser = authService.getUser(request);
+      if (optUser.isPresent()) {
+        User user = optUser.get();
+        content = "<div>Hello, " + user.getFirstName() + " " + user.getLastName() + "</div>" +
+                "<div><form action=\"/logout\" method=\"post\"><button>Logout</></form></div>";
+      } else {
+        content = "Internal error";
+      }
     }
 
     return "<html><body>" + content + "</body></html>";
