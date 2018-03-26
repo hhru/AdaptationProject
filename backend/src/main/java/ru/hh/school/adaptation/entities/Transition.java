@@ -1,13 +1,19 @@
 package ru.hh.school.adaptation.entities;
 
-import javax.persistence.CascadeType;
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "transition")
@@ -18,16 +24,23 @@ public class Transition {
   private Integer id;
 
   @ManyToOne
-  @JoinColumn(name = "workflow_id")
-  private Workflow workflow;
+  @JoinColumn(name = "employee_id")
+  private Employee employee;
 
-  @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_step_id")
-  private WorkflowStep workflowStep;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "step")
+  private WorkflowStepType step;
 
-  @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "workflow_step_next_id")
-  private WorkflowStep workflowStepNext;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "step_status")
+  private WorkflowStepStatus stepStatus;
+
+  @Column(name = "deadline_timestamp")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date deadlineTimestamp;
+
+  @Column(name = "comment")
+  private String comment;
 
   public Integer getId() {
     return id;
@@ -37,27 +50,43 @@ public class Transition {
     this.id = id;
   }
 
-  public Workflow getWorkflow() {
-    return workflow;
+  public Employee getEmployee() {
+    return employee;
   }
 
-  public void setWorkflow(Workflow workflow) {
-    this.workflow = workflow;
+  public void setEmployee(Employee employee) {
+    this.employee = employee;
   }
 
-  public WorkflowStep getWorkflowStep() {
-    return workflowStep;
+  public WorkflowStepType getStep() {
+    return step;
   }
 
-  public void setWorkflowStep(WorkflowStep workflowStep) {
-    this.workflowStep = workflowStep;
+  public void setStep(WorkflowStepType step) {
+    this.step = step;
   }
 
-  public WorkflowStep getWorkflowStepNext() {
-    return workflowStepNext;
+  public WorkflowStepStatus getStepStatus() {
+    return stepStatus;
   }
 
-  public void setWorkflowStepNext(WorkflowStep workflowStepNext) {
-    this.workflowStepNext = workflowStepNext;
+  public void setStepStatus(WorkflowStepStatus stepStatus) {
+    this.stepStatus = stepStatus;
+  }
+
+  public Date getDeadlineTimestamp() {
+    return deadlineTimestamp;
+  }
+
+  public void setDeadlineTimestamp(Date deadlineTimestamp) {
+    this.deadlineTimestamp = deadlineTimestamp;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 }

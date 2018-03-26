@@ -7,7 +7,6 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.entities.WorkflowStep;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
@@ -47,11 +46,6 @@ public class EmployeeService {
       throw new EntityNotFoundException(String.format("Employee with id = %d does not exist", id));
     }
     return employee;
-  }
-
-  public WorkflowStep getEmployeeWorkflowStep(Integer id) {
-    WorkflowStep workflowStep = employeeDao.getEmployeeWorkflowStepById(id);
-    return workflowStep;
   }
 
   @Transactional

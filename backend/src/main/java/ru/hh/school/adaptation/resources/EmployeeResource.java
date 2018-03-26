@@ -4,11 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.hh.school.adaptation.dto.WorkflowStepDto;
-import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.WorkflowStep;
+import ru.hh.school.adaptation.entities.Transition;
+import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 import ru.hh.school.adaptation.services.EmployeeService;
-import ru.hh.school.adaptation.services.WorkflowService;
+import ru.hh.school.adaptation.services.TransitionService;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 
@@ -27,39 +26,40 @@ import java.util.List;
 @Singleton
 public class EmployeeResource {
   private final EmployeeService employeeService;
-  private final WorkflowService workflowService;
+  private final TransitionService transitionService;
 
   @Inject
-  public EmployeeResource(EmployeeService employeeService, WorkflowService workflowService) {
+  public EmployeeResource(EmployeeService employeeService, TransitionService transitionService) {
     this.employeeService = employeeService;
-    this.workflowService = workflowService;
+    this.transitionService = transitionService;
   }
 
   @GET
   @Produces("application/json")
-  @Path("/employee/{id}/step")
+  @Path("/employee/{id}/step/{status}")
   @ResponseBody
-  public WorkflowStepDto getEmployeeWorkflow(@PathParam("id") Integer id) {
-    return new WorkflowStepDto(employeeService.getEmployeeWorkflowStep(id));
+  public Transition getEmployeeWorkflow(@PathParam("id") Integer id, @PathParam("status") WorkflowStepStatus status) {
+    return transitionService.getTransitionByEmployeeId(id, status);
   }
 
   @PUT
   @Produces("application/json")
   @Path("/employee/{id}/step")
   @ResponseBody
-  public void setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody Integer to) {
-    Employee employee = employeeService.getEmployee(id);
-    WorkflowStep workflowStep = workflowService.getWorkflowStep(to);
-    employee.setWorkflowStep(workflowStep);
-    employeeService.updateEmployee(employee);
+  public void setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody WorkflowStepStatus to,
+                                  @RequestBody WorkflowStepStatus from) {
+    if (from==null) {
+      from = WorkflowStepStatus.DONE;
+    }
+    transitionService.setEmployeeTransition(id, to, from);
   }
 
   @GET
   @Produces("application/json")
   @Path("/employee/{id}/step/all")
   @ResponseBody
-  public List<WorkflowStepDto> getAllWorkflow(@PathParam("id") Integer id) {
-    return workflowService.getAllWorkflowStepsByEmployeeId(id);
+  public List<Transition> getAllWorkflow(@PathParam("id") Integer id) {
+    return transitionService.getAllTransitionByEmployeeId(id);
   }
 
   @GET

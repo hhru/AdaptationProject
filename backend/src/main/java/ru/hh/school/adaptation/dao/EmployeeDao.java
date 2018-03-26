@@ -3,7 +3,6 @@ package ru.hh.school.adaptation.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.WorkflowStep;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -31,15 +30,6 @@ public class EmployeeDao {
 
   public void update(Employee employee) {
     sessionFactory.getCurrentSession().update(employee);
-  }
-
-  public WorkflowStep getEmployeeWorkflowStepById(Integer employeeId) {
-    Session session = sessionFactory.openSession();
-    session.beginTransaction();
-    Employee employee = (Employee) session.load(Employee.class, employeeId);
-    WorkflowStep workflowStep = employee.getWorkflowStep();
-    session.getTransaction().commit();
-    return workflowStep;
   }
 
 }

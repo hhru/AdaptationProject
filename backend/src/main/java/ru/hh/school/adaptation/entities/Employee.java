@@ -7,12 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,14 +55,6 @@ public class Employee {
   @Temporal(TemporalType.TIMESTAMP)
   private Date employmentTimestamp;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "workflow_step_id")
-  private WorkflowStep workflowStep;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "workflow_id")
-  private Workflow workflow;
-
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "mentor_id")
   private User mentor;
@@ -70,6 +62,10 @@ public class Employee {
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "chief_id")
   private User chief;
+
+  @OneToOne
+  @JoinColumn(name = "transition_id")
+  private Transition transition;
 
   public Integer getId() {
     return id;
@@ -123,22 +119,6 @@ public class Employee {
     this.employmentTimestamp = employmentTimestamp;
   }
 
-  public WorkflowStep getWorkflowStep() {
-    return workflowStep;
-  }
-
-  public void setWorkflowStep(WorkflowStep workflowStep) {
-    this.workflowStep = workflowStep;
-  }
-
-  public Workflow getWorkflow() {
-    return workflow;
-  }
-
-  public void setWorkflow(Workflow workflow) {
-    this.workflow = workflow;
-  }
-
   public Gender getGender() {
     return gender;
   }
@@ -177,5 +157,13 @@ public class Employee {
 
   public void setChief(User chief) {
     this.chief = chief;
+  }
+
+  public Transition getTransition() {
+    return transition;
+  }
+
+  public void setTransition(Transition transition) {
+    this.transition = transition;
   }
 }
