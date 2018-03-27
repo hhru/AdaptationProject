@@ -1,7 +1,6 @@
 package ru.hh.school.adaptation.dao;
 
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
@@ -33,7 +32,6 @@ public class TransitionDao {
                     .uniqueResult();
   }
 
-  @Transactional
   public void update(Transition transition) {
     sessionFactory.getCurrentSession().update(transition);
   }
