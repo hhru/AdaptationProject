@@ -23,13 +23,13 @@ public class MainResource {
 
   @GET
   @Path("/index")
-  public String index(@Context HttpServletRequest request) {
+  public String index() {
     String content;
 
-    if (!authService.isUserLoggedIn(request)) {
+    if (!authService.isUserLoggedIn()) {
       content = "<div><form action=\"/login\" method=\"post\"><button>Login</></form></div>";
     } else {
-      Optional<User> optUser = authService.getUser(request);
+      Optional<User> optUser = authService.getUser();
       if (optUser.isPresent()) {
         User user = optUser.get();
         content = "<div>Hello, " + user.getFirstName() + " " + user.getLastName() + "</div>" +
