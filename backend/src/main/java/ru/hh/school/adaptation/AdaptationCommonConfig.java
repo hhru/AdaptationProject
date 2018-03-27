@@ -13,6 +13,7 @@ import ru.hh.school.adaptation.dao.ExampleDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
+import ru.hh.school.adaptation.dao.WorkflowStepDao;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Example;
 import ru.hh.school.adaptation.entities.MailTemplate;
@@ -27,6 +28,7 @@ import ru.hh.school.adaptation.entities.WorkflowStep;
         EmployeeDao.class,
         UserDao.class,
         TransitionDao.class,
+        WorkflowStepDao.class,
         ExampleResource.class,
         EmployeeResource.class,
         EmployeeService.class,

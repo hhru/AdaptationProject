@@ -33,19 +33,12 @@ public class TransitionDao {
                     .uniqueResult();
   }
 
-  public Transition getNextTransitionByEmployeeId(Integer employeeId) {
-    return sessionFactory.getCurrentSession().createQuery("from Transition T "
-            + "where T.id>(select T.id from T where T.employee.id=:employeeId and T.stepStatus=:current) and "
-            + "T.stepStatus!=:ignore order by T.id", Transition.class)
-            .setParameter("employeeId", employeeId)
-            .setParameter("current", WorkflowStepStatus.CURRENT)
-            .setParameter("ignore", WorkflowStepStatus.IGNORE)
-            .setMaxResults(1)
-            .uniqueResult();
-  }
-
   @Transactional
   public void update(Transition transition) {
     sessionFactory.getCurrentSession().update(transition);
+  }
+
+  public void save(Transition transition) {
+    sessionFactory.getCurrentSession().persist(transition);
   }
 }

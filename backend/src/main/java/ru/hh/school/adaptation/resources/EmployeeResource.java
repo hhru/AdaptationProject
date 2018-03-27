@@ -42,7 +42,7 @@ public class EmployeeResource {
     return transitionService.getCurrentTransitionByEmployeeId(id);
   }
 
-  @GET
+  @PUT
   @Produces("application/json")
   @Path("/employee/{id}/step/next")
   @ResponseBody
@@ -50,7 +50,7 @@ public class EmployeeResource {
     transitionService.setEmployeeNextTransition(id);
   }
 
-  @PUT
+  @GET
   @Produces("application/json")
   @Path("/employee/{id}/step/all")
   @ResponseBody

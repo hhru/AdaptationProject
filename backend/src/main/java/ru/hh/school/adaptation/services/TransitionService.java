@@ -6,6 +6,8 @@ import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 
 import javax.inject.Singleton;
+
+import java.util.Iterator;
 import java.util.List;
 
 @Singleton
@@ -23,14 +25,25 @@ public class TransitionService {
 
   @Transactional
   public void setEmployeeNextTransition(Integer employeeId) {
-    Transition transitionFrom = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
-    Transition transitionTo = transitionDao.getNextTransitionByEmployeeId(employeeId);
+    List<Transition> transitionList = transitionDao.getAllTransitionByEmployeeId(employeeId);
+    Iterator<Transition> iter = transitionList.iterator();
+    Transition transitionCurrent;
+    Transition transitionNext;
+    do {
+      transitionCurrent = iter.next();
+    } while (iter.hasNext() && transitionCurrent.getStepStatus()!=WorkflowStepStatus.CURRENT);
+    transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
 
-    transitionFrom.setStepStatus(WorkflowStepStatus.DONE);
-    transitionTo.setStepStatus(WorkflowStepStatus.CURRENT);
+    do {
+      transitionNext = iter.next();
+    } while (iter.hasNext() && transitionCurrent.getStepStatus()==WorkflowStepStatus.IGNORE);
+    if (transitionNext==null || transitionCurrent.getStepStatus()==WorkflowStepStatus.IGNORE) {
+      return;
+    }
+    transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
 
-    transitionDao.update(transitionFrom);
-    transitionDao.update(transitionTo);
+    transitionDao.update(transitionCurrent);
+    transitionDao.update(transitionNext);
   }
 
   @Transactional(readOnly = true)

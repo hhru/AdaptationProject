@@ -2,14 +2,20 @@ package ru.hh.school.adaptation.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.entities.Employee;
-
+import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.dao.UserDao;
+import ru.hh.school.adaptation.dao.WorkflowStepDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.entities.WorkflowStep;
+import ru.hh.school.adaptation.entities.WorkflowStepStatus;
+import ru.hh.school.adaptation.entities.WorkflowStepType;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +24,14 @@ public class EmployeeService {
 
   private EmployeeDao employeeDao;
   private UserDao userDao;
+  private TransitionDao transitionDao;
+  private WorkflowStepDao workflowStepDao;
 
-  public EmployeeService(EmployeeDao employeeDao, UserDao userDao){
+  public EmployeeService(EmployeeDao employeeDao, UserDao userDao, TransitionDao transitionDao, WorkflowStepDao workflowStepDao){
     this.employeeDao = employeeDao;
     this.userDao = userDao;
+    this.transitionDao = transitionDao;
+    this.workflowStepDao = workflowStepDao;
   }
 
   @Transactional(readOnly = true)
@@ -78,6 +88,15 @@ public class EmployeeService {
     employee.setChief(chief);
 
     employeeDao.save(employee);
+
+    List<WorkflowStep> workflowStepList = workflowStepDao.getAllWorkflowSteps();
+    for (WorkflowStep step : workflowStepList) {
+      Transition t = new Transition();
+      t.setEmployee(employee);
+      t.setWorkflowStep(step);
+      t.setStepStatus(step.getName()==WorkflowStepType.ADD?WorkflowStepStatus.CURRENT:WorkflowStepStatus.NOT_DONE);
+      transitionDao.save(t);
+    }
   }
 
   @Transactional
