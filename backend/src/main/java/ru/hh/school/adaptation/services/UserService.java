@@ -33,6 +33,17 @@ public class UserService {
   }
 
   @Transactional
+  public void saveUser(UserDto userDto) {
+    User user = new User();
+    user.setFirstName(userDto.firstName);
+    user.setLastName(userDto.lastName);
+    user.setMiddleName(userDto.middleName);
+    user.setEmail(userDto.email);
+    user.setHhid(userDto.hhid);
+    userDao.save(user);
+  }
+
+  @Transactional
   public void updateUser(UserDto userDto) {
     User user = getUser(userDto.id).orElseThrow(() -> new EntityNotFoundException(String.format("User with id = %d does not exist", userDto.id)));
     user.setHhid(userDto.hhid);

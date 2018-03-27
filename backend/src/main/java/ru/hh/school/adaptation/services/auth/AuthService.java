@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.hh.school.adaptation.dto.HhUserInfoDto;
+import ru.hh.school.adaptation.dto.UserDto;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.exceptions.AccessDeniedException;
+import ru.hh.school.adaptation.misc.UserSession;
 import ru.hh.school.adaptation.services.UserService;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Optional;
@@ -20,10 +20,11 @@ public class AuthService {
   private HhApiService apiService;
   private UserService userService;
 
-  static private ThreadLocal sessionThreadLocal = new ThreadLocal<HttpSession>();
+  private static ThreadLocal<UserSession> sessionThreadLocal = new ThreadLocal<>();
 
-  static public ThreadLocal<HttpSession> getSessionThreadLocal() {
-    return sessionThreadLocal;
+  public static void setHttpSession(HttpSession httpSession) {
+    UserSession userSession = new UserSession(httpSession);
+    sessionThreadLocal.set(userSession);
   }
 
   @Inject
@@ -38,26 +39,23 @@ public class AuthService {
 
   public void authorize(String code) {
     try {
-      HhUserInfoDto userInfo = apiService.getUserInfo(code);
-      if (userInfo == null) {
+      Optional<HhUserInfoDto> userInfoDtoOptional = apiService.getUserInfoDto(code);
+      if (!userInfoDtoOptional.isPresent()) {
         logger.error("Oops! Something goes wrong while get hh user info.");
         return;
       }
 
-      User user = userService.getUserByHhid(userInfo.getId()).orElseThrow(
-              () -> new AccessDeniedException(String.format("Access denied for user with id %d", userInfo.getId()))
-      );
+      HhUserInfoDto userInfoDto = userInfoDtoOptional.get();
 
-      userService.getUserDto(user.getId()).ifPresent(userDto -> {
-        userDto.firstName = userInfo.getFirstName();
-        userDto.lastName = userInfo.getLastName();
-        userDto.middleName = userInfo.getMiddleName();
-        userDto.email = userInfo.getEmail();
-        userService.updateUser(userDto);
-
-        UserSession userSession = getUserSession();
-        userSession.setId(user.getId());
+      User user = userService.getUserByHhid(userInfoDto.getId()).orElseGet(() -> {
+        UserDto userDto = new UserDto(userInfoDto);
+        userService.saveUser(userDto);
+        return userService.getUserByHhid(userInfoDto.getId()).get();
       });
+      sessionThreadLocal.get().setId(user.getId());
+
+    } catch (InterruptedException interruptedException) {
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
@@ -65,21 +63,16 @@ public class AuthService {
 
   public void logout() {
     if (isUserLoggedIn()) {
-      getUserSession().logout();
+      sessionThreadLocal.get().logout();
     }
   }
 
   public boolean isUserLoggedIn() {
-    return getUserSession().getId() != null;
+    return sessionThreadLocal.get().getId() != null;
   }
 
   public Optional<User> getUser() {
-    Integer userId = getUserSession().getId();
+    Integer userId = sessionThreadLocal.get().getId();
     return userService.getUser(userId);
-  }
-
-  private UserSession getUserSession() {
-    HttpSession session = getSessionThreadLocal().get();
-    return new UserSession(session);
   }
 }

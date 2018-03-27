@@ -7,8 +7,6 @@ import ru.hh.nab.core.servlet.DefaultServletConfig;
 import ru.hh.school.adaptation.filters.AuthFilter;
 
 public class AdaptationServletConfig extends DefaultServletConfig {
-  AdaptationServletConfig() {
-  }
 
   @Override
   public ResourceConfig createResourceConfig(ApplicationContext context) {

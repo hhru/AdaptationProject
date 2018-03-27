@@ -1,9 +1,9 @@
-package ru.hh.school.adaptation.services.auth;
+package ru.hh.school.adaptation.misc;
 
 import javax.servlet.http.HttpSession;
 
 public class UserSession {
-  HttpSession session;
+  private HttpSession session;
 
   public UserSession(HttpSession session) {
     this.session = session;

@@ -14,40 +14,41 @@ import ru.hh.school.adaptation.dto.HhUserInfoDto;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 public class HhApiService {
-  private static final String PROTECTED_RESOURCE_URL = "https://api.hh.ru/me";
+  private final String hhApiUrl;
   private final OAuth20Service oauthService;
 
   @Inject
   HhApiService(FileSettings fileSettings) {
-    FileSettings oauthSettings = fileSettings.getSubSettings("oauth");
-    String clientId = oauthSettings.getString("client.id");
-    String clientSecret = oauthSettings.getString("client.secret");
-    String redirectUri = oauthSettings.getString("redirect-uri");
+    String clientId = fileSettings.getString("oauth.client.id");
+    String clientSecret = fileSettings.getString("oauth.client.secret");
+    String redirectUri = fileSettings.getString("oauth.redirect-uri");
 
     oauthService = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
             .callback(redirectUri)
             .build(HHApi.instance());
+
+    hhApiUrl = fileSettings.getString("hh.api.url");
   }
 
   String getAuthorizationUrl() {
     return oauthService.getAuthorizationUrl();
   }
 
-  HhUserInfoDto getUserInfo(String code) throws InterruptedException, ExecutionException, IOException {
+  Optional<HhUserInfoDto> getUserInfoDto(String code) throws InterruptedException, ExecutionException, IOException {
     OAuth2AccessToken accessToken = oauthService.getAccessToken(code);
     String userInfoJson = requestUserInfo(accessToken);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode tree = mapper.readTree(userInfoJson);
-
-    return mapper.treeToValue(tree, HhUserInfoDto.class);
+    return Optional.ofNullable(mapper.treeToValue(tree, HhUserInfoDto.class));
   }
 
   private String requestUserInfo(OAuth2AccessToken accessToken) throws InterruptedException, ExecutionException, IOException {
-    OAuthRequest oauthRequest = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
+    OAuthRequest oauthRequest = new OAuthRequest(Verb.GET, hhApiUrl);
     oauthService.signRequest(accessToken, oauthRequest);
     Response response = oauthService.execute(oauthRequest);
     // todo: response code not equals 200.

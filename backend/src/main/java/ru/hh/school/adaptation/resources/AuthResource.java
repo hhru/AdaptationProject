@@ -4,12 +4,10 @@ import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -35,9 +33,7 @@ public class AuthResource {
   @Path("/logout")
   public Response logout() {
     authService.logout();
-
-    URI uri = URI.create("index");
-    return Response.seeOther(uri).build();
+    return Response.seeOther(URI.create("index")).build();
   }
 
   @GET
@@ -47,8 +43,6 @@ public class AuthResource {
     if (error == null) {
       authService.authorize(code);
     }
-
-    URI uri = URI.create("index");
-    return Response.temporaryRedirect(uri).build();
+    return Response.temporaryRedirect(URI.create("index")).build();
   }
 }
