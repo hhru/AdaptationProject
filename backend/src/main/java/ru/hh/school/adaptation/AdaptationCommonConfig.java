@@ -18,6 +18,7 @@ import ru.hh.school.adaptation.entities.Example;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.entities.WorkflowStep;
 
 @Configuration
 @Import({
@@ -41,7 +42,8 @@ public class AdaptationCommonConfig {
                                MailTemplate.class,
                                Employee.class,
                                User.class,
-                               Transition.class
+                               Transition.class,
+                               WorkflowStep.class
       );
     }
 }

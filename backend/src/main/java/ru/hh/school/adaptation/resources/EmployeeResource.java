@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.hh.school.adaptation.entities.Transition;
-import ru.hh.school.adaptation.entities.WorkflowStepStatus;
-import ru.hh.school.adaptation.entities.WorkflowStepType;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import ru.hh.school.adaptation.dto.EmployeeDto;
 
 import javax.inject.Inject;
@@ -43,19 +42,15 @@ public class EmployeeResource {
     return transitionService.getCurrentTransitionByEmployeeId(id);
   }
 
-  @PUT
+  @GET
   @Produces("application/json")
-  @Path("/employee/{id}/step")
+  @Path("/employee/{id}/step/next")
   @ResponseBody
-  public void setEmployeeTransition(@PathParam("id") Integer id, @RequestBody WorkflowStepType typeTo,
-                                    @RequestBody WorkflowStepStatus setStatusFrom) {
-    if (setStatusFrom==null) {
-      setStatusFrom = WorkflowStepStatus.DONE;
-    }
-    transitionService.setEmployeeTransition(id, typeTo, setStatusFrom);
+  public void setEmployeeTransition(@PathParam("id") Integer id) {
+    transitionService.setEmployeeNextTransition(id);
   }
 
-  @GET
+  @PUT
   @Produces("application/json")
   @Path("/employee/{id}/step/all")
   @ResponseBody

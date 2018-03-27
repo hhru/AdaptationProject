@@ -4,7 +4,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
-import ru.hh.school.adaptation.entities.WorkflowStepType;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -17,24 +16,26 @@ public class TransitionService {
     this.transitionDao = transitionDao;
   }
 
+  @Transactional(readOnly = true)
   public Transition getCurrentTransitionByEmployeeId(Integer id) {
     return transitionDao.getCurrentTransitionByEmployeeId(id);
   }
 
   @Transactional
-  public void setEmployeeTransition(Integer employeeId, WorkflowStepType typeTo, WorkflowStepStatus setStatusFrom) {
+  public void setEmployeeNextTransition(Integer employeeId) {
     Transition transitionFrom = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
-    transitionFrom.setStepStatus(setStatusFrom);
-    transitionDao.update(transitionFrom);
+    Transition transitionTo = transitionDao.getNextTransitionByEmployeeId(employeeId);
 
-    Transition transitionTo = transitionDao.getTransitionByEmployeeIdwithStepType(employeeId, typeTo);
-    transitionTo.setStepStatus(WorkflowStepStatus.COMING);
+    transitionFrom.setStepStatus(WorkflowStepStatus.DONE);
+    transitionTo.setStepStatus(WorkflowStepStatus.CURRENT);
+
+    transitionDao.update(transitionFrom);
     transitionDao.update(transitionTo);
   }
 
+  @Transactional(readOnly = true)
   public List<Transition> getAllTransitionByEmployeeId(Integer employeeId) {
-    List<Transition> transitionList = transitionDao.getAllTransitionByEmployeeId(employeeId);
-    return transitionList;
+    return transitionDao.getAllTransitionByEmployeeId(employeeId);
   }
 
 }

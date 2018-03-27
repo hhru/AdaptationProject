@@ -27,9 +27,9 @@ public class Transition {
   @JoinColumn(name = "employee_id")
   private Employee employee;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "step")
-  private WorkflowStepType step;
+  @ManyToOne
+  @JoinColumn(name = "workflow_step_id")
+  private WorkflowStep workflowStep;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "step_status")
@@ -58,12 +58,12 @@ public class Transition {
     this.employee = employee;
   }
 
-  public WorkflowStepType getStep() {
-    return step;
+  public WorkflowStep getWorkflowStep() {
+    return workflowStep;
   }
 
-  public void setStep(WorkflowStepType step) {
-    this.step = step;
+  public void setWorkflowStep(WorkflowStep workflowStep) {
+    this.workflowStep = workflowStep;
   }
 
   public WorkflowStepStatus getStepStatus() {
