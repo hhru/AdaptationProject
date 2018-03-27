@@ -39,7 +39,7 @@ public class AdaptationCommonConfig {
   public static final String JSON_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
   @Bean
-    MappingConfig mappingConfig() {
-      return new MappingConfig(Example.class, MailTemplate.class, Employee.class, User.class);
-    }
+  MappingConfig mappingConfig() {
+    return new MappingConfig(Example.class, MailTemplate.class, Employee.class, User.class);
+  }
 }

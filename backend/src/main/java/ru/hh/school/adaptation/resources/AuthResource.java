@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import javax.ws.rs.core.Response;
@@ -25,15 +26,15 @@ public class AuthResource {
 
   @POST
   @Path("/login")
-  public Response login(@Context HttpServletRequest request) {
-    URI uri = authService.isUserLoggedIn(request) ? URI.create("index") : authService.getAuthorizationUri();
+  public Response login() {
+    URI uri = authService.isUserLoggedIn() ? URI.create("index") : authService.getAuthorizationUri();
     return Response.seeOther(uri).build();
   }
 
   @POST
   @Path("/logout")
-  public Response logout(@Context HttpServletRequest request) {
-    authService.logout(request);
+  public Response logout() {
+    authService.logout();
 
     URI uri = URI.create("index");
     return Response.seeOther(uri).build();
@@ -41,10 +42,10 @@ public class AuthResource {
 
   @GET
   @Path("/auth")
-  public Response auth(@Context HttpServletRequest request) {
+  public Response auth(@QueryParam("code") String code, @QueryParam("error") String error) {
     // TODO: access denied.
-    if (request.getParameter("error") == null) {
-      authService.authorize(request);
+    if (error == null) {
+      authService.authorize(code);
     }
 
     URI uri = URI.create("index");

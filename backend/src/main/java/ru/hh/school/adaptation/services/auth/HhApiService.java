@@ -53,6 +53,4 @@ public class HhApiService {
     // todo: response code not equals 200.
     return response.getCode() == 200 ? response.getBody() : null;
   }
-
-
 }

@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.hh.school.adaptation.dto.HhUserInfoDto;
-import ru.hh.school.adaptation.dto.UserDto;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.AccessDeniedException;
-import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.services.UserService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Optional;
 
@@ -20,6 +19,12 @@ public class AuthService {
 
   private HhApiService apiService;
   private UserService userService;
+
+  static private ThreadLocal sessionThreadLocal = new ThreadLocal<HttpSession>();
+
+  static public ThreadLocal<HttpSession> getSessionThreadLocal() {
+    return sessionThreadLocal;
+  }
 
   @Inject
   public AuthService(HhApiService apiService, UserService userService) {
@@ -31,8 +36,7 @@ public class AuthService {
     return URI.create(apiService.getAuthorizationUrl());
   }
 
-  public void authorize(HttpServletRequest request) {
-    String code = request.getParameter("code");
+  public void authorize(String code) {
     try {
       HhUserInfoDto userInfo = apiService.getUserInfo(code);
       if (userInfo == null) {
@@ -51,7 +55,7 @@ public class AuthService {
         userDto.email = userInfo.getEmail();
         userService.updateUser(userDto);
 
-        UserSession userSession = getUserSession(request);
+        UserSession userSession = getUserSession();
         userSession.setId(user.getId());
       });
     } catch (Exception e) {
@@ -59,22 +63,23 @@ public class AuthService {
     }
   }
 
-  public void logout(HttpServletRequest request) {
-    if (isUserLoggedIn(request)) {
-      getUserSession(request).logout();
+  public void logout() {
+    if (isUserLoggedIn()) {
+      getUserSession().logout();
     }
   }
 
-  public boolean isUserLoggedIn(HttpServletRequest request) {
-    return getUserSession(request).getId() != null;
+  public boolean isUserLoggedIn() {
+    return getUserSession().getId() != null;
   }
 
-  public Optional<User> getUser(HttpServletRequest request) {
-    Integer userId = getUserSession(request).getId();
+  public Optional<User> getUser() {
+    Integer userId = getUserSession().getId();
     return userService.getUser(userId);
   }
 
-  private UserSession getUserSession(HttpServletRequest request) {
-    return new UserSession(request.getSession());
+  private UserSession getUserSession() {
+    HttpSession session = getSessionThreadLocal().get();
+    return new UserSession(session);
   }
 }
