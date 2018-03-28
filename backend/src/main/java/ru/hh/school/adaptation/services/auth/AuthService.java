@@ -47,10 +47,10 @@ public class AuthService {
 
       HhUserInfoDto userInfoDto = userInfoDtoOptional.get();
 
-      User user = userService.getUserByHhid(userInfoDto.getId()).orElseGet(() -> {
+      User user = userService.getUserByHhid(userInfoDto.id).orElseGet(() -> {
         UserDto userDto = new UserDto(userInfoDto);
         userService.saveUser(userDto);
-        return userService.getUserByHhid(userInfoDto.getId()).get();
+        return userService.getUserByHhid(userInfoDto.id).get();
       });
       sessionThreadLocal.get().setId(user.getId());
 

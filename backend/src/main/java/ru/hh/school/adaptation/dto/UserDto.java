@@ -20,11 +20,11 @@ public class UserDto {
   }
 
   public UserDto(HhUserInfoDto userInfoDto) {
-    hhid = userInfoDto.getId();
-    firstName = userInfoDto.getFirstName();
-    lastName = userInfoDto.getLastName();
-    middleName = userInfoDto.getMiddleName();
-    email = userInfoDto.getEmail();
+    hhid = userInfoDto.id;
+    firstName = userInfoDto.firstName;
+    lastName = userInfoDto.lastName;
+    middleName = userInfoDto.middleName;
+    email = userInfoDto.email;
   }
 
   public UserDto(User user) {
