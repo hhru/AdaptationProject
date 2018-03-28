@@ -16,6 +16,7 @@ import java.net.URI;
 @Singleton
 public class AuthResource {
   private final AuthService authService;
+  private static final URI BACK_URL = URI.create("index");
 
   @Inject
   public AuthResource(AuthService authService) {
@@ -25,7 +26,7 @@ public class AuthResource {
   @POST
   @Path("/login")
   public Response login() {
-    URI uri = authService.isUserLoggedIn() ? URI.create("index") : authService.getAuthorizationUri();
+    URI uri = authService.isUserLoggedIn() ? BACK_URL : authService.getAuthorizationUri();
     return Response.seeOther(uri).build();
   }
 
@@ -33,7 +34,7 @@ public class AuthResource {
   @Path("/logout")
   public Response logout() {
     authService.logout();
-    return Response.seeOther(URI.create("index")).build();
+    return Response.seeOther(BACK_URL).build();
   }
 
   @GET
@@ -43,6 +44,6 @@ public class AuthResource {
     if (error == null) {
       authService.authorize(code);
     }
-    return Response.temporaryRedirect(URI.create("index")).build();
+    return Response.temporaryRedirect(BACK_URL).build();
   }
 }
