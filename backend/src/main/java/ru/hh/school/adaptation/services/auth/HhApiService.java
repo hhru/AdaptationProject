@@ -22,16 +22,8 @@ public class HhApiService {
   private final OAuth20Service oauthService;
 
   @Inject
-  HhApiService(FileSettings fileSettings) {
-    String clientId = fileSettings.getString("oauth.client.id");
-    String clientSecret = fileSettings.getString("oauth.client.secret");
-    String redirectUri = fileSettings.getString("oauth.redirect-uri");
-
-    oauthService = new ServiceBuilder(clientId)
-            .apiSecret(clientSecret)
-            .callback(redirectUri)
-            .build(HHApi.instance());
-
+  HhApiService(OAuth20Service oauthService, FileSettings fileSettings) {
+    this.oauthService = oauthService;
     hhApiUrl = fileSettings.getString("hh.api.url");
   }
 

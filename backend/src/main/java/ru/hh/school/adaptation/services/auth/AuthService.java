@@ -56,8 +56,9 @@ public class AuthService {
 
     } catch (InterruptedException interruptedException) {
       Thread.currentThread().interrupt();
-    } catch (Exception e) {
-      logger.error(e.getMessage());
+      throw new RuntimeException(interruptedException);
+    } catch (Exception exception) {
+      throw new RuntimeException(exception);
     }
   }
 
