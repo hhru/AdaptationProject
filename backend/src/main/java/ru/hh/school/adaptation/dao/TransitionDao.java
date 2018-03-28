@@ -19,7 +19,7 @@ public class TransitionDao {
 
   public List<Transition> getAllTransitionByEmployeeId(Integer employeeId) {
 	return sessionFactory.getCurrentSession().createQuery("from Transition T "
-                    + "where T.employee.id=:employeeId order by T.id", Transition.class)
+                    + "where T.employee.id=:employeeId order by T.workflowStep", Transition.class)
                     .setParameter("employeeId", employeeId)
                     .list();
   }
@@ -29,7 +29,7 @@ public class TransitionDao {
                     + "where T.employee.id=:employeeId and T.stepStatus=:status", Transition.class)
                     .setParameter("employeeId", employeeId)
                     .setParameter("status", WorkflowStepStatus.CURRENT)
-                    .uniqueResult();
+                    .getSingleResult();
   }
 
   public void update(Transition transition) {
@@ -37,6 +37,10 @@ public class TransitionDao {
   }
 
   public void save(Transition transition) {
-    sessionFactory.getCurrentSession().persist(transition);
+    sessionFactory.getCurrentSession().save(transition);
+  }
+
+  public Transition getRecordById(Integer id) {
+    return sessionFactory.getCurrentSession().get(Transition.class, id);
   }
 }

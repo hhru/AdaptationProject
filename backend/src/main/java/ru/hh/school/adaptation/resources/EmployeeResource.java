@@ -4,12 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import ru.hh.school.adaptation.dto.EmployeeDto;
+import ru.hh.school.adaptation.dto.TransitionDto;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -38,7 +38,7 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/step")
   @ResponseBody
-  public Transition getCurrentEmployeeTransition(@PathParam("id") Integer id) {
+  public TransitionDto getCurrentEmployeeTransition(@PathParam("id") Integer id) {
     return transitionService.getCurrentTransitionByEmployeeId(id);
   }
 
@@ -54,8 +54,8 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/step/all")
   @ResponseBody
-  public List<Transition> getAllTransition(@PathParam("id") Integer id) {
-    return transitionService.getAllTransitionByEmployeeId(id);
+  public List<TransitionDto> getAllTransition(@PathParam("id") Integer id) {
+    return transitionService.getAllTransitionDtoByEmployeeId(id);
   }
 
   @GET

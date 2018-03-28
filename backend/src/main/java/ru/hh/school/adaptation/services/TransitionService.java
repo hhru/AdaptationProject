@@ -2,13 +2,14 @@ package ru.hh.school.adaptation.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.TransitionDao;
+import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 
 import javax.inject.Singleton;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class TransitionService {
@@ -19,27 +20,16 @@ public class TransitionService {
   }
 
   @Transactional(readOnly = true)
-  public Transition getCurrentTransitionByEmployeeId(Integer id) {
-    return transitionDao.getCurrentTransitionByEmployeeId(id);
+  public TransitionDto getCurrentTransitionByEmployeeId(Integer employeeId) {
+    return new TransitionDto(transitionDao.getCurrentTransitionByEmployeeId(employeeId));
   }
 
   @Transactional
   public void setEmployeeNextTransition(Integer employeeId) {
-    List<Transition> transitionList = transitionDao.getAllTransitionByEmployeeId(employeeId);
-    Iterator<Transition> iter = transitionList.iterator();
-    Transition transitionCurrent;
-    Transition transitionNext;
-    do {
-      transitionCurrent = iter.next();
-    } while (iter.hasNext() && transitionCurrent.getStepStatus()!=WorkflowStepStatus.CURRENT);
-    transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
+    Transition transitionCurrent = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
+    Transition transitionNext = transitionDao.getRecordById(transitionCurrent.getNextId().getId());
 
-    do {
-      transitionNext = iter.next();
-    } while (iter.hasNext() && transitionCurrent.getStepStatus()==WorkflowStepStatus.IGNORE);
-    if (transitionNext==null || transitionCurrent.getStepStatus()==WorkflowStepStatus.IGNORE) {
-      return;
-    }
+    transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
     transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
 
     transitionDao.update(transitionCurrent);
@@ -47,8 +37,7 @@ public class TransitionService {
   }
 
   @Transactional(readOnly = true)
-  public List<Transition> getAllTransitionByEmployeeId(Integer employeeId) {
-    return transitionDao.getAllTransitionByEmployeeId(employeeId);
+  public List<TransitionDto> getAllTransitionDtoByEmployeeId(Integer employeeId) {
+    return transitionDao.getAllTransitionByEmployeeId(employeeId).stream().map(TransitionDto::new).collect(Collectors.toList());
   }
-
 }

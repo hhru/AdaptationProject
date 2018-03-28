@@ -6,11 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,13 +25,17 @@ public class Transition {
   @GeneratedValue( strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "employee_id")
   private Employee employee;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "workflow_step_id")
   private WorkflowStep workflowStep;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "next_id")
+  private Transition nextId;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "step_status")
@@ -64,6 +70,14 @@ public class Transition {
 
   public void setWorkflowStep(WorkflowStep workflowStep) {
     this.workflowStep = workflowStep;
+  }
+
+  public Transition getNextId() {
+    return nextId;
+  }
+
+  public void setNextId(Transition nextId) {
+    this.nextId = nextId;
   }
 
   public WorkflowStepStatus getStepStatus() {
