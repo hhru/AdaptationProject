@@ -2,7 +2,6 @@
   "name": "adaptation",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.development.js",
     "build": "webpack -p --config webpack.config.production.js"
