@@ -27,14 +27,14 @@ public class AuthResource {
   @Path("/login")
   public Response login() {
     URI uri = authService.isUserLoggedIn() ? BACK_URL : authService.getAuthorizationUri();
-    return Response.seeOther(uri).build();
+    return Response.status(Response.Status.FOUND).location(uri).build();
   }
 
   @POST
   @Path("/logout")
   public Response logout() {
     authService.logout();
-    return Response.seeOther(BACK_URL).build();
+    return Response.status(Response.Status.FOUND).location(BACK_URL).build();
   }
 
   @GET
@@ -44,6 +44,6 @@ public class AuthResource {
     if (error == null) {
       authService.authorize(code);
     }
-    return Response.temporaryRedirect(BACK_URL).build();
+    return Response.status(Response.Status.FOUND).location(BACK_URL).build();
   }
 }
