@@ -2,14 +2,13 @@ package ru.hh.school.adaptation.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
-import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeDto;
+import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,8 @@ public class EmployeeService {
     }
     return employee;
   }
+
+
 
   @Transactional
   public void saveEmployee(EmployeeDto employeeDto) {
