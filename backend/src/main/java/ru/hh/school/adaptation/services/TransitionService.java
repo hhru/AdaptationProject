@@ -27,7 +27,7 @@ public class TransitionService {
   @Transactional
   public void setEmployeeNextTransition(Integer employeeId) {
     Transition transitionCurrent = transitionDao.getCurrentTransitionByEmployeeId(employeeId);
-    Transition transitionNext = transitionDao.getRecordById(transitionCurrent.getNextId().getId());
+    Transition transitionNext = transitionDao.getRecordById(transitionCurrent.getNext().getId());
 
     transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
     transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);

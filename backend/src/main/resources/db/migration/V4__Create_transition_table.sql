@@ -14,7 +14,7 @@ insert into workflow_step (name) VALUES ('FINAL_MEETING');
 insert into workflow_step (name) VALUES ('FINAL_MEETING_RESULT');
 insert into workflow_step (name) VALUES ('QUESTIONNAIRE');
 
-CREATE TYPE workflow_step_status AS ENUM ('DONE', 'CURRENT', 'NOT_DONE', 'OVERDUE', 'IGNORE');
+CREATE TYPE workflow_step_status AS ENUM ('DONE', 'CURRENT', 'NOT_DONE', 'IGNORE');
 CREATE TABLE transition
 (
   id SERIAL PRIMARY KEY,

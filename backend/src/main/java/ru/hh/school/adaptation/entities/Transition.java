@@ -35,7 +35,7 @@ public class Transition {
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "next_id")
-  private Transition nextId;
+  private Transition next;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "step_status")
@@ -72,12 +72,12 @@ public class Transition {
     this.workflowStep = workflowStep;
   }
 
-  public Transition getNextId() {
-    return nextId;
+  public Transition getNext() {
+    return next;
   }
 
-  public void setNextId(Transition nextId) {
-    this.nextId = nextId;
+  public void setNext(Transition next) {
+    this.next = next;
   }
 
   public WorkflowStepStatus getStepStatus() {

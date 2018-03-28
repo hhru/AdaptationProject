@@ -23,7 +23,7 @@ public class TransitionDto {
     id = transition.getId();
     employee = transition.getEmployee().getId();
     workflowStep = transition.getWorkflowStep().getId();
-    nextId = transition.getNextId()==null?null:transition.getNextId().getId();
+    nextId = transition.getNext() == null?null:transition.getNext().getId();
     stepStatus = transition.getStepStatus();
     deadlineTimestamp = transition.getDeadlineTimestamp();
     comment = transition.getComment();
