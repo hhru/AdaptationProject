@@ -1,9 +1,9 @@
 import React from 'react';
-import { p } from './App.css';
+import { mainArticle } from './app.css';
 
 const App = () => {
   return (
-    <p className={p}>
+    <p className={mainArticle}>
       Hell
     </p>
   );
