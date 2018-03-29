@@ -23,6 +23,9 @@ public class User {
   @Column(name = "middle_name")
   private String middleName;
 
+  @Column(name = "email", nullable = false)
+  private String email;
+
   public Integer getId() {
     return id;
   }
@@ -57,5 +60,13 @@ public class User {
 
   public void setMiddleName(String middleName) {
     this.middleName = middleName;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 }
