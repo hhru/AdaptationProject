@@ -25,17 +25,17 @@ public class Transition {
   @GeneratedValue( strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "next_id")
+  private Transition next;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "employee_id")
   private Employee employee;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "workflow_step_id")
-  private WorkflowStep workflowStep;
-
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "next_id")
-  private Transition next;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "step_type")
+  private WorkflowStepType stepType;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "step_status")
@@ -56,6 +56,14 @@ public class Transition {
     this.id = id;
   }
 
+  public Transition getNext() {
+    return next;
+  }
+
+  public void setNext(Transition next) {
+    this.next = next;
+  }
+
   public Employee getEmployee() {
     return employee;
   }
@@ -64,20 +72,12 @@ public class Transition {
     this.employee = employee;
   }
 
-  public WorkflowStep getWorkflowStep() {
-    return workflowStep;
+  public WorkflowStepType getStepType() {
+    return stepType;
   }
 
-  public void setWorkflowStep(WorkflowStep workflowStep) {
-    this.workflowStep = workflowStep;
-  }
-
-  public Transition getNext() {
-    return next;
-  }
-
-  public void setNext(Transition next) {
-    this.next = next;
+  public void setStepType(WorkflowStepType stepType) {
+    this.stepType = stepType;
   }
 
   public WorkflowStepStatus getStepStatus() {
