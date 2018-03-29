@@ -40,11 +40,17 @@ public class Employee {
   @Column(name = "email", nullable = false)
   private String email;
 
+  @Column(name = "inside", nullable = false)
+  private String inside;
+
   @Column(name = "mobile_phone")
   private Long mobilePhone;
 
   @Column(name = "internal_phone")
   private Integer internalPhone;
+
+  @Column(name = "commentary")
+  private String commentary;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
@@ -55,12 +61,16 @@ public class Employee {
   private Date employmentTimestamp;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "mentor_id")
-  private User mentor;
+  @JoinColumn(name = "hr_id")
+  private User hr;
 
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "chief_id")
-  private User chief;
+  private Lead chief;
+
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "chief_id")
+  private Lead mentor;
 
   public Integer getId() {
     return id;
@@ -122,12 +132,12 @@ public class Employee {
     this.gender = gender;
   }
 
-  public User getMentor() {
-    return mentor;
+  public User getHr() {
+    return hr;
   }
 
-  public void setMentor(User mentor) {
-    this.mentor = mentor;
+  public void setHr(User mentor) {
+    this.hr = hr;
   }
 
   public Long getMobilePhone() {
@@ -146,11 +156,35 @@ public class Employee {
     this.internalPhone = internalPhone;
   }
 
-  public User getChief() {
+  public String getInside() {
+    return inside;
+  }
+
+  public void setInside(String inside) {
+    this.inside = inside;
+  }
+
+  public Lead getChief() {
     return chief;
   }
 
-  public void setChief(User chief) {
+  public void setChief(Lead chief) {
     this.chief = chief;
+  }
+
+  public Lead getMentor() {
+    return mentor;
+  }
+
+  public void setMentor(Lead mentor) {
+    this.mentor = mentor;
+  }
+
+  public String getCommentary() {
+    return commentary;
+  }
+
+  public void setCommentary(String commentary) {
+    this.commentary = commentary;
   }
 }

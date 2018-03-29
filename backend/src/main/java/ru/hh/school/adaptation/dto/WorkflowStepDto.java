@@ -2,25 +2,19 @@ package ru.hh.school.adaptation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.hh.school.adaptation.AdaptationCommonConfig;
+import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 
 import java.util.Date;
-import java.util.List;
 
-public class EmployeeDto {
+public class WorkflowStepDto {
 
-  public Integer id;
+  public int id;
 
-  public PersonalDto employee;
+  public String name;
 
-  public PersonalDto chief;
-
-  public PersonalDto mentor;
-
-  public PersonalDto hr;
+  public WorkflowStepStatus status;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
-  public Date employmentTimestamp;
-
-  public List<WorkflowStepDto> workflow;
+  public Date deadlineTimestamp;
 
 }
