@@ -19,7 +19,7 @@ public class TransitionDao {
 
   public List<Transition> getAllTransitionByEmployeeId(Integer employeeId) {
 	return sessionFactory.getCurrentSession().createQuery("from Transition T "
-                    + "where T.employee.id=:employeeId order by T.workflowStep", Transition.class)
+                    + "where T.employee.id=:employeeId order by T.stepType", Transition.class)
                     .setParameter("employeeId", employeeId)
                     .list();
   }
