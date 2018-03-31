@@ -20,17 +20,19 @@ class ListEmployees extends React.Component {
         for (let i = 0; i < employeeList.length; i++) {
             employeeList[i]['edit'] = this.handleEditEmployee;
             employeeList[i]['delete'] = this.handleDeleteEmployee;
+            employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[0];
             employeeList[i]['workflowToBeShown'] = [];
             for (let j = 0; j < employeeList[i].workflow.length; j++) {
                 let color;
                 if (employeeList[i].workflow[j]['status'] == 'COMPLETE') {
+                    employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
                     color = 'success';
                 } else if (employeeList[i].workflow[j]['status'] == 'INCOMPLETE') {
                     color = 'info';
                 } else if (employeeList[i].workflow[j]['status'] == 'OVERDUE') {
                     color = 'danger';
                 } else if (employeeList[i].workflow[j]['status'] == 'IN_PROCESS') {
-                    employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j]['name'];
+                    employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
                     color = 'warning';
                 } else {
                     color = 'grey';
@@ -212,6 +214,7 @@ class ListEmployees extends React.Component {
                             {custd: DeleteEmployee, keyItem: "delete"},
                             {custd: ShowEmployeeProgress, keyItem: "workflowToBeShown"}
                            ]}
+                       defaultCSS={true}
                    />
            </div>
         )
@@ -269,10 +272,10 @@ class ShowEmployeeProgress extends React.Component{
     render () {
         return (	
             <td style={{width: '250px', minWidth: '250px'}} >
-                <div className="text-center">{this.props.rowData.currentWorkflowStep}</div>
+                <div className="text-center">{this.props.rowData.currentWorkflowStep['name']}</div>
                 <Progress multi>
                     {this.props.rowData.workflowToBeShown.map(workflowStage => (
-                        <Progress bar 
+                        <Progress bar
                             color={workflowStage.color}
                             value={workflowStage.value}>
                             {workflowStage.textToDisplay}
