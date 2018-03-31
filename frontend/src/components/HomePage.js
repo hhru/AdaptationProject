@@ -12,13 +12,13 @@ class HomePage extends React.Component {
 
         this.handleLoginLogoutButtonPressed = this.handleLoginLogoutButtonPressed.bind(this);
     }
-  
+
     handleLoginLogoutButtonPressed () {
-        let url = '/api/login/';
+//        let url = '/api/login/';
         let data = this.state;
 //        axios.get(url)
 //            .then(function (response) {
-//                console.log(response);
+                console.log(response);
                 this.setState(
                     prevState => ({
                         isLoggedIn: !prevState.isLoggedIn
@@ -36,7 +36,7 @@ class HomePage extends React.Component {
                 <p>
                     Welcome to adaptation homepage!
                 </p>
-                
+
                 <button onClick={this.handleLoginLogoutButtonPressed}>
                     {this.state.isLoggedIn ? 'Logout' : 'Login'}
                 </button>

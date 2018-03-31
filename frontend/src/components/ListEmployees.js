@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SortableTbl from 'react-sort-search-table';
 
-
 class ListEmployees extends React.Component {
     constructor(props) {
         super(props);
@@ -56,15 +55,15 @@ class ListEmployees extends React.Component {
     render() {
         return (
             <div>
-               <SortableTbl
-                   tblData={this.state.employeeList}
-                   tHead={['First Name', 'Last Name', 'Email', 'Employment Date', 'Edit', 'Delete']}
-                   dKey={['firstName', 'lastName', 'email', 'employmentTimestamp', 'edit', 'delete']}
-                   customTd={[
-                        {custd: EditEmployee, keyItem: "edit"},
-                        {custd: DeleteEmployee, keyItem: "delete"}
-                       ]}
-               />
+                   <SortableTbl
+                       tblData={this.state.employeeList}
+                       tHead={['First Name', 'Last Name', 'Email', 'Employment Date', 'Edit', 'Delete']}
+                       dKey={['firstName', 'lastName', 'email', 'employmentTimestamp', 'edit', 'delete']}
+                       customTd={[
+                            {custd: EditEmployee, keyItem: "edit"},
+                            {custd: DeleteEmployee, keyItem: "delete"}
+                           ]}
+                   />
            </div>
         )
     }
