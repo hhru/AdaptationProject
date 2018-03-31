@@ -59,6 +59,7 @@ class HomePageForLogedInUser extends React.Component {
 
         this.handleAddEmployee = this.handleAddEmployee.bind(this);
         this.handleListEmployees = this.handleListEmployees.bind(this);
+        this.handleShowEmployeePage = this.handleShowEmployeePage.bind(this);
     }
   
     handleAddEmployee () {
@@ -67,6 +68,10 @@ class HomePageForLogedInUser extends React.Component {
 
     handleListEmployees () {
         this.props.history.push('/list_employees');
+    }
+
+    handleShowEmployeePage () {
+        this.props.history.push('/employee_page');
     }
 
     render() {
@@ -80,6 +85,9 @@ class HomePageForLogedInUser extends React.Component {
                     List Employees
                 </button>
 
+                <button onClick={this.handleShowEmployeePage}>
+                    Show Sample Employee Page
+                </button>
             </div>
         );
     }

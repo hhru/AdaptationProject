@@ -20,7 +20,17 @@ class EmployeePage extends React.Component {
 
         this.state = {
             employeeId: this.props.location.search,
-            data: {},
+            data: {
+                "id": null,
+                "self": {"id": null, "firstName": '', "lastName": '', "middleName": '', "email": '', "inside": ''},
+              "chief": {"id": null, "firstName": '', "lastName": '', "middleName": '', "email": '', "inside": ''},
+              "mentor": {"id": null, "firstName": '', "lastName": '', "middleName": '', "email": '', "inside": ''},
+              "hr": {"id": null, "firstName": '', "lastName": '', "middleName": '', "email": '', "inside": ''},
+                "employmentTimestamp": null,
+                "workflow": [
+                    {"id": null, "type": '', "status": '', "deadlineTimestamp": null, "comment": null}
+                ]
+            }
         };
 
         this.handleGetEmployeeInfo = this.handleGetEmployeeInfo.bind(this);
@@ -126,7 +136,7 @@ class EmployeePage extends React.Component {
         })
     }
 
-    componentWillMount () {
+    componentDidMount () {
         let response;
 //        $.get('/api/employee/' + sthis.state.employeeId, this.handleGetEmployeeInfo);
         this.handleGetEmployeeInfo(response);
@@ -168,6 +178,35 @@ class EmployeePage extends React.Component {
                 <FaSmileO/>
                 <FaTimesCircle/>
                 <FaEdit/>
+                <br/>
+                <Workflow data={this.state.data.workflow}/>
+            </div>
+        );
+    }
+}
+
+
+class Workflow extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.renderWorkflowStage = this.renderWorkflowStage.bind(this);
+    }
+
+    renderWorkflowStage () {
+        return (
+            <FaAdjust size={50} color="green" />
+        );
+
+    }
+
+    render () {
+        return (
+            <div>
+                <FaAdjust size={50} color="yellow" />
+                {this.props.data.map(workflowStage => (
+                    this.renderWorkflowStage(workflowStage)
+                ))}
             </div>
         );
     }
