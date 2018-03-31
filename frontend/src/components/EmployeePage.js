@@ -1,6 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import FaAdjust from 'react-icons/lib/fa/adjust';
+import FaCheckCircle from 'react-icons/lib/fa/check-circle';
+import FaCircleO from 'react-icons/lib/fa/circle-o';
+import FaClockO from 'react-icons/lib/fa/clock-o';
+import FaCircle from 'react-icons/lib/fa/circle';
+import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
+import FaPlusCircle from 'react-icons/lib/fa/plus-circle';
+import FaQuestionCircle from 'react-icons/lib/fa/question-circle';
+import FaSmileO from 'react-icons/lib/fa/smile-o';
+import FaTimesCircle from 'react-icons/lib/fa/times-circle';
+import FaEdit from 'react-icons/lib/fa/edit';
 
 
 class EmployeePage extends React.Component {
@@ -142,6 +153,17 @@ class EmployeePage extends React.Component {
                 <p>
                     {'Дата выхода: ' + this.state.data.employmentTimestamp}
                 </p>
+                <FaAdjust/>
+                <FaCheckCircle/>
+                <FaCircleO/>
+                <FaClockO/>
+                <FaCircle/>
+                <FaExclamationCircle/>
+                <FaPlusCircle/>
+                <FaQuestionCircle/>
+                <FaSmileO/>
+                <FaTimesCircle/>
+                <FaEdit/>
             </div>
         );
     }
