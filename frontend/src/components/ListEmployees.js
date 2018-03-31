@@ -20,6 +20,27 @@ class ListEmployees extends React.Component {
         for (let i = 0; i < employeeList.length; i++) {
             employeeList[i]['edit'] = this.handleEditEmployee;
             employeeList[i]['delete'] = this.handleDeleteEmployee;
+            employeeList[i]['workflowToBeShown'] = [];
+            for (let j = 0; j < employeeList[i].workflow.length; j++) {
+                let color;
+                if (employeeList[i].workflow[j]['status'] == 'COMPLETE') {
+                    color = 'success';
+                } else if (employeeList[i].workflow[j]['status'] == 'INCOMPLETE') {
+                    color = 'info';
+                } else if (employeeList[i].workflow[j]['status'] == 'OVERDUE') {
+                    color = 'danger';
+                } else if (employeeList[i].workflow[j]['status'] == 'IN_PROCESS') {
+                    employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j]['name'];
+                    color = 'warning';
+                } else {
+                    color = 'grey';
+                }
+                employeeList[i]['workflowToBeShown'].push({
+                    'color': color,
+                    'value': 100.0/employeeList[i].workflow.length,
+                    'textToDisplay': j + 1
+                })
+            }
         }
         this.setState({
             employeeList: employeeList,
@@ -67,12 +88,12 @@ class ListEmployees extends React.Component {
                     {
                         "step":3,
                         "name":"Ставятся задачи на испытательный срок",
-                        "status":"IN_PROCESS"
+                        "status":"OVERDUE"
                     },
                     {
                         "step":4,
                         "name":"шаг 4",
-                        "status":"INCOMPLETE"
+                        "status":"IN_PROCESS"
                     },
                     {
                         "step":5,
@@ -185,11 +206,11 @@ class ListEmployees extends React.Component {
                    <SortableTbl
                        tblData={this.state.employeeList}
                        tHead={['First Name', 'Last Name', 'Hr Name', 'Employment Date', 'Workflow', 'Edit', 'Delete']}
-                       dKey={['firstName', 'lastName', 'hrName', 'employmentTimestamp', 'workflow',  'edit', 'delete']}
+                       dKey={['firstName', 'lastName', 'hrName', 'employmentTimestamp', 'workflowToBeShown', 'edit', 'delete']}
                        customTd={[
                             {custd: EditEmployee, keyItem: "edit"},
                             {custd: DeleteEmployee, keyItem: "delete"},
-                            {custd: ShowEmployeeProgress, keyItem: "workflow"}
+                            {custd: ShowEmployeeProgress, keyItem: "workflowToBeShown"}
                            ]}
                    />
            </div>
@@ -245,18 +266,19 @@ class ShowEmployeeProgress extends React.Component{
         super(props);
     }
 
-
     render () {
         return (	
             <td style={{width: '250px', minWidth: '250px'}} >
-            <div className="text-center">With Labels</div>
-            <Progress multi>
-                <Progress bar value="15">Meh</Progress>
-                <Progress bar color="success" value="30">Wow!</Progress>
-                <Progress bar color="info" value="25">Cool</Progress>
-                <Progress bar color="warning" value="20">20%</Progress>
-                <Progress bar color="danger" value="5">!!</Progress>
-            </Progress>
+                <div className="text-center">{this.props.rowData.currentWorkflowStep}</div>
+                <Progress multi>
+                    {this.props.rowData.workflowToBeShown.map(workflowStage => (
+                        <Progress bar 
+                            color={workflowStage.color}
+                            value={workflowStage.value}>
+                            {workflowStage.textToDisplay}
+                        </Progress>
+                    ))}
+                </Progress>
             </td>
         );
     }
