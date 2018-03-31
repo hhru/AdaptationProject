@@ -76,57 +76,57 @@ class EmployeePage extends React.Component {
             {
               "id": 8,
               "type": "ADD",
-              "status": "CURRENT",
-              "deadlineTimestamp": null,
+              "status": "DONE",
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 7,
               "type": "TASK_LIST",
-              "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "status": "OVERDUE",
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 6,
               "type": "WELCOME_MEETING",
-              "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "status": "CURRENT",
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 5,
               "type": "INTERIM_MEETING",
               "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 4,
               "type": "INTERIM_MEETING_RESULT",
               "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 3,
               "type": "FINAL_MEETING",
               "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 2,
               "type": "FINAL_MEETING_RESULT",
               "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             },
             {
               "id": 1,
               "type": "QUESTIONNAIRE",
               "status": "NOT_DONE",
-              "deadlineTimestamp": null,
+              "deadlineTimestamp": "2018-03-31",
               "comment": null
             }
           ]
@@ -163,14 +163,12 @@ class EmployeePage extends React.Component {
                 <p>
                     {'Дата выхода: ' + this.state.data.employmentTimestamp}
                 </p>
-                <FaAdjust size={50} color="yellow" />
+                <Workflow data={this.state.data.workflow}/>
                 <br/>
-                <FaCheckCircle size={50} color="green" />
-                <br/>
-                <FaExclamationCircle size={50} color="red" />
-                <br/>
-                <FaCircle size={50} color="grey" />
-                <br/>
+                <FaAdjust/>
+                <FaCheckCircle/>
+                <FaExclamationCircle/>
+                <FaCircle/>
                 <FaCircleO/>
                 <FaClockO/>
                 <FaPlusCircle/>
@@ -178,8 +176,6 @@ class EmployeePage extends React.Component {
                 <FaSmileO/>
                 <FaTimesCircle/>
                 <FaEdit/>
-                <br/>
-                <Workflow data={this.state.data.workflow}/>
             </div>
         );
     }
@@ -191,11 +187,29 @@ class Workflow extends React.Component {
         super(props);
 
         this.renderWorkflowStage = this.renderWorkflowStage.bind(this);
+        this.selectIcon = this.selectIcon.bind(this);
     }
 
-    renderWorkflowStage () {
+    selectIcon (workflowStage) {
+        if (workflowStage.status == 'NOT_DONE') {
+            return (<FaCircle size={50} color="grey" />);
+        } else if (workflowStage.status == 'CURRENT') {
+            return (<FaAdjust size={50} color="yellow" />);
+        } else if (workflowStage.status == 'OVERDUE') {
+            return (<FaExclamationCircle size={50} color="red" />);
+        } else if (workflowStage.status == 'DONE') {
+            return (<FaCheckCircle size={50} color="green" />);
+        }
+    }
+
+    renderWorkflowStage (workflowStage) {
         return (
-            <FaAdjust size={50} color="green" />
+            <div>
+                {workflowStage.deadlineTimestamp}
+                {this.selectIcon(workflowStage)}
+                {workflowStage.type}
+                <br />
+            </div>
         );
 
     }
@@ -203,7 +217,6 @@ class Workflow extends React.Component {
     render () {
         return (
             <div>
-                <FaAdjust size={50} color="yellow" />
                 {this.props.data.map(workflowStage => (
                     this.renderWorkflowStage(workflowStage)
                 ))}
