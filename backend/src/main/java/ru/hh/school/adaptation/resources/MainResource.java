@@ -30,7 +30,7 @@ public class MainResource {
       Optional<User> optUser = authService.getUser();
       if (optUser.isPresent()) {
         User user = optUser.get();
-        content = "<div>Hello, " + user.getFirstName() + " " + user.getLastName() + "</div>" +
+        content = "<div>Hello, " + user.getSelf().getFirstName() + " " + user.getSelf().getLastName() + "</div>" +
                 "<div><form action=\"/logout\" method=\"post\"><button>Logout</></form></div>";
       } else {
         content = "Internal error";

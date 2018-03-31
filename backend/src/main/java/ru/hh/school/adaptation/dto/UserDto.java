@@ -15,6 +15,8 @@ public class UserDto {
 
   public String email;
 
+  public String inside;
+
   public UserDto() {
   }
 
@@ -29,9 +31,10 @@ public class UserDto {
   public UserDto(User user) {
     id = user.getId();
     hhid = user.getHhid();
-    firstName = user.getFirstName();
-    lastName = user.getLastName();
-    middleName = user.getMiddleName();
-    email = user.getEmail();
+    firstName = user.getSelf().getFirstName();
+    lastName = user.getSelf().getLastName();
+    middleName = user.getSelf().getMiddleName();
+    email = user.getSelf().getEmail();
+    inside = user.getSelf().getInside();
   }
 }

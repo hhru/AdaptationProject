@@ -3,8 +3,8 @@ package ru.hh.school.adaptation.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "lead")
-public class Lead {
+@Table(name = "personal_info")
+public class PersonalInfo {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,7 @@ import ru.hh.school.adaptation.entities.Employee;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeBriefDto {
 
@@ -26,10 +27,14 @@ public class EmployeeBriefDto {
 
   public EmployeeBriefDto(Employee employee) {
     id = employee.getId();
-    firstName = employee.getFirstName();
-    lastName = employee.getLastName();
-    middleName = employee.getMiddleName();
+    firstName = employee.getSelf().getFirstName();
+    lastName = employee.getSelf().getLastName();
+    middleName = employee.getSelf().getMiddleName();
     employmentTimestamp = employee.getEmploymentTimestamp();
-    hrName = String.format("%s %s", employee.getHr().getLastName(), employee.getHr().getFirstName());
+    hrName = String.format("%s %s",
+        employee.getHr().getSelf().getLastName(),
+        employee.getHr().getSelf().getFirstName()
+    );
+    workflow = employee.getWorkflow().stream().map(WorkflowStepBriefDto::new).collect(Collectors.toList());
   }
 }
