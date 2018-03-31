@@ -18,7 +18,7 @@ class HomePage extends React.Component {
         let data = this.state;
 //        axios.get(url)
 //            .then(function (response) {
-                console.log(response);
+//                console.log(response);
                 this.setState(
                     prevState => ({
                         isLoggedIn: !prevState.isLoggedIn
