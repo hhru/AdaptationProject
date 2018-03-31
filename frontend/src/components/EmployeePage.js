@@ -153,12 +153,16 @@ class EmployeePage extends React.Component {
                 <p>
                     {'Дата выхода: ' + this.state.data.employmentTimestamp}
                 </p>
-                <FaAdjust/>
-                <FaCheckCircle/>
+                <FaAdjust size={50} color="yellow" />
+                <br/>
+                <FaCheckCircle size={50} color="green" />
+                <br/>
+                <FaExclamationCircle size={50} color="red" />
+                <br/>
+                <FaCircle size={50} color="grey" />
+                <br/>
                 <FaCircleO/>
                 <FaClockO/>
-                <FaCircle/>
-                <FaExclamationCircle/>
                 <FaPlusCircle/>
                 <FaQuestionCircle/>
                 <FaSmileO/>
