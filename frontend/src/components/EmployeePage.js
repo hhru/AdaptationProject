@@ -127,21 +127,20 @@ class EmployeePage extends React.Component {
                 <p>
                     {this.state.data.self.firstName + ' ' + this.state.data.self.middleName + ' ' + this.state.data.self.lastName}
                 </p>
-                <br/>
                 <p>
                     {this.state.data.self.email}
                 </p>
-                <br/>
                 <p>
                     {'Начальник: ' + this.state.data.chief.firstName + ' ' + this.state.data.chief.middleName + ' ' + this.state.data.chief.lastName}
                 </p>
-                <br/>
                 <p>
                     {'Ментор: ' + this.state.data.mentor.firstName + ' ' + this.state.data.mentor.middleName + ' ' + this.state.data.mentor.lastName}
                 </p>
-                <br/>
                 <p>
                     {'HR: ' + this.state.data.hr.firstName + ' ' + this.state.data.hr.middleName + ' ' + this.state.data.hr.lastName}
+                </p>
+                <p>
+                    {'Дата выхода: ' + this.state.data.employmentTimestamp}
                 </p>
             </div>
         );
