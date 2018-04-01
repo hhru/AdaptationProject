@@ -2,96 +2,84 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-
 class HomePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoggedIn: false,
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false,
+    };
 
-        this.handleLoginLogoutButtonPressed = this.handleLoginLogoutButtonPressed.bind(this);
-    }
+    this.handleLoginLogoutButtonPressed = this.handleLoginLogoutButtonPressed.bind(
+      this
+    );
+  }
 
-    handleLoginLogoutButtonPressed () {
-//        let url = '/api/login/';
-        let data = this.state;
-//        axios.get(url)
-//            .then(function (response) {
-//                console.log(response);
-                this.setState(
-                    prevState => ({
-                        isLoggedIn: !prevState.isLoggedIn
-                    })
-                );
-//            })
-//            .catch(function (error) {
-//                console.log(error);
-//            });
-    }
+  handleLoginLogoutButtonPressed() {
+    //        let url = '/api/login/';
+    let data = this.state;
+    //        axios.get(url)
+    //            .then(function (response) {
+    //                console.log(response);
+    this.setState((prevState) => ({
+      isLoggedIn: !prevState.isLoggedIn,
+    }));
+    //            })
+    //            .catch(function (error) {
+    //                console.log(error);
+    //            });
+  }
 
-    render() {
-        return (
-            <div>
-                <p>
-                    Welcome to adaptation homepage!
-                </p>
+  render() {
+    return (
+      <div>
+        <p>Welcome to adaptation homepage!</p>
 
-                <button onClick={this.handleLoginLogoutButtonPressed}>
-                    {this.state.isLoggedIn ? 'Logout' : 'Login'}
-                </button>
+        <button onClick={this.handleLoginLogoutButtonPressed}>
+          {this.state.isLoggedIn ? 'Logout' : 'Login'}
+        </button>
 
-                {this.state.isLoggedIn
-                    ? <HomePageForLogedInUser history={this.props.history} />
-                    : null
-                }
- 
-            </div>
-        );
-    }
+        {this.state.isLoggedIn ? (
+          <HomePageForLogedInUser history={this.props.history} />
+        ) : null}
+      </div>
+    );
+  }
 }
-
-
 
 class HomePageForLogedInUser extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.handleAddEmployee = this.handleAddEmployee.bind(this);
-        this.handleListEmployees = this.handleListEmployees.bind(this);
-        this.handleShowEmployeePage = this.handleShowEmployeePage.bind(this);
-    }
-  
-    handleAddEmployee () {
-        this.props.history.push('/add_employee');
-    }
+    this.handleAddEmployee = this.handleAddEmployee.bind(this);
+    this.handleListEmployees = this.handleListEmployees.bind(this);
+    this.handleShowEmployeePage = this.handleShowEmployeePage.bind(this);
+  }
 
-    handleListEmployees () {
-        this.props.history.push('/list_employees');
-    }
+  handleAddEmployee() {
+    this.props.history.push('/add_employee');
+  }
 
-    handleShowEmployeePage () {
-        this.props.history.push('/employee_page');
-    }
+  handleListEmployees() {
+    this.props.history.push('/list_employees');
+  }
 
-    render() {
-        return (
-            <div>
-                <button onClick={this.handleAddEmployee}>
-                    Add Employee
-                </button>
+  handleShowEmployeePage() {
+    this.props.history.push('/employee_page');
+  }
 
-                <button onClick={this.handleListEmployees}>
-                    List Employees
-                </button>
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleAddEmployee}>Add Employee</button>
 
-                <button onClick={this.handleShowEmployeePage}>
-                    Show Sample Employee Page
-                </button>
-            </div>
-        );
-    }
+        <button onClick={this.handleListEmployees}>List Employees</button>
+
+        <button onClick={this.handleShowEmployeePage}>
+          Show Sample Employee Page
+        </button>
+      </div>
+    );
+  }
 }
-
 
 export default HomePage;

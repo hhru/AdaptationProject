@@ -9,26 +9,25 @@ import HomePage from './HomePage';
 import NotFound from './NotFound';
 import Header from './Header';
 
-import { p } from './app.css';
+import { mainArticle } from './app.css';
 
 const App = () => {
-    return (
+  return (
+    <div>
+      <Header />
+      <Router>
         <div>
-            <Header/>
-            <Router>
-                 <div>
-                     <Switch>
-                         <Route exact path="/" component={HomePage} />
-                         <Route exact path="/add_employee" component={AddEmployee} />
-                         <Route exact path="/list_employees" component={ListEmployees} />
-                         <Route exact path="/employee_page" component={EmployeePage} />
-                         <Route component={NotFound} />
-                     </Switch>
-                 </div>
-             </Router>
+          <Switch>
+            <Route exact path="/" component={HomePage} />
+            <Route exact path="/add_employee" component={AddEmployee} />
+            <Route exact path="/list_employees" component={ListEmployees} />
+            <Route exact path="/employee_page" component={EmployeePage} />
+            <Route component={NotFound} />
+          </Switch>
         </div>
-    );
+      </Router>
+    </div>
+  );
 };
-
 
 export default App;
