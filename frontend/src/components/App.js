@@ -7,23 +7,27 @@ import ListEmployees from './ListEmployees';
 import EmployeePage from './EmployeePage';
 import HomePage from './HomePage';
 import NotFound from './NotFound';
+import Header from './Header';
 
 import { p } from './App.css';
 
 const App = () => {
-  return (
-   <Router>
-     <div>
-       <Switch>
-         <Route exact path="/" component={HomePage} />
-         <Route exact path="/add_employee" component={AddEmployee} />
-         <Route exact path="/list_employees" component={ListEmployees} />
-         <Route exact path="/employee_page" component={EmployeePage} />
-         <Route component={NotFound} />
-       </Switch>
-     </div>
-   </Router>
-  );
+    return (
+        <div>
+            <Header/>
+            <Router>
+                 <div>
+                     <Switch>
+                         <Route exact path="/" component={HomePage} />
+                         <Route exact path="/add_employee" component={AddEmployee} />
+                         <Route exact path="/list_employees" component={ListEmployees} />
+                         <Route exact path="/employee_page" component={EmployeePage} />
+                         <Route component={NotFound} />
+                     </Switch>
+                 </div>
+             </Router>
+        </div>
+    );
 };
 
 
