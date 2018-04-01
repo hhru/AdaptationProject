@@ -9,7 +9,7 @@ import HomePage from './HomePage';
 import NotFound from './NotFound';
 import Header from './Header';
 
-import { p } from './App.css';
+import { p } from './app.css';
 
 const App = () => {
     return (
