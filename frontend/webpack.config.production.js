@@ -1,9 +1,9 @@
 const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const common = require('./webpack.config.common.js');
 
-module.exports = {
+module.exports = merge(common, {
   mode: 'production',
   entry: './src/index.js',
   output: {
@@ -15,10 +15,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      }, {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -49,13 +45,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: 'public/index.html',
-      favicon: 'public/favicon.ico'
-    }),
     new ExtractTextPlugin({
       filename: 'styles/styles.[contenthash].css',
       allChunks: true
     })
   ]
-};
+});
