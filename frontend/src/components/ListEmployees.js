@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SortableTbl from 'react-sort-search-table';
 import { Progress } from 'reactstrap';
+import ReactTable from 'react-table';
+
+import 'react-table/react-table.css';
+import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 
 class ListEmployees extends React.Component {
   constructor(props) {
@@ -9,19 +12,16 @@ class ListEmployees extends React.Component {
 
     this.state = {
       employeeList: [],
+      loaded: false,
     };
 
     this.handleGetBriefEmployeeList = this.handleGetBriefEmployeeList.bind(
       this
     );
-    this.handleDeleteEmployee = this.handleDeleteEmployee.bind(this);
-    this.handleEditEmployee = this.handleEditEmployee.bind(this);
   }
 
   handleGetBriefEmployeeList(employeeList) {
     for (let i = 0; i < employeeList.length; i++) {
-      employeeList[i]['edit'] = this.handleEditEmployee;
-      employeeList[i]['delete'] = this.handleDeleteEmployee;
       employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[0];
       employeeList[i]['workflowToBeShown'] = [];
       for (let j = 0; j < employeeList[i].workflow.length; j++) {
@@ -30,17 +30,18 @@ class ListEmployees extends React.Component {
           employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
           color = 'success';
         } else if (employeeList[i].workflow[j]['status'] == 'INCOMPLETE') {
-          color = 'info';
+          color = 'light';
         } else if (employeeList[i].workflow[j]['status'] == 'OVERDUE') {
           color = 'danger';
         } else if (employeeList[i].workflow[j]['status'] == 'IN_PROCESS') {
           employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
           color = 'warning';
         } else {
-          color = 'grey';
+          color = 'light';
         }
         employeeList[i]['workflowToBeShown'].push({
           color: color,
+          key: i + ' ' + j,
           value: 100.0 / employeeList[i].workflow.length,
           textToDisplay: j + 1,
         });
@@ -48,25 +49,8 @@ class ListEmployees extends React.Component {
     }
     this.setState({
       employeeList: employeeList,
+      loaded: true,
     });
-  }
-
-  handleDeleteEmployee(employeeId) {
-    //        TODO: notify backend!
-    let newEmployeeList = [];
-    for (let i = 0; i < this.state.employeeList.length; i++) {
-      if (this.state.employeeList[i]['id'] != employeeId) {
-        newEmployeeList.push(this.state.employeeList[i]);
-      }
-    }
-
-    this.setState({
-      employeeList: newEmployeeList,
-    });
-  }
-
-  handleEditEmployee(employeeId) {
-    console.log('edit ' + employeeId);
   }
 
   componentDidMount() {
@@ -194,131 +178,58 @@ class ListEmployees extends React.Component {
     ];
 
     let url = '/api/employee/all/brief/';
-    //        axios.get(url)
-    //            .then(function (response) {
-    //                console.log(response);
+    //axios.get(url)
+    //    .then(function (response) {
+    //        console.log(response);
     this.handleGetBriefEmployeeList(response);
-    //            })
-    //            .catch(function (error) {
-    //                console.log(error);
-    //            });
+    //    })
+    //    .catch(function (error) {
+    //        console.log(error);
+    //    });
   }
 
   render() {
+    let columns = [
+      {
+        Header: 'ФИО',
+        id: 'fullName',
+        accessor: (row) =>
+          row.firstName + ' ' + row.middleName + ' ' + row.lastName,
+      },
+      {
+        Header: 'Дата выхода',
+        accessor: 'employmentTimestamp',
+      },
+      {
+        Header: 'Состояние',
+        accessor: 'progress',
+        Cell: (row) => (
+          <div>
+            <div className="text-center">
+              {row.original.currentWorkflowStep['name']}
+            </div>
+
+            <Progress multi>
+              {row.original.workflowToBeShown.map((workflowStage) => (
+                <Progress
+                  bar
+                  color={workflowStage.color}
+                  value={workflowStage.value}
+                  key={workflowStage.key}
+                >
+                  {workflowStage.textToDisplay}
+                </Progress>
+              ))}
+            </Progress>
+          </div>
+        ),
+      },
+    ];
+
     return (
       <div>
-        <SortableTbl
-          tblData={this.state.employeeList}
-          tHead={[
-            'First Name',
-            'Last Name',
-            'Hr Name',
-            'Employment Date',
-            'Workflow',
-            'Edit',
-            'Delete',
-          ]}
-          dKey={[
-            'firstName',
-            'lastName',
-            'hrName',
-            'employmentTimestamp',
-            'workflowToBeShown',
-            'edit',
-            'delete',
-          ]}
-          customTd={[
-            { custd: EditEmployee, keyItem: 'edit' },
-            { custd: DeleteEmployee, keyItem: 'delete' },
-            { custd: ShowEmployeeProgress, keyItem: 'workflowToBeShown' },
-          ]}
-          defaultCSS={true}
-        />
+        <ReactTable data={this.state.employeeList} columns={columns} />
       </div>
-    );
-  }
-}
-
-class EditEmployee extends React.Component {
-  constructor(props) {
-    super(props);
-    this.editItem = this.editItem.bind(this);
-  }
-
-  editItem() {
-    alert(
-      'edit ' + this.props.rowData.firstName + ' ' + this.props.rowData.lastName
-    );
-    this.props.tdData(this.props.rowData['id']);
-  }
-
-  render() {
-    return (
-      <td>
-        <input
-          type="button"
-          className="btn btn-warning"
-          value="Edit"
-          onClick={this.editItem}
-        />
-      </td>
-    );
-  }
-}
-
-class DeleteEmployee extends React.Component {
-  constructor(props) {
-    super(props);
-    this.deleteItem = this.deleteItem.bind(this);
-  }
-
-  deleteItem() {
-    alert(
-      'delete ' +
-        this.props.rowData.firstName +
-        ' ' +
-        this.props.rowData.lastName
-    );
-    this.props.tdData(this.props.rowData['id']);
-  }
-
-  render() {
-    return (
-      <td>
-        <input
-          type="button"
-          className="btn btn-danger"
-          value="Delete"
-          onClick={this.deleteItem}
-        />
-      </td>
-    );
-  }
-}
-
-class ShowEmployeeProgress extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <td style={{ width: '250px', minWidth: '250px' }}>
-        <div className="text-center">
-          {this.props.rowData.currentWorkflowStep['name']}
-        </div>
-        <Progress multi>
-          {this.props.rowData.workflowToBeShown.map((workflowStage) => (
-            <Progress
-              bar
-              color={workflowStage.color}
-              value={workflowStage.value}
-            >
-              {workflowStage.textToDisplay}
-            </Progress>
-          ))}
-        </Progress>
-      </td>
     );
   }
 }
