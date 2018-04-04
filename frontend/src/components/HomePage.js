@@ -15,18 +15,17 @@ class HomePage extends React.Component {
   }
 
   handleLoginLogoutButtonPressed() {
-    //        let url = '/api/login/';
-    let data = this.state;
-    //        axios.get(url)
-    //            .then(function (response) {
-    //                console.log(response);
+    //let url = '/api/login/';
+    //  axios.get(url)
+    //    .then(function (response) {
+    //      console.log(response);
     this.setState((prevState) => ({
       isLoggedIn: !prevState.isLoggedIn,
     }));
-    //            })
-    //            .catch(function (error) {
-    //                console.log(error);
-    //            });
+    //      })
+    //    .catch(function (error) {
+    //  console.log(error);
+    //});
   }
 
   render() {
