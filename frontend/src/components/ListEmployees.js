@@ -175,6 +175,17 @@ class ListEmployees extends React.Component {
       QUESTIONNAIRE: 8,
     };
 
+    let fullTextToDisplay = {
+      ADD: 'Добавлен в систему',
+      TASK_LIST: 'Задачи поставлены',
+      WELCOME_MEETING: 'Welcome встреча',
+      INTERIM_MEETING: 'Промежуточная встреча',
+      INTERIM_MEETING_RESULT: 'Результаты промежуточной встречи',
+      FINAL_MEETING: 'Финальная встреча',
+      FINAL_MEETING_RESULT: 'Результаты финальной встречи',
+      QUESTIONNAIRE: 'Опрос',
+    };
+
     let columns = [
       {
         Header: 'ФИО',
@@ -191,7 +202,7 @@ class ListEmployees extends React.Component {
         Cell: (row) => (
           <div>
             <div className="text-center">
-              {row.original.currentWorkflowStep}
+              {fullTextToDisplay[row.original.currentWorkflowStep]}
             </div>
 
             <Progress multi>
