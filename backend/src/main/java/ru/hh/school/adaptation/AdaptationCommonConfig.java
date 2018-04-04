@@ -8,48 +8,51 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
-import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.dao.*;
+import ru.hh.school.adaptation.entities.*;
+import ru.hh.school.adaptation.resources.*;
 import ru.hh.school.adaptation.services.EmployeeService;
+import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.TransitionService;
-import ru.hh.school.adaptation.dao.EmployeeDao;
-import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
-import ru.hh.school.adaptation.dao.MailTemplateDao;
-import ru.hh.school.adaptation.dao.TransitionDao;
-import ru.hh.school.adaptation.dao.UserDao;
-import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.MailTemplate;
-import ru.hh.school.adaptation.entities.Transition;
-import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.resources.AuthResource;
 
 @Configuration
 @Import({
-        MailTemplateDao.class,
-        EmployeeDao.class,
-        UserDao.class,
-        TransitionDao.class,
-        EmployeeResource.class,
-        EmployeeService.class,
-        TransitionService.class,
-        UserService.class,
-        HhApiService.class,
-        AuthService.class,
-        AuthResource.class,
-        MainResource.class
+    ExampleDao.class,
+    MailTemplateDao.class,
+    EmployeeDao.class,
+    UserDao.class,
+    TransitionDao.class,
+    PersonalInfoDao.class,
+
+    UserService.class,
+    HhApiService.class,
+    AuthService.class,
+    EmployeeService.class,
+    TransitionService.class,
+    AuthService.class,
+    PersonalInfoService.class,
+
+    AuthResource.class,
+    MainResource.class,
+    ExampleResource.class,
+    EmployeeResource.class,
+    PersonalInfoResource.class
 })
 public class AdaptationCommonConfig {
 
   public static final String JSON_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  public static final String JSON_DATE_FORMAT = "yyyy-MM-dd";
 
   @Bean
   MappingConfig mappingConfig() {
-    return new MappingConfig(MailTemplate.class,
+    return new MappingConfig(
+                             MailTemplate.class,
                              Employee.class,
                              User.class,
-                             Transition.class
+                            PersonalInfo.class, Transition.class
     );
   }
 

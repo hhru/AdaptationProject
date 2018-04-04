@@ -3,23 +3,14 @@ package ru.hh.school.adaptation.resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.hh.school.adaptation.dto.*;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import ru.hh.school.adaptation.dto.EmployeeDto;
-import ru.hh.school.adaptation.dto.TransitionDto;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-
+import javax.ws.rs.*;
 import java.util.List;
 
 @Path("/")
@@ -62,15 +53,15 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/all")
   @ResponseBody
-  public List<EmployeeDto> getAll() {
-    return employeeService.getAllEmployeesDto();
+  public List<EmployeeBriefDto> getAll() {
+    return employeeService.getBriefEmployeesList();
   }
 
   @GET
   @Produces("application/json")
   @Path("/employee/{id}")
   @ResponseBody
-  public EmployeeDto get(@PathParam("id") Integer id) {
+  public EmployeeDto getEmployee(@PathParam("id") Integer id) {
     return employeeService.getEmployeeDto(id);
   }
 
@@ -79,41 +70,16 @@ public class EmployeeResource {
   @Path("/employee/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public void create(@RequestBody EmployeeDto employeeDto) {
-    employeeService.saveEmployee(employeeDto);
+  public EmployeeDto createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto){
+    return employeeService.createEmployee(employeeCreateDto);
   }
 
   @PUT
   @Produces("application/json")
   @Path("/employee/update")
   @ResponseBody
-  public void update(@RequestBody EmployeeDto employeeDto) {
-    employeeService.updateEmployee(employeeDto);
-  @Path("/employee/{id}/workflow")
-  @ResponseBody
-  @Transactional
-  public WorkflowDto getEmployeeWorkflow(@PathParam("id") Integer id) {
-    return new WorkflowDto(employeeService.getEmployee(id).getWorkflow());
+  public EmployeeDto updateEmployee(@RequestBody EmployeeUpdateDto employeeUpdateDto){
+    return employeeService.updateEmployee(employeeUpdateDto);
   }
 
-  @PUT
-  @Produces("application/json")
-  @Path("/employee/{id}/workflow")
-  @ResponseBody
-  public ResponseEntity<Void> setEmployeeWorkflow(@PathParam("id") Integer id, @RequestBody Integer next) {
-    Employee employee = employeeService.getEmployee(id);
-    Workflow workflow = workflowService.getWorkflow(next);
-    employee.setWorkflow(workflow);
-    employeeService.updateEmployee(employee);
-    return new ResponseEntity<>(null, HttpStatus.OK);
-  }
-
-  @GET
-  @Produces("application/json")
-  @Path("/employee/{id}/all_workflow")
-  @ResponseBody
-  public List<WorkflowDto> getAllWorkflow(@PathParam("id") Integer id) {
-    Employee employee = employeeService.getEmployee(id);
-    return workflowService.getAllWorkflows(employee.getWorkflowSet().getId());
-  }
 }

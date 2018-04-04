@@ -1,6 +1,7 @@
 package ru.hh.school.adaptation.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,32 +26,18 @@ public class Employee {
   @Column(name = "id", updatable = false)
   private Integer id;
 
-  @Column(name = "first_name", nullable = false)
-  private String firstName;
-
-  @Column(name = "last_name", nullable = false)
-  private String lastName;
-
-  @Column(name = "middle_name")
-  private String middleName;
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "self_id")
+  private PersonalInfo self;
 
   @Column(name = "position", nullable = false)
   private String position;
-
-  @Column(name = "email", nullable = false)
-  private String email;
-
-  @Column(name = "inside", nullable = false)
-  private String inside;
 
   @Column(name = "mobile_phone")
   private Long mobilePhone;
 
   @Column(name = "internal_phone")
   private Integer internalPhone;
-
-  @Column(name = "commentary")
-  private String commentary;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
@@ -66,38 +53,18 @@ public class Employee {
 
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "chief_id")
-  private Lead chief;
+  private PersonalInfo chief;
 
   @ManyToOne(cascade = {CascadeType.ALL})
-  @JoinColumn(name = "chief_id")
-  private Lead mentor;
+  @JoinColumn(name = "mentor_id")
+  private PersonalInfo mentor;
+
+  @OneToMany(mappedBy = "employee")
+  @OrderBy("step_type")
+  private List<Transition> workflow;
 
   public Integer getId() {
     return id;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public void setMiddleName(String middleName) {
-    this.middleName = middleName;
   }
 
   public String getPosition() {
@@ -106,14 +73,6 @@ public class Employee {
 
   public void setPosition(String position) {
     this.position = position;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
   }
 
   public Date getEmploymentTimestamp() {
@@ -156,36 +115,32 @@ public class Employee {
     this.internalPhone = internalPhone;
   }
 
-  public String getInside() {
-    return inside;
-  }
-
-  public void setInside(String inside) {
-    this.inside = inside;
-  }
-
-  public Lead getChief() {
+  public PersonalInfo getChief() {
     return chief;
   }
 
-  public void setChief(Lead chief) {
+  public void setChief(PersonalInfo chief) {
     this.chief = chief;
   }
 
-  public Lead getMentor() {
+  public PersonalInfo getMentor() {
     return mentor;
   }
 
-  public void setMentor(Lead mentor) {
+  public void setMentor(PersonalInfo mentor) {
     this.mentor = mentor;
   }
 
-  public String getCommentary() {
-    return commentary;
+  public PersonalInfo getSelf() {
+    return self;
   }
 
-  public void setCommentary(String commentary) {
-    this.commentary = commentary;
+  public void setSelf(PersonalInfo self) {
+    this.self = self;
+  }
+
+  public List<Transition> getWorkflow() {
+    return workflow;
   }
 
   public void setWorkflow(List<Transition> workflow) {
