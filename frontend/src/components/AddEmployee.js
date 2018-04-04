@@ -29,19 +29,13 @@ class AddEmployee extends React.Component {
   }
 
   handleSubmit(event) {
+    event.preventDefault();
     let url = '/api/employee/';
     let data = this.state;
     //        $.post(url, data, function (response) {
     //            console.log(response);
     //        }.bind(this));
-    alert(
-      'Employee ' +
-        this.state.firstName +
-        ' ' +
-        this.state.lastName +
-        ' was added'
-    );
-    event.preventDefault();
+    alert('Employee ' + data.firstName + ' ' + data.lastName + ' was added');
   }
 
   render() {
