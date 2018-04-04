@@ -13,16 +13,6 @@ class ListEmployees extends React.Component {
     this.state = {
       employeeList: [],
     };
-
-    this.handleEmployeeListGetBrief = this.handleEmployeeListGetBrief.bind(
-      this
-    );
-  }
-
-  handleEmployeeListGetBrief(employeeList) {
-    this.setState({
-      employeeList: employeeList,
-    });
   }
 
   componentDidMount() {
@@ -151,29 +141,13 @@ class ListEmployees extends React.Component {
     //axios.get(url)
     //  .then(function (response) {
     //      console.log(response);
-    this.handleEmployeeListGetBrief(response);
+    this.setState({
+      employeeList: response,
+    });
     //  })
     //  .catch(function (error) {
     //    console.log(error);
     //  });
-  }
-
-  prepareProgressBar(colorsMap, shortTextToDisplay) {
-    for (let i = 0; i < employeeList.length; i++) {
-      employeeList[i]['workflowToBeShown'] = [];
-      for (let j = 0; j < employeeList[i].workflow.length; j++) {
-        employeeList[i]['workflowToBeShown'].push({
-          color:
-            colorsMap[employeeList[i].workflow[j]['overdue']][
-              employeeList[i].workflow[j]['status']
-            ],
-          key: i + ' ' + j,
-          value: 100.0 / employeeList[i].workflow.length,
-          textToDisplay:
-            shortTextToDisplay[employeeList[i].workflow[j]['type']],
-        });
-      }
-    }
   }
 
   render() {
@@ -205,8 +179,7 @@ class ListEmployees extends React.Component {
       {
         Header: 'ФИО',
         id: 'fullName',
-        accessor: (row) =>
-          row.firstName + ' ' + row.middleName + ' ' + row.lastName,
+        accessor: (row) => `${row.firstName} ${row.middleName} ${row.lastName}`,
       },
       {
         Header: 'Дата выхода',
@@ -229,6 +202,7 @@ class ListEmployees extends React.Component {
                     colorsMap[workflowStage['overdue']][workflowStage['status']]
                   }
                   value={100.0 / row.original.workflow.length}
+                  key={workflowStage.id}
                 >
                   {shortTextToDisplay[workflowStage['type']]}
                 </Progress>
