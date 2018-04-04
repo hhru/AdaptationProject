@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 public class AccessDeniedException  extends WebApplicationException {
 
-  private static final Response.Status responseStatus = Response.Status.BAD_REQUEST;
+  private static final Response.Status responseStatus = Response.Status.FORBIDDEN;
 
   public AccessDeniedException(String message){
     super(

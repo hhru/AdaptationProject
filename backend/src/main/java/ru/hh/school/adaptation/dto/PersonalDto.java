@@ -17,6 +17,10 @@ public class PersonalDto {
 
   public String inside;
 
+  public PersonalDto(){
+
+  }
+
   public PersonalDto(PersonalInfo personalInfo){
     id = personalInfo.getId();
     firstName = personalInfo.getFirstName();

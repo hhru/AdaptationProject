@@ -20,7 +20,7 @@ public class EmployeeBriefDto {
 
   public String hrName;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentTimestamp;
 
   public List<WorkflowStepBriefDto> workflow;

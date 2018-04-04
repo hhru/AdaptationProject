@@ -57,7 +57,7 @@ public class Employee {
   private Gender gender;
 
   @Column(name = "employment_timestamp")
-  @Temporal(TemporalType.TIMESTAMP)
+  @Temporal(TemporalType.DATE)
   private Date employmentTimestamp;
 
   @ManyToOne(cascade = {CascadeType.ALL})
@@ -136,7 +136,7 @@ public class Employee {
     return hr;
   }
 
-  public void setHr(User mentor) {
+  public void setHr(User hr) {
     this.hr = hr;
   }
 
@@ -186,5 +186,9 @@ public class Employee {
 
   public void setCommentary(String commentary) {
     this.commentary = commentary;
+  }
+
+  public void setWorkflow(List<Transition> workflow) {
+    this.workflow = workflow;
   }
 }

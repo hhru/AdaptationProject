@@ -25,7 +25,7 @@ CREATE TABLE employee
   mobile_phone         BIGINT,
   internal_phone       INT,
   gender               GENDER                              NOT NULL,
-  employment_timestamp TIMESTAMP DEFAULT now()             NOT NULL,
+  employment_timestamp DATE            NOT NULL,
   hr_id                INT REFERENCES "user" (id)          NOT NULL,
   mentor_id            INT REFERENCES personal_info (id),
   chief_id             INT REFERENCES personal_info (id)   NOT NULL
