@@ -12,44 +12,16 @@ class ListEmployees extends React.Component {
 
     this.state = {
       employeeList: [],
-      loaded: false,
     };
 
-    this.handleGetBriefEmployeeList = this.handleGetBriefEmployeeList.bind(
+    this.handleEmployeeListGetBrief = this.handleEmployeeListGetBrief.bind(
       this
     );
   }
 
-  handleGetBriefEmployeeList(employeeList) {
-    for (let i = 0; i < employeeList.length; i++) {
-      employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[0];
-      employeeList[i]['workflowToBeShown'] = [];
-      for (let j = 0; j < employeeList[i].workflow.length; j++) {
-        let color;
-        if (employeeList[i].workflow[j]['status'] == 'COMPLETE') {
-          employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
-          color = 'success';
-        } else if (employeeList[i].workflow[j]['status'] == 'INCOMPLETE') {
-          color = 'light';
-        } else if (employeeList[i].workflow[j]['status'] == 'OVERDUE') {
-          color = 'danger';
-        } else if (employeeList[i].workflow[j]['status'] == 'IN_PROCESS') {
-          employeeList[i]['currentWorkflowStep'] = employeeList[i].workflow[j];
-          color = 'warning';
-        } else {
-          color = 'light';
-        }
-        employeeList[i]['workflowToBeShown'].push({
-          color: color,
-          key: i + ' ' + j,
-          value: 100.0 / employeeList[i].workflow.length,
-          textToDisplay: j + 1,
-        });
-      }
-    }
+  handleEmployeeListGetBrief(employeeList) {
     this.setState({
       employeeList: employeeList,
-      loaded: true,
     });
   }
 
@@ -61,57 +33,56 @@ class ListEmployees extends React.Component {
         lastName: 'Иванов',
         middleName: 'Иванович',
         hrName: 'Бежецкова Е.',
-        employmentTimestamp: '2017-07-10 16:30:00',
+        employmentDate: '2017-07-10',
+        currentWorkflowStep: 'WELCOME_MEETING',
         workflow: [
           {
-            step: 1,
-            name: 'Сотрудник добавлен в систему',
+            id: 8,
+            type: 'ADD',
             status: 'COMPLETE',
+            overdue: false,
           },
           {
-            step: 2,
-            name: 'Сотрудник добавлен в систему',
+            id: 7,
+            type: 'TASK_LIST',
             status: 'COMPLETE',
+            overdue: false,
           },
           {
-            step: 3,
-            name: 'Ставятся задачи на испытательный срок',
-            status: 'OVERDUE',
+            id: 6,
+            type: 'WELCOME_MEETING',
+            status: 'IN_PROGRESS',
+            overdue: false,
           },
           {
-            step: 4,
-            name: 'шаг 4',
-            status: 'IN_PROCESS',
+            id: 5,
+            type: 'INTERIM_MEETING',
+            status: 'NOT_DONE',
+            overdue: true,
           },
           {
-            step: 5,
-            name: 'шаг 5',
-            status: 'INCOMPLETE',
+            id: 4,
+            type: 'INTERIM_MEETING_RESULT',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 6,
-            name: 'шаг 6',
-            status: 'INCOMPLETE',
+            id: 3,
+            type: 'FINAL_MEETING',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 7,
-            name: 'шаг 7',
-            status: 'INCOMPLETE',
+            id: 2,
+            type: 'FINAL_MEETING_RESULT',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 8,
-            name: 'шаг 8',
-            status: 'INCOMPLETE',
-          },
-          {
-            step: 9,
-            name: 'шаг 9',
-            status: 'INCOMPLETE',
-          },
-          {
-            step: 10,
-            name: 'Успешное прохождение испытательного срока',
-            status: 'INCOMPLETE',
+            id: 1,
+            type: 'QUESTIONNAIRE',
+            status: 'NOT_DONE',
+            overdue: false,
           },
         ],
       },
@@ -121,57 +92,56 @@ class ListEmployees extends React.Component {
         lastName: 'Петрова',
         middleName: 'Андреевна',
         hrName: 'Бежецкова Е.',
-        employmentTimestamp: '2017-11-10 16:30:00',
+        employmentDate: '2017-11-10',
+        currentWorkflowStep: 'ADD',
         workflow: [
           {
-            step: 1,
-            name: 'Сотрудник добавлен в систему',
+            id: 16,
+            type: 'ADD',
             status: 'COMPLETE',
+            overdue: false,
           },
           {
-            step: 2,
-            name: 'Сотрудник добавлен в систему',
-            status: 'INCOMPLETE',
+            id: 15,
+            type: 'TASK_LIST',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 3,
-            name: 'Ставятся задачи на испытательный срок',
-            status: 'INCOMPLETE',
+            id: 14,
+            type: 'WELCOME_MEETING',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 4,
-            name: 'шаг 4',
-            status: 'INCOMPLETE',
+            id: 13,
+            type: 'INTERIM_MEETING',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 5,
-            name: 'шаг 5',
-            status: 'INCOMPLETE',
+            id: 12,
+            type: 'INTERIM_MEETING_RESULT',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 6,
-            name: 'шаг 6',
-            status: 'INCOMPLETE',
+            id: 11,
+            type: 'FINAL_MEETING',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 7,
-            name: 'шаг 7',
-            status: 'INCOMPLETE',
+            id: 10,
+            type: 'FINAL_MEETING_RESULT',
+            status: 'NOT_DONE',
+            overdue: false,
           },
           {
-            step: 8,
-            name: 'шаг 8',
-            status: 'INCOMPLETE',
-          },
-          {
-            step: 9,
-            name: 'шаг 9',
-            status: 'INCOMPLETE',
-          },
-          {
-            step: 10,
-            name: 'Успешное прохождение испытательного срока',
-            status: 'INCOMPLETE',
+            id: 9,
+            type: 'QUESTIONNAIRE',
+            status: 'NOT_DONE',
+            overdue: false,
           },
         ],
       },
@@ -179,16 +149,58 @@ class ListEmployees extends React.Component {
 
     let url = '/api/employee/all/brief/';
     //axios.get(url)
-    //    .then(function (response) {
-    //        console.log(response);
-    this.handleGetBriefEmployeeList(response);
-    //    })
-    //    .catch(function (error) {
-    //        console.log(error);
-    //    });
+    //  .then(function (response) {
+    //      console.log(response);
+    this.handleEmployeeListGetBrief(response);
+    //  })
+    //  .catch(function (error) {
+    //    console.log(error);
+    //  });
+  }
+
+  prepareProgressBar(colorsMap, shortTextToDisplay) {
+    for (let i = 0; i < employeeList.length; i++) {
+      employeeList[i]['workflowToBeShown'] = [];
+      for (let j = 0; j < employeeList[i].workflow.length; j++) {
+        employeeList[i]['workflowToBeShown'].push({
+          color:
+            colorsMap[employeeList[i].workflow[j]['overdue']][
+              employeeList[i].workflow[j]['status']
+            ],
+          key: i + ' ' + j,
+          value: 100.0 / employeeList[i].workflow.length,
+          textToDisplay:
+            shortTextToDisplay[employeeList[i].workflow[j]['type']],
+        });
+      }
+    }
   }
 
   render() {
+    let colorsMap = {
+      true: {
+        IN_PROGRESS: 'danger',
+        COMPLETE: 'danger',
+        NOT_DONE: 'danger',
+      },
+      false: {
+        IN_PROGRESS: 'warning',
+        COMPLETE: 'success',
+        NOT_DONE: 'light',
+      },
+    };
+
+    let shortTextToDisplay = {
+      ADD: 1,
+      TASK_LIST: 2,
+      WELCOME_MEETING: 3,
+      INTERIM_MEETING: 4,
+      INTERIM_MEETING_RESULT: 5,
+      FINAL_MEETING: 6,
+      FINAL_MEETING_RESULT: 7,
+      QUESTIONNAIRE: 8,
+    };
+
     let columns = [
       {
         Header: 'ФИО',
@@ -198,7 +210,7 @@ class ListEmployees extends React.Component {
       },
       {
         Header: 'Дата выхода',
-        accessor: 'employmentTimestamp',
+        accessor: 'employmentDate',
       },
       {
         Header: 'Состояние',
@@ -206,18 +218,19 @@ class ListEmployees extends React.Component {
         Cell: (row) => (
           <div>
             <div className="text-center">
-              {row.original.currentWorkflowStep['name']}
+              {row.original.currentWorkflowStep}
             </div>
 
             <Progress multi>
-              {row.original.workflowToBeShown.map((workflowStage) => (
+              {row.original.workflow.map((workflowStage) => (
                 <Progress
                   bar
-                  color={workflowStage.color}
-                  value={workflowStage.value}
-                  key={workflowStage.key}
+                  color={
+                    colorsMap[workflowStage['overdue']][workflowStage['status']]
+                  }
+                  value={100.0 / row.original.workflow.length}
                 >
-                  {workflowStage.textToDisplay}
+                  {shortTextToDisplay[workflowStage['type']]}
                 </Progress>
               ))}
             </Progress>
