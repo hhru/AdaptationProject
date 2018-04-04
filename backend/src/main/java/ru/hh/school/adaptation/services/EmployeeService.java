@@ -8,6 +8,7 @@ import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
 
@@ -66,7 +67,11 @@ public class EmployeeService {
     employee.setPosition(employeeCreateDto.position);
     employee.setGender(employeeCreateDto.gender);
     employee.setEmploymentTimestamp(employeeCreateDto.employmentTimestamp);
+    employeeDao.save(employee);
+
     employee.setWorkflow(transitionService.createTransitionsForNewEmployee(employee));
+    employeeDao.update(employee);
+
     return new EmployeeDto(employee);
   }
 
@@ -80,13 +85,18 @@ public class EmployeeService {
       employee.setGender(employeeUpdateDto.gender);
       employee.setHr(userDao.getRecordById(employeeUpdateDto.hrId));
       employee.setPosition(employeeUpdateDto.position);
+
       if (employeeUpdateDto.mentor != null){
         employee.setMentor(personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.mentor));
       } else {
         employee.setMentor(null);
       }
       employee.setChief(personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.chief));
-      personalInfoService.updatePersonalInfo(employeeUpdateDto.self);
+
+      PersonalInfo selfInfo = employee.getSelf();
+      personalInfoService.updatePersonalInfo(selfInfo, employeeUpdateDto.self);
+
+      employeeDao.update(employee);
       return new EmployeeDto(employee);
     }
   }

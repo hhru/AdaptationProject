@@ -40,8 +40,7 @@ public class PersonalInfoService {
     return dtoToEntity(personalDto);
   }
 
-  public PersonalInfo updatePersonalInfo(PersonalDto personalDto) {
-    PersonalInfo personalInfo = personalInfoDao.getRecordById(personalDto.id);
+  public PersonalInfo updatePersonalInfo(PersonalInfo personalInfo, PersonalDto personalDto) {
     personalInfo.setInside(personalDto.inside);
     personalInfo.setEmail(personalDto.email);
     personalInfo.setLastName(personalDto.lastName);
