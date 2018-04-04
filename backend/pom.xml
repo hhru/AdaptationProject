@@ -22,6 +22,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>ru.hh.nab</groupId>
             <artifactId>nab-core</artifactId>
             <version>${nab.version}</version>
@@ -67,12 +73,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.jdbc.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>${jersey.version}</version>
         </dependency>
 
         <dependency>

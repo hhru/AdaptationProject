@@ -11,7 +11,7 @@ module.exports = merge(common, {
   entry: ['react-hot-loader/patch', './src/index.js'],
   output: {
     filename: 'bundle.[hash].js',
-    publicPath: '/'
+    publicPath: '/',
   },
   devtool: 'eval-source-map',
   module: {
@@ -20,33 +20,33 @@ module.exports = merge(common, {
         test: /\.css$/,
         use: [
           {
-            loader: 'style-loader'
-          }, {
+            loader: 'style-loader',
+          },
+          {
             loader: 'css-loader',
             options: {
               modules: false,
               camelCase: true,
-              sourceMap: true
-            }
-          }, {
+              sourceMap: true,
+            },
+          },
+          {
             loader: 'postcss-loader',
             options: {
               config: {
                 ctx: {
                   autoprefixer: {
-                    browsers: 'last 2 versions'
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    ]
+                    browsers: 'last 2 versions',
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-  ],
+  plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
     host: 'localhost',
     port: port,
@@ -56,8 +56,8 @@ module.exports = merge(common, {
     proxy: {
       '/api/': {
         target: `http://${backendHost}:${backendPort}`,
-        pathRewrite: {'^/api' : ''}
-      }
-    }
-  }
+        pathRewrite: { '^/api': '' },
+      },
+    },
+  },
 });

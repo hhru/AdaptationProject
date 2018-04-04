@@ -9,9 +9,20 @@ module.exports = merge(common, {
   output: {
     filename: 'static/bundle.[hash].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/'
+    publicPath: '/',
   },
   devtool: 'source-map',
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          name: 'commons',
+          chunks: 'initial',
+          minChunks: 2,
+        },
+      },
+    },
+  },
   module: {
     rules: [
       {
@@ -25,29 +36,30 @@ module.exports = merge(common, {
                 modules: false,
                 importLoaders: 1,
                 camelCase: true,
-                sourceMap: true
-              }
-            }, {
+                sourceMap: true,
+              },
+            },
+            {
               loader: 'postcss-loader',
               options: {
                 config: {
                   ctx: {
                     autoprefixer: {
-                      browsers: 'last 2 versions'
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        })
-      }
-    ]
+                      browsers: 'last 2 versions',
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        }),
+      },
+    ],
   },
   plugins: [
     new ExtractTextPlugin({
       filename: 'styles/styles.[contenthash].css',
-      allChunks: true
-    })
-  ]
+      allChunks: true,
+    }),
+  ],
 });
