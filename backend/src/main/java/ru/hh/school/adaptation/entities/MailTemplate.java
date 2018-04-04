@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "mail_template")
 public class MailTemplate {
   @Id
-  @GeneratedValue( strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @Column(name = "name")
@@ -45,7 +45,7 @@ public class MailTemplate {
   }
   
   public String getHtml() {
-	return html;
+    return html;
   }
 
   public void setHtml(String html) {

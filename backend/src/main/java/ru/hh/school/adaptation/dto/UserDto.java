@@ -1,6 +1,5 @@
 package ru.hh.school.adaptation.dto;
 
-import org.eclipse.jetty.server.UserIdentity;
 import ru.hh.school.adaptation.entities.User;
 
 public class UserDto {

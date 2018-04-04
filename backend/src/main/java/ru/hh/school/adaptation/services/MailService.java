@@ -26,7 +26,9 @@ public class MailService {
   }
 
   public void sendMail(String userEmail, String messageHtml, String subject) {
-    if (messageHtml == null) {throw new IllegalArgumentException("message is null");}
+    if (messageHtml == null) {
+      throw new IllegalArgumentException("message is null");
+    }
 
     Runnable task = () -> {
       try {
@@ -48,7 +50,7 @@ public class MailService {
 
   public String applyTemplate(String template, Map<String, String> params) {
     for(Map.Entry<String, String> item: params.entrySet()) {
-    	template = template.replace(item.getKey(),item.getValue());
+      template = template.replace(item.getKey(), item.getValue());
     }
     return template;
   }
