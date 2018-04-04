@@ -11,17 +11,19 @@ class AddEmployee extends React.Component {
       gender: '',
       position: '',
       email: '',
-      employmentTimestamp: '',
+      employmentDate: '',
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.buildLabeledInputElement = this.buildLabeledInputElement.bind(this);
+    this.buildInputElement = this.buildInputElement.bind(this);
   }
 
   handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+    const input = event.target;
+    const value = input.type === 'checkbox' ? input.checked : input.value;
+    const name = input.name;
 
     this.setState({
       [name]: value,
@@ -32,102 +34,74 @@ class AddEmployee extends React.Component {
     event.preventDefault();
     let url = '/api/employee/';
     let data = this.state;
-    //        $.post(url, data, function (response) {
-    //            console.log(response);
-    //        }.bind(this));
-    alert('Employee ' + data.firstName + ' ' + data.lastName + ' was added');
+    //$.post(url, data, function (response) {
+    //  console.log(response);
+    //}.bind(this));
+    alert(`Сотрудник ${data.firstName} ${data.lastName} добавлен в систему`);
+  }
+
+  buildInputElement(name, type, value, isRequired) {
+    return (
+      <input
+        name={name}
+        type={type}
+        value={value}
+        onChange={this.handleInputChange}
+        required={isRequired}
+      />
+    );
+  }
+
+  buildLabeledInputElement(labelText, name, type, isRequired) {
+    return (
+      <span>
+        <label>
+          {labelText + ':'}
+          {this.buildInputElement(name, type, this.state[name], isRequired)}
+        </label>
+        <br />
+      </span>
+    );
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          First Name:
-          <input
-            name="firstName"
-            type="text"
-            value={this.state.firstName}
-            onChange={this.handleInputChange}
-          />
-        </label>
-
-        <br />
-        <label>
-          Middle Name:
-          <input
-            name="middleName"
-            type="text"
-            value={this.state.middleName}
-            onChange={this.handleInputChange}
-          />
-        </label>
-
-        <br />
-        <label>
-          Last Name:
-          <input
-            name="lastName"
-            type="text"
-            value={this.state.lastName}
-            onChange={this.handleInputChange}
-          />
-        </label>
-
-        <br />
-        <label>
-          Gender:
-          <input
-            name="gender"
-            type="radio"
-            value="male"
-            onChange={this.handleInputChange}
-          />{' '}
-          Male
-          <input
-            name="gender"
-            type="radio"
-            value="female"
-            onChange={this.handleInputChange}
-          />{' '}
-          Female
-        </label>
-
-        <br />
-        <label>
-          Position:
-          <input
-            name="position"
-            type="text"
-            value={this.state.position}
-            onChange={this.handleInputChange}
-          />
-        </label>
-
-        <br />
-        <label>
-          Email:
-          <input
-            name="email"
-            type="email"
-            value={this.state.email}
-            onChange={this.handleInputChange}
-          />
-        </label>
-
-        <br />
-        <label>
-          Date of employment:
-          <input
-            name="employmentTimestamp"
-            type="date"
-            value={this.state.employmentTimestamp}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <br />
-
-        <input type="submit" value="Submit" />
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          {this.buildLabeledInputElement('Имя', 'firstName', 'text', true)}
+          {this.buildLabeledInputElement(
+            'Отчество',
+            'middleName',
+            'text',
+            false
+          )}
+          {this.buildLabeledInputElement('Фамилия', 'lastName', 'text', true)}
+          <span>
+            <label>
+              Пол:
+              {this.buildInputElement('gender', 'radio', 'male', true)}
+              М
+              {this.buildInputElement('gender', 'radio', 'female', true)}
+              Ж
+            </label>
+            <br />
+          </span>
+          {this.buildLabeledInputElement(
+            'Должность',
+            'position',
+            'text',
+            false
+          )}
+          {this.buildLabeledInputElement('Email', 'email', 'email', true)}
+          {this.buildLabeledInputElement(
+            'Дата выхода',
+            'employmentDate',
+            'date',
+            true
+          )}
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
     );
   }
 }
