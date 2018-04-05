@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Progress } from 'reactstrap';
 import ReactTable from 'react-table';
 
-import 'react-table/react-table.css';
+import '!style-loader!css-loader!react-table/react-table.css';
 import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 
 class ListEmployees extends React.Component {
