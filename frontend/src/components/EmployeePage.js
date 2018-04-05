@@ -15,7 +15,7 @@ class EmployeePage extends React.Component {
       data: {
         id: null,
         currentWorkflowStep: '',
-        self: {
+        employee: {
           id: null,
           firstName: '',
           lastName: '',
@@ -65,7 +65,7 @@ class EmployeePage extends React.Component {
   componentDidMount() {
     let responseData = {
       id: 1,
-      self: {
+      employee: {
         id: 3,
         firstName: 'Джон',
         lastName: 'МакКлейн',
@@ -173,31 +173,31 @@ class EmployeePage extends React.Component {
   }
 
   render() {
+    const employee = `${this.state.data.employee.firstName} ${
+      this.state.data.employee.middleName
+    } ${this.state.data.employee.lastName}`;
+    const employeeEmail = this.state.data.employee.email;
+    const chief = `${this.state.data.chief.firstName} ${
+      this.state.data.chief.middleName
+    } ${this.state.data.chief.lastName}`;
+    const mentor = `${this.state.data.mentor.firstName} ${
+      this.state.data.mentor.middleName
+    } ${this.state.data.mentor.lastName}`;
+    const hr = `${this.state.data.hr.firstName} ${
+      this.state.data.hr.middleName
+    } ${this.state.data.hr.lastName}`;
+    const employmentDate = this.state.data.employmentDate;
+    const workflow = this.state.data.workflow;
+
     return (
       <div>
-        <p>
-          {`${this.state.data.self.firstName} ${
-            this.state.data.self.middleName
-          } ${this.state.data.self.lastName}`}
-        </p>
-        <p>{this.state.data.self.email}</p>
-        <p>
-          {`Начальник: ${this.state.data.chief.firstName} ${
-            this.state.data.chief.middleName
-          } ${this.state.data.chief.lastName}`}
-        </p>
-        <p>
-          {`Ментор: ${this.state.data.mentor.firstName} ${
-            this.state.data.mentor.middleName
-          } ${this.state.data.mentor.lastName}`}
-        </p>
-        <p>
-          {`HR: ${this.state.data.hr.firstName} ${
-            this.state.data.hr.middleName
-          } ${this.state.data.hr.lastName}`}
-        </p>
-        <p>{`Дата выхода: ${this.state.data.employmentDate}`}</p>
-        <Workflow data={this.state.data.workflow} />
+        <p>{employee}</p>
+        <p>{employeeEmail}</p>
+        <p>{`Начальник: ${chief}`}</p>
+        <p>{`Ментор: ${mentor}`}</p>
+        <p>{`HR: ${hr}`}</p>
+        <p>{`Дата выхода: ${employmentDate}`}</p>
+        <Workflow data={workflow} />
       </div>
     );
   }
@@ -211,23 +211,24 @@ class Workflow extends React.Component {
   }
 
   renderWorkflowStage(workflowStage) {
-    let iconMap = {
-      true: {
-        IN_PROGRESS: <FaExclamationCircle size={50} color="red" />,
-        COMPLETE: <FaExclamationCircle size={50} color="red" />,
-        NOT_DONE: <FaExclamationCircle size={50} color="red" />,
-      },
-      false: {
-        IN_PROGRESS: <FaAdjust size={50} color="yellow" />,
-        COMPLETE: <FaCheckCircle size={50} color="green" />,
-        NOT_DONE: <FaCircle size={50} color="grey" />,
-      },
+    const iconMap = {
+      IN_PROGRESS_OVERDUE: <FaExclamationCircle size={50} color="red" />,
+      COMPLETE_OVERDUE: <FaExclamationCircle size={50} color="red" />,
+      NOT_DONE_OVERDUE: <FaExclamationCircle size={50} color="red" />,
+      IN_PROGRESS: <FaAdjust size={50} color="yellow" />,
+      COMPLETE: <FaCheckCircle size={50} color="green" />,
+      NOT_DONE: <FaCircle size={50} color="grey" />,
     };
 
     return (
       <div>
         {workflowStage.deadlineDate}
-        {iconMap[workflowStage['overdue']][workflowStage['status']]}
+        {
+          iconMap[
+            workflowStage['status'] +
+              (workflowStage['overdue'] == true ? '_OVERDUE' : '')
+          ]
+        }
         {workflowStage.type}
         <br />
       </div>

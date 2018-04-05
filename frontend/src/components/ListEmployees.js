@@ -137,7 +137,7 @@ class ListEmployees extends React.Component {
       },
     ];
 
-    let url = '/api/employee/all/brief/';
+    const url = '/api/employee/all/brief/';
     //axios.get(url)
     //  .then(function (response) {
     //      console.log(response);
@@ -151,20 +151,16 @@ class ListEmployees extends React.Component {
   }
 
   render() {
-    let colorsMap = {
-      true: {
-        IN_PROGRESS: 'danger',
-        COMPLETE: 'danger',
-        NOT_DONE: 'danger',
-      },
-      false: {
-        IN_PROGRESS: 'warning',
-        COMPLETE: 'success',
-        NOT_DONE: 'light',
-      },
+    const colorsMap = {
+      IN_PROGRESS_OVERDUE: 'danger',
+      COMPLETE_OVERDUE: 'danger',
+      NOT_DONE_OVERDUE: 'danger',
+      IN_PROGRESS: 'warning',
+      COMPLETE: 'success',
+      NOT_DONE: 'light',
     };
 
-    let shortTextToDisplay = {
+    const shortTextToDisplay = {
       ADD: 1,
       TASK_LIST: 2,
       WELCOME_MEETING: 3,
@@ -175,7 +171,7 @@ class ListEmployees extends React.Component {
       QUESTIONNAIRE: 8,
     };
 
-    let fullTextToDisplay = {
+    const fullTextToDisplay = {
       ADD: 'Добавлен в систему',
       TASK_LIST: 'Задачи поставлены',
       WELCOME_MEETING: 'Welcome встреча',
@@ -210,7 +206,10 @@ class ListEmployees extends React.Component {
                 <Progress
                   bar
                   color={
-                    colorsMap[workflowStage['overdue']][workflowStage['status']]
+                    colorsMap[
+                      workflowStage['status'] +
+                        (workflowStage['overdue'] == true ? '_OVERDUE' : '')
+                    ]
                   }
                   value={100.0 / row.original.workflow.length}
                   key={workflowStage.id}

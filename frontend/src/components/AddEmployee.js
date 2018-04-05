@@ -32,10 +32,9 @@ class AddEmployee extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    let url = '/api/employee/';
+    const url = '/api/employee/';
     let data = this.state;
     //$.post(url, data, function (response) {
-    //  console.log(response);
     //}.bind(this));
     alert(`Сотрудник ${data.firstName} ${data.lastName} добавлен в систему`);
   }

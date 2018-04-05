@@ -15,7 +15,7 @@ class HomePage extends React.Component {
   }
 
   handleLoginLogoutButtonPressed() {
-    //let url = '/api/login/';
+    const url = '/api/login/';
     //  axios.get(url)
     //    .then(function (response) {
     //      console.log(response);
