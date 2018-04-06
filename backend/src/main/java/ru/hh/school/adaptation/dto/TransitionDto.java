@@ -17,7 +17,6 @@ public class TransitionDto {
   public String comment;
 
   public TransitionDto() {
-
   }
 
   public TransitionDto(Transition transition) {

@@ -7,10 +7,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import ru.hh.metrics.StatsDSender;
 import ru.hh.nab.core.CoreCommonConfig;
 import ru.hh.nab.core.util.FileSettings;
-import ru.hh.nab.hibernate.DataSourceFactory;
 import ru.hh.nab.hibernate.HibernateCommonConfig;
 import ru.hh.nab.hibernate.datasource.DataSourceType;
 import ru.hh.school.adaptation.services.MailService;
