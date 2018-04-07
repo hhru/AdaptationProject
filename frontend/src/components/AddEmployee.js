@@ -16,8 +16,6 @@ class AddEmployee extends React.Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.buildLabeledInputElement = this.buildLabeledInputElement.bind(this);
-    this.buildInputElement = this.buildInputElement.bind(this);
   }
 
   handleInputChange(event) {
@@ -36,71 +34,145 @@ class AddEmployee extends React.Component {
     let data = this.state;
     //$.post(url, data, function (response) {
     //}.bind(this));
-    alert(`Сотрудник ${data.firstName} ${data.lastName} добавлен в систему`);
-  }
-
-  buildInputElement(name, type, value, isRequired) {
-    return (
-      <input
-        name={name}
-        type={type}
-        value={value}
-        onChange={this.handleInputChange}
-        required={isRequired}
-      />
-    );
-  }
-
-  buildLabeledInputElement(labelText, name, type, isRequired) {
-    return (
-      <span>
-        <label>
-          {labelText + ':'}
-          {this.buildInputElement(name, type, this.state[name], isRequired)}
-        </label>
-        <br />
-      </span>
-    );
+    let { firstName: firstName, lastName: lastName } = this.state;
+    alert(`Сотрудник ${firstName} ${lastName} добавлен в систему`);
   }
 
   render() {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          {this.buildLabeledInputElement('Имя', 'firstName', 'text', true)}
-          {this.buildLabeledInputElement(
-            'Отчество',
-            'middleName',
-            'text',
-            false
-          )}
-          {this.buildLabeledInputElement('Фамилия', 'lastName', 'text', true)}
+          <LabeledInputFormElement
+            labelText="Имя"
+            name="firstName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.firstName}
+          />
+          <LabeledInputFormElement
+            labelText="Отчество"
+            name="middleName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={false}
+            value={this.state.middleName}
+          />
+          <LabeledInputFormElement
+            labelText="Фамилия"
+            name="lastName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.lastName}
+          />
+
           <span>
             <label>
               Пол:
-              {this.buildInputElement('gender', 'radio', 'male', true)}
+              <InputFormElement
+                name="gender"
+                type="radio"
+                value="male"
+                onChange={this.handleInputChange}
+                required={true}
+              />
               М
-              {this.buildInputElement('gender', 'radio', 'female', true)}
+              <InputFormElement
+                name="gender"
+                type="radio"
+                value="female"
+                onChange={this.handleInputChange}
+                required={true}
+              />
               Ж
             </label>
             <br />
           </span>
-          {this.buildLabeledInputElement(
-            'Должность',
-            'position',
-            'text',
-            false
-          )}
-          {this.buildLabeledInputElement('Email', 'email', 'email', true)}
-          {this.buildLabeledInputElement(
-            'Дата выхода',
-            'employmentDate',
-            'date',
-            true
-          )}
+          <LabeledInputFormElement
+            labelText="Должность"
+            name="position"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={false}
+            value={this.state.position}
+          />
+          <LabeledInputFormElement
+            labelText="Email"
+            name="email"
+            type="email"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.email}
+          />
+          <LabeledInputFormElement
+            labelText="Дата выхода"
+            name="employmentDate"
+            type="date"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.employmentDate}
+          />
           <input type="submit" value="Submit" />
         </form>
       </div>
+    );
+  }
+}
+
+class InputFormElement extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      name: name,
+      type: type,
+      value: value,
+      onChange: onChange,
+      required: required,
+    } = this.props;
+    return (
+      <input
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        required={required}
+      />
+    );
+  }
+}
+
+class LabeledInputFormElement extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      name: name,
+      type: type,
+      value: value,
+      onChange: onChange,
+      isRequired: required,
+      labelText: labelText,
+    } = this.props;
+    return (
+      <span>
+        <label>
+          {labelText + ':'}
+          <InputFormElement
+            name={name}
+            type={type}
+            value={value}
+            onChange={onChange}
+            required={required}
+          />
+        </label>
+        <br />
+      </span>
     );
   }
 }
