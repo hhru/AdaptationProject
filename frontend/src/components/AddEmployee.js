@@ -34,7 +34,7 @@ class AddEmployee extends React.Component {
     let data = this.state;
     //$.post(url, data, function (response) {
     //}.bind(this));
-    let { firstName: firstName, lastName: lastName } = this.state;
+    let { firstName, lastName } = this.state;
     alert(`Сотрудник ${firstName} ${lastName} добавлен в систему`);
   }
 
@@ -66,7 +66,6 @@ class AddEmployee extends React.Component {
             isRequired={true}
             value={this.state.lastName}
           />
-
           <span>
             <label>
               Пол:
@@ -126,13 +125,7 @@ class InputFormElement extends React.Component {
   }
 
   render() {
-    const {
-      name: name,
-      type: type,
-      value: value,
-      onChange: onChange,
-      required: required,
-    } = this.props;
+    const { name, type, value, onChange, required } = this.props;
     return (
       <input
         name={name}
@@ -152,12 +145,12 @@ class LabeledInputFormElement extends React.Component {
 
   render() {
     const {
-      name: name,
-      type: type,
-      value: value,
-      onChange: onChange,
+      name,
+      type,
+      value,
+      onChange,
       isRequired: required,
-      labelText: labelText,
+      labelText,
     } = this.props;
     return (
       <span>

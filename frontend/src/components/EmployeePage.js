@@ -173,29 +173,40 @@ class EmployeePage extends React.Component {
   }
 
   render() {
-    const employee = `${this.state.data.employee.firstName} ${
-      this.state.data.employee.middleName
-    } ${this.state.data.employee.lastName}`;
-    const employeeEmail = this.state.data.employee.email;
-    const chief = `${this.state.data.chief.firstName} ${
-      this.state.data.chief.middleName
-    } ${this.state.data.chief.lastName}`;
-    const mentor = `${this.state.data.mentor.firstName} ${
-      this.state.data.mentor.middleName
-    } ${this.state.data.mentor.lastName}`;
-    const hr = `${this.state.data.hr.firstName} ${
-      this.state.data.hr.middleName
-    } ${this.state.data.hr.lastName}`;
+    const {
+      firstName: employeeFirstName,
+      middleName: employeeMiddleName,
+      lastName: employeeLastName,
+      email: employeeEmail,
+    } = this.state.data.employee;
+    const {
+      firstName: chiefFirstName,
+      middleName: chiefMiddleName,
+      lastName: chiefLastName,
+    } = this.state.data.chief;
+    const {
+      firstName: mentorFirstName,
+      middleName: mentorMiddleName,
+      lastName: mentorLastName,
+    } = this.state.data.mentor;
+    const {
+      firstName: hrFirstName,
+      middleName: hrMiddleName,
+      lastName: hrLastName,
+    } = this.state.data.hr;
     const employmentDate = this.state.data.employmentDate;
     const workflow = this.state.data.workflow;
 
     return (
       <div>
-        <p>{employee}</p>
+        <p
+        >{`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}</p>
         <p>{employeeEmail}</p>
-        <p>{`Начальник: ${chief}`}</p>
-        <p>{`Ментор: ${mentor}`}</p>
-        <p>{`HR: ${hr}`}</p>
+        <p
+        >{`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}</p>
+        <p
+        >{`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}</p>
+        <p>{`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`}</p>
         <p>{`Дата выхода: ${employmentDate}`}</p>
         <Workflow data={workflow} />
       </div>
@@ -206,41 +217,58 @@ class EmployeePage extends React.Component {
 class Workflow extends React.Component {
   constructor(props) {
     super(props);
-
-    this.renderWorkflowStage = this.renderWorkflowStage.bind(this);
-  }
-
-  renderWorkflowStage(workflowStage) {
-    const iconMap = {
-      IN_PROGRESS_OVERDUE: <FaExclamationCircle size={50} color="red" />,
-      COMPLETE_OVERDUE: <FaExclamationCircle size={50} color="red" />,
-      NOT_DONE_OVERDUE: <FaExclamationCircle size={50} color="red" />,
-      IN_PROGRESS: <FaAdjust size={50} color="yellow" />,
-      COMPLETE: <FaCheckCircle size={50} color="green" />,
-      NOT_DONE: <FaCircle size={50} color="grey" />,
-    };
-
-    return (
-      <div>
-        {workflowStage.deadlineDate}
-        {
-          iconMap[
-            workflowStage['status'] +
-              (workflowStage['overdue'] == true ? '_OVERDUE' : '')
-          ]
-        }
-        {workflowStage.type}
-        <br />
-      </div>
-    );
   }
 
   render() {
     return (
       <div>
-        {this.props.data.map((workflowStage) =>
-          this.renderWorkflowStage(workflowStage)
-        )}
+        {this.props.data.map((workflowStageData) => (
+          <WorkflowStage
+            deadlineDate={workflowStageData.deadlineDate}
+            status={workflowStageData.status}
+            overdue={workflowStageData.overdue}
+            type={workflowStageData.type}
+            key={workflowStageData.id}
+          />
+        ))}
+      </div>
+    );
+  }
+}
+
+class WorkflowStage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.selectIcon = this.selectIcon.bind(this);
+  }
+
+  selectIcon(status, overdue) {
+    console.log(status, overdue);
+    switch (overdue) {
+      case true:
+        return <FaExclamationCircle size={50} color="red" />;
+      default:
+        switch (status) {
+          case 'COMPLETE':
+            return <FaCheckCircle size={50} color="green" />;
+          case 'IN_PROGRESS':
+            return <FaAdjust size={50} color="yellow" />;
+          default:
+            return <FaCircle size={50} color="grey" />;
+        }
+    }
+  }
+
+  render() {
+    const { deadlineDate, status, overdue, type } = this.props;
+
+    return (
+      <div>
+        {deadlineDate}
+        {this.selectIcon(status, overdue)}
+        {type}
+        <br />
       </div>
     );
   }
