@@ -19,16 +19,16 @@ CREATE TABLE "user"
 
 CREATE TABLE employee
 (
-  id                   SERIAL PRIMARY KEY,
-  self_id              INT REFERENCES personal_info (id)   NOT NULL,
-  position             VARCHAR(256)                        NOT NULL,
-  mobile_phone         BIGINT,
-  internal_phone       INT,
-  gender               GENDER                              NOT NULL,
-  employment_timestamp DATE            NOT NULL,
-  hr_id                INT REFERENCES "user" (id)          NOT NULL,
-  mentor_id            INT REFERENCES personal_info (id),
-  chief_id             INT REFERENCES personal_info (id)   NOT NULL
+  id              SERIAL PRIMARY KEY,
+  self_id         INT REFERENCES personal_info (id)   NOT NULL,
+  position        VARCHAR(256)                        NOT NULL,
+  mobile_phone    BIGINT,
+  internal_phone  INT,
+  gender          GENDER                              NOT NULL,
+  employment_date DATE                                NOT NULL,
+  hr_id           INT REFERENCES "user" (id)          NOT NULL,
+  mentor_id       INT REFERENCES personal_info (id),
+  chief_id        INT REFERENCES personal_info (id)   NOT NULL
 );
 
 -- Some data for simplify testing of user cases
@@ -39,5 +39,5 @@ VALUES ('Билл', 'Гейтс', 'gates@microsoft.com', 'gates');
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
 VALUES ('Джон', 'МакКлейн', 'МакКлейн', 'die@hard.com', 'john');
 INSERT INTO "user" (hhid, self_id) VALUES (1, 2);
-INSERT INTO employee (self_id, position, gender, employment_timestamp, hr_id, mentor_id, chief_id)
+INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
 VALUES (3, 'Разработчик', 'MALE', now(), 1, 1, 1);

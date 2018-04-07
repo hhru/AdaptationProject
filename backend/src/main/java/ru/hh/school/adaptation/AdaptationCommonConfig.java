@@ -9,20 +9,17 @@ import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.EmployeeDao;
-import ru.hh.school.adaptation.dao.ExampleDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.Example;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.EmployeeResource;
-import ru.hh.school.adaptation.resources.ExampleResource;
 import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
 import ru.hh.school.adaptation.services.EmployeeService;
@@ -34,7 +31,6 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
 
 @Configuration
 @Import({
-    ExampleDao.class,
     MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
@@ -51,7 +47,6 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
 
     AuthResource.class,
     MainResource.class,
-    ExampleResource.class,
     EmployeeResource.class,
     PersonalInfoResource.class
 })

@@ -3,7 +3,21 @@ package ru.hh.school.adaptation.entities;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "employee")
@@ -31,9 +45,9 @@ public class Employee {
   @Column(name = "gender")
   private Gender gender;
 
-  @Column(name = "employment_timestamp")
+  @Column(name = "employment_date")
   @Temporal(TemporalType.DATE)
-  private Date employmentTimestamp;
+  private Date employmentDate;
 
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "hr_id")
@@ -63,12 +77,12 @@ public class Employee {
     this.position = position;
   }
 
-  public Date getEmploymentTimestamp() {
-    return employmentTimestamp;
+  public Date getEmploymentDate() {
+    return employmentDate;
   }
 
-  public void setEmploymentTimestamp(Date employmentTimestamp) {
-    this.employmentTimestamp = employmentTimestamp;
+  public void setEmploymentDate(Date employmentDate) {
+    this.employmentDate = employmentDate;
   }
 
   public Gender getGender() {

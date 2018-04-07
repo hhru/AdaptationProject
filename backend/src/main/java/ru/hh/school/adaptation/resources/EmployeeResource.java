@@ -4,13 +4,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.hh.school.adaptation.dto.*;
+import ru.hh.school.adaptation.dto.EmployeeBriefDto;
+import ru.hh.school.adaptation.dto.EmployeeCreateDto;
+import ru.hh.school.adaptation.dto.EmployeeDto;
+import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
+import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 @Path("/")

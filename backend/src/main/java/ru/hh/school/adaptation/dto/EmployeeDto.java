@@ -12,7 +12,7 @@ public class EmployeeDto {
 
   public Integer id;
 
-  public PersonalDto self;
+  public PersonalDto employee;
 
   public PersonalDto chief;
 
@@ -21,19 +21,19 @@ public class EmployeeDto {
   public PersonalDto hr;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
-  public Date employmentTimestamp;
+  public Date employmentDate;
 
   public List<WorkflowStepDto> workflow;
 
   public EmployeeDto(Employee employee){
     id = employee.getId();
-    self = new PersonalDto(employee.getSelf());
+    this.employee = new PersonalDto(employee.getSelf());
     chief = new PersonalDto(employee.getChief());
     if (employee.getMentor() != null){
       mentor = new PersonalDto(employee.getMentor());
     }
     hr = new PersonalDto(employee.getHr());
-    employmentTimestamp = employee.getEmploymentTimestamp();
+    employmentDate = employee.getEmploymentDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
   }
 

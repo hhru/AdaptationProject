@@ -4,6 +4,8 @@ import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 import ru.hh.school.adaptation.entities.WorkflowStepType;
 
+import java.util.Date;
+
 public class WorkflowStepBriefDto {
 
   public Integer id;
@@ -12,10 +14,13 @@ public class WorkflowStepBriefDto {
 
   public WorkflowStepStatus status;
 
-  public WorkflowStepBriefDto(Transition transition){
+  public boolean overdue;
+
+  public WorkflowStepBriefDto(Transition transition) {
     id = transition.getId();
     type = transition.getStepType();
     status = transition.getStepStatus();
+    overdue = transition.getDeadlineTimestamp() != null && transition.getDeadlineTimestamp().after(new Date());
   }
 
 }

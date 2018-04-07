@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 import { Progress } from 'reactstrap';
 import ReactTable from 'react-table';
 
@@ -16,138 +17,19 @@ class ListEmployees extends React.Component {
   }
 
   componentDidMount() {
-    let response = [
-      {
-        id: 1,
-        firstName: 'Иван',
-        lastName: 'Иванов',
-        middleName: 'Иванович',
-        hrName: 'Бежецкова Е.',
-        employmentDate: '2017-07-10',
-        currentWorkflowStep: 'WELCOME_MEETING',
-        workflow: [
-          {
-            id: 8,
-            type: 'ADD',
-            status: 'COMPLETE',
-            overdue: false,
-          },
-          {
-            id: 7,
-            type: 'TASK_LIST',
-            status: 'COMPLETE',
-            overdue: false,
-          },
-          {
-            id: 6,
-            type: 'WELCOME_MEETING',
-            status: 'IN_PROGRESS',
-            overdue: false,
-          },
-          {
-            id: 5,
-            type: 'INTERIM_MEETING',
-            status: 'NOT_DONE',
-            overdue: true,
-          },
-          {
-            id: 4,
-            type: 'INTERIM_MEETING_RESULT',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 3,
-            type: 'FINAL_MEETING',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 2,
-            type: 'FINAL_MEETING_RESULT',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 1,
-            type: 'QUESTIONNAIRE',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-        ],
-      },
-      {
-        id: 2,
-        firstName: 'Ольга',
-        lastName: 'Петрова',
-        middleName: 'Андреевна',
-        hrName: 'Бежецкова Е.',
-        employmentDate: '2017-11-10',
-        currentWorkflowStep: 'ADD',
-        workflow: [
-          {
-            id: 16,
-            type: 'ADD',
-            status: 'COMPLETE',
-            overdue: false,
-          },
-          {
-            id: 15,
-            type: 'TASK_LIST',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 14,
-            type: 'WELCOME_MEETING',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 13,
-            type: 'INTERIM_MEETING',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 12,
-            type: 'INTERIM_MEETING_RESULT',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 11,
-            type: 'FINAL_MEETING',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 10,
-            type: 'FINAL_MEETING_RESULT',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-          {
-            id: 9,
-            type: 'QUESTIONNAIRE',
-            status: 'NOT_DONE',
-            overdue: false,
-          },
-        ],
-      },
-    ];
-
-    const url = '/api/employee/all/brief/';
-    //axios.get(url)
-    //  .then(function (response) {
-    //      console.log(response);
-    this.setState({
-      employeeList: response,
-    });
-    //  })
-    //  .catch(function (error) {
-    //    console.log(error);
-    //  });
+    const url = '/api/employee/all';
+    const self = this;
+    axios
+      .get(url)
+      .then(function(response) {
+        console.log(response.data);
+        self.setState({
+          employeeList: response.data,
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -155,8 +37,8 @@ class ListEmployees extends React.Component {
       IN_PROGRESS_OVERDUE: 'danger',
       COMPLETE_OVERDUE: 'danger',
       NOT_DONE_OVERDUE: 'danger',
-      IN_PROGRESS: 'warning',
-      COMPLETE: 'success',
+      CURRENT: 'warning',
+      DONE: 'success',
       NOT_DONE: 'light',
     };
 
@@ -223,9 +105,18 @@ class ListEmployees extends React.Component {
       },
     ];
 
+    let self = this;
+
     return (
       <div>
-        <ReactTable data={this.state.employeeList} columns={columns} />
+        <ReactTable
+          data={this.state.employeeList}
+          columns={columns}
+          getTrProps={(state, rowInfo, column, instance) => ({
+            onClick: (e) =>
+              self.props.history.push('/employee/' + rowInfo.row._original.id),
+          })}
+        />
       </div>
     );
   }

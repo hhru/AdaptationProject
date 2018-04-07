@@ -21,6 +21,6 @@ public class EmployeeCreateDto {
   public Gender gender;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
-  public Date employmentTimestamp;
+  public Date employmentDate;
 
 }

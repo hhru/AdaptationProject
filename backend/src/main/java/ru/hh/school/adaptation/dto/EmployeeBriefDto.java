@@ -21,7 +21,7 @@ public class EmployeeBriefDto {
   public String hrName;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
-  public Date employmentTimestamp;
+  public Date employmentDate;
 
   public List<WorkflowStepBriefDto> workflow;
 
@@ -30,7 +30,7 @@ public class EmployeeBriefDto {
     firstName = employee.getSelf().getFirstName();
     lastName = employee.getSelf().getLastName();
     middleName = employee.getSelf().getMiddleName();
-    employmentTimestamp = employee.getEmploymentTimestamp();
+    employmentDate = employee.getEmploymentDate();
     hrName = String.format("%s %s",
         employee.getHr().getSelf().getLastName(),
         employee.getHr().getSelf().getFirstName()

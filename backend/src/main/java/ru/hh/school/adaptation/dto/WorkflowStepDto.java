@@ -21,12 +21,15 @@ public class WorkflowStepDto {
 
   public String comment;
 
+  public boolean overdue;
+
   public WorkflowStepDto(Transition transition){
     id = transition.getId();
     type = transition.getStepType();
     status = transition.getStepStatus();
     deadlineTimestamp = transition.getDeadlineTimestamp();
     comment = transition.getComment();
+    overdue = transition.getDeadlineTimestamp() != null && transition.getDeadlineTimestamp().after(new Date());
   }
 
 }

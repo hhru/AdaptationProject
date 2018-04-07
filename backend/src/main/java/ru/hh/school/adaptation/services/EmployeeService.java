@@ -66,7 +66,7 @@ public class EmployeeService {
     employee.setHr(userDao.getRecordById(employeeCreateDto.hrId));
     employee.setPosition(employeeCreateDto.position);
     employee.setGender(employeeCreateDto.gender);
-    employee.setEmploymentTimestamp(employeeCreateDto.employmentTimestamp);
+    employee.setEmploymentDate(employeeCreateDto.employmentDate);
     employeeDao.save(employee);
 
     employee.setWorkflow(transitionService.createTransitionsForNewEmployee(employee));
@@ -81,7 +81,7 @@ public class EmployeeService {
       throw new RequestValidationException("Id in update request can't be null");
     } else {
       Employee employee = employeeDao.getRecordById(employeeUpdateDto.id);
-      employee.setEmploymentTimestamp(employeeUpdateDto.employmentTimestamp);
+      employee.setEmploymentDate(employeeUpdateDto.employmentDate);
       employee.setGender(employeeUpdateDto.gender);
       employee.setHr(userDao.getRecordById(employeeUpdateDto.hrId));
       employee.setPosition(employeeUpdateDto.position);
