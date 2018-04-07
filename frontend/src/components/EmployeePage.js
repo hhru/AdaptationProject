@@ -199,15 +199,21 @@ class EmployeePage extends React.Component {
 
     return (
       <div>
-        <p
-        >{`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}</p>
-        <p>{employeeEmail}</p>
-        <p
-        >{`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}</p>
-        <p
-        >{`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}</p>
-        <p>{`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`}</p>
-        <p>{`Дата выхода: ${employmentDate}`}</p>
+        <p>
+          {' '}
+          {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}{' '}
+        </p>
+        <p> {employeeEmail} </p>
+        <p>
+          {' '}
+          {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}{' '}
+        </p>
+        <p>
+          {' '}
+          {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}{' '}
+        </p>
+        <p> {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`} </p>
+        <p> {`Дата выхода: ${employmentDate}`} </p>
         <Workflow data={workflow} />
       </div>
     );
