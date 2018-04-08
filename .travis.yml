@@ -15,7 +15,7 @@ matrix:
         - mvn flyway:migrate
       after_success:
         - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST fuser -n tcp -k 9999
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST pkill -f adaptation-project
         - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
         - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
         - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app

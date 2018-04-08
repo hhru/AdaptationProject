@@ -1,11 +1,11 @@
 package ru.hh.school.adaptation.dto;
 
+import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.User;
 
-public class UserDto {
-  public Integer id;
+public class PersonalDto {
 
-  public Integer hhid;
+  public Integer id;
 
   public String firstName;
 
@@ -17,24 +17,26 @@ public class UserDto {
 
   public String inside;
 
-  public UserDto() {
+  public PersonalDto(){
+
   }
 
-  public UserDto(HhUserInfoDto userInfoDto) {
-    hhid = userInfoDto.id;
-    firstName = userInfoDto.firstName;
-    lastName = userInfoDto.lastName;
-    middleName = userInfoDto.middleName;
-    email = userInfoDto.email;
+  public PersonalDto(PersonalInfo personalInfo){
+    id = personalInfo.getId();
+    firstName = personalInfo.getFirstName();
+    lastName = personalInfo.getLastName();
+    middleName = personalInfo.getMiddleName();
+    email = personalInfo.getEmail();
+    inside = personalInfo.getInside();
   }
 
-  public UserDto(User user) {
+  public PersonalDto(User user){
     id = user.getId();
-    hhid = user.getHhid();
     firstName = user.getSelf().getFirstName();
     lastName = user.getSelf().getLastName();
     middleName = user.getSelf().getMiddleName();
     email = user.getSelf().getEmail();
     inside = user.getSelf().getInside();
   }
+
 }

@@ -3,52 +3,38 @@ package ru.hh.school.adaptation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.hh.school.adaptation.AdaptationCommonConfig;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.Gender;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeDto {
 
   public Integer id;
 
-  public String firstName;
+  public PersonalDto employee;
 
-  public String lastName;
+  public PersonalDto chief;
 
-  public String middleName;
+  public PersonalDto mentor;
 
-  public String position;
+  public PersonalDto hr;
 
-  public String email;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date employmentDate;
 
-  public Long mobilePhone;
+  public List<WorkflowStepDto> workflow;
 
-  public Integer internalPhone;
-
-  public Gender gender;
-
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_TIME_FORMAT)
-  public Date employmentTimestamp;
-
-  public Integer mentorId;
-
-  public Integer chiefId;
-
-  public EmployeeDto() {
-
-  }
-
-  public EmployeeDto(Employee employee) {
+  public EmployeeDto(Employee employee){
     id = employee.getId();
-    firstName = employee.getFirstName();
-    lastName = employee.getLastName();
-    middleName = employee.getMiddleName();
-    position = employee.getPosition();
-    email = employee.getEmail();
-    gender = employee.getGender();
-    employmentTimestamp = employee.getEmploymentTimestamp();
-    mentorId = employee.getMentor().getId();
-    chiefId = employee.getChief().getId();
+    this.employee = new PersonalDto(employee.getSelf());
+    chief = new PersonalDto(employee.getChief());
+    if (employee.getMentor() != null){
+      mentor = new PersonalDto(employee.getMentor());
+    }
+    hr = new PersonalDto(employee.getHr());
+    employmentDate = employee.getEmploymentDate();
+    workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
   }
 
 }

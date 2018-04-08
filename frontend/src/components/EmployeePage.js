@@ -11,7 +11,7 @@ class EmployeePage extends React.Component {
     super(props);
 
     this.state = {
-      employeeId: this.props.location.search,
+      employeeId: this.props.match.params.id,
       data: {
         id: null,
         currentWorkflowStep: '',
@@ -63,113 +63,19 @@ class EmployeePage extends React.Component {
   }
 
   componentDidMount() {
-    let responseData = {
-      id: 1,
-      employee: {
-        id: 3,
-        firstName: 'Джон',
-        lastName: 'МакКлейн',
-        middleName: 'Иванович',
-        email: 'die@hard.com',
-        inside: 'john',
-      },
-      chief: {
-        id: 1,
-        firstName: 'Гусев',
-        lastName: 'Леонид',
-        middleName: 'Викторович',
-        email: 'l.gusev@hh.ru',
-        inside: 'gusev',
-      },
-      mentor: {
-        id: 1,
-        firstName: 'Гусев',
-        lastName: 'Леонид',
-        middleName: 'Викторович',
-        email: 'l.gusev@hh.ru',
-        inside: 'gusev',
-      },
-      hr: {
-        id: 1,
-        firstName: 'Билл',
-        lastName: 'Гейтс',
-        middleName: 'В.',
-        email: 'gates@microsoft.com',
-        inside: 'gates',
-      },
-      employmentDate: '2018-03-31',
-      currentWorkflowStep: 'TASK_LIST',
-      workflow: [
-        {
-          id: 8,
-          type: 'ADD',
-          status: 'COMPLETE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 7,
-          type: 'TASK_LIST',
-          status: 'COMPLETE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 6,
-          type: 'WELCOME_MEETING',
-          status: 'IN_PROGRESS',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 5,
-          type: 'INTERIM_MEETING',
-          status: 'NOT_DONE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: true,
-        },
-        {
-          id: 4,
-          type: 'INTERIM_MEETING_RESULT',
-          status: 'NOT_DONE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 3,
-          type: 'FINAL_MEETING',
-          status: 'NOT_DONE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 2,
-          type: 'FINAL_MEETING_RESULT',
-          status: 'NOT_DONE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-        {
-          id: 1,
-          type: 'QUESTIONNAIRE',
-          status: 'NOT_DONE',
-          deadlineDate: '2018-03-31',
-          comment: null,
-          overdue: false,
-        },
-      ],
-    };
-    //$.get('/api/employee/' + sthis.state.employeeId);
-    this.setState({
-      data: responseData,
-    });
+    const url = '/api/employee/' + this.state.employeeId;
+    const self = this;
+    axios
+      .get(url)
+      .then(function(response) {
+        console.log(response.data);
+        self.setState({
+          data: response.data,
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -256,9 +162,9 @@ class WorkflowStage extends React.Component {
         return <FaExclamationCircle size={50} color="red" />;
       default:
         switch (status) {
-          case 'COMPLETE':
+          case 'DONE':
             return <FaCheckCircle size={50} color="green" />;
-          case 'IN_PROGRESS':
+          case 'CURRENT':
             return <FaAdjust size={50} color="yellow" />;
           default:
             return <FaCircle size={50} color="grey" />;
