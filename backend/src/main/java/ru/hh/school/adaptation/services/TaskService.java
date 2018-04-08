@@ -14,7 +14,6 @@ import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 @Singleton
@@ -70,7 +69,7 @@ public class TaskService {
     if (taskForm == null) {
       taskForm = new TaskForm();
       taskForm.setEmployee(employee);
-      taskForm.setKey(UUID.randomUUID().toString().replace("-",""));
+      taskForm.setKey(UUID.randomUUID().toString().replace("-", ""));
       taskFormDao.save(taskForm);
     }
     return taskForm;

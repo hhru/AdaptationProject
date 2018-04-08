@@ -2,7 +2,6 @@ package ru.hh.school.adaptation.dao;
 
 import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.TaskForm;
-import ru.hh.school.adaptation.entities.User;
 
 import javax.inject.Inject;
 
