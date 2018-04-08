@@ -8,6 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
+import ru.hh.school.adaptation.dao.*;
+import ru.hh.school.adaptation.entities.*;
+import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.TaskResource;
+import ru.hh.school.adaptation.services.EmployeeService;
+import ru.hh.school.adaptation.services.TaskService;
+import ru.hh.school.adaptation.services.TransitionService;
+import ru.hh.school.adaptation.resources.MainResource;
+import ru.hh.school.adaptation.services.UserService;
+import ru.hh.school.adaptation.services.auth.AuthService;
+import ru.hh.school.adaptation.services.auth.HhApiService;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
@@ -32,6 +43,22 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
 
 @Configuration
 @Import({
+        MailTemplateDao.class,
+        EmployeeDao.class,
+        UserDao.class,
+        TransitionDao.class,
+    TaskDao.class,
+    TaskFormDao.class,
+        EmployeeResource.class,
+        EmployeeService.class,
+        TransitionService.class,
+    TaskService.class,
+        UserService.class,
+        HhApiService.class,
+        AuthService.class,
+        AuthResource.class,
+        MainResource.class,
+    TaskResource.class
     MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
@@ -59,12 +86,12 @@ public class AdaptationCommonConfig {
 
   @Bean
   MappingConfig mappingConfig() {
-    return new MappingConfig(
-                             MailTemplate.class,
+    return new MappingConfig(MailTemplate.class,
                              Employee.class,
                              User.class,
-                             PersonalInfo.class,
-                             Transition.class
+                            PersonalInfo.class, Transition.class,
+        Task.class,
+        TaskForm.class
     );
   }
 

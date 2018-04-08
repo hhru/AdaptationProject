@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
   Col,
   Button,
@@ -11,7 +12,6 @@ import {
 
 class AddTask extends React.Component {
   constructor(props) {
-    console.log(props);
     super(props);
     this.addTaskRow = this.addTaskRow.bind(this);
     this.submitTasks = this.submitTasks.bind(this);
@@ -19,51 +19,151 @@ class AddTask extends React.Component {
     this.handleRemoveTask = this.handleRemoveTask.bind(this);
 
     this.state = {
-      taskList: [
-        <TaskRow
-          id={0}
-          key={0}
-          onChange={this.handleTaskEdit}
-          onRemove={this.handleRemoveTask}
-        />,
-      ],
+      keyCounter: -1,
       taskContent: [],
     };
   }
 
+  componentDidMount() {
+    const url = '/api/tasks/' + this.props.match.params.id;
+    const self = this;
+    axios
+      .get(url)
+      .then(function(response) {
+        let newKey = self.state.keyCounter;
+        self.setState({ keyCounter: -1 }, () =>
+          self.setState(
+            (previousState) => ({
+              taskContent: response.data.taskList.map((task) => {
+                newKey++;
+                return {
+                  id: task.id,
+                  key: newKey,
+                  number: newKey,
+                  text: task.text,
+                  deadlineDate: task.deadlineDate,
+                  resources:
+                    task.resources !== undefined
+                      ? task.resources.split(',')
+                      : null,
+                  deleted: task.deleted,
+                };
+              }),
+            }),
+            () => self.setState({ keyCounter: newKey })
+          )
+        );
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
   addTaskRow(event) {
-    let taskRow = (
-      <TaskRow
-        id={this.state.taskList.length}
-        key={this.state.taskList.length}
-        onChange={this.handleTaskEdit}
-        onRemove={this.handleRemoveTask}
-      />
-    );
+    const key = this.state.keyCounter + 1;
+    let taskRow = {
+      number: key,
+      key: key,
+    };
     this.setState((prevState) => ({
-      taskList: [...prevState.taskList, taskRow],
+      taskContent: [...prevState.taskContent, taskRow],
+      keyCounter: prevState.keyCounter + 1,
     }));
   }
 
   submitTasks(event) {
     console.log({
-      tasks: this.state.taskContent,
-      id: this.props.match.params.id,
+      tasks: this.state.taskContent.map((task) => {
+        return {
+          id: task.id,
+          text: task.text,
+          deadlineDate: task.deadlineDate,
+          resources: task.resources.join(','),
+          deleted: task.deleted,
+        };
+      }),
+      key: this.props.match.params.id,
+    });
+    const url = '/api/tasks/submit';
+    const self = this;
+    axios
+      .post(url, {
+        taskList: this.state.taskContent.map((task) => {
+          return {
+            id: task.id,
+            text: task.text,
+            deadlineDate: task.deadlineDate,
+            resources: task.resources.join(','),
+            deleted: task.deleted,
+          };
+        }),
+        key: this.props.match.params.id,
+      })
+      .then(function(response) {
+        let newKey = -1;
+        self.setState({ keyCounter: -1, taskContent: [] }, () =>
+          self.setState(
+            (previousState) => ({
+              taskContent: response.data.taskList.map((task) => {
+                newKey++;
+                return {
+                  id: task.id,
+                  key: newKey,
+                  number: newKey,
+                  text: task.text,
+                  deadlineDate: task.deadlineDate,
+                  resources:
+                    task.resources !== undefined
+                      ? task.resources.split(',')
+                      : null,
+                  deleted: task.deleted,
+                };
+              }),
+            }),
+            () => self.setState({ keyCounter: newKey })
+          )
+        );
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  handleTaskEdit(taskNumber, value) {
+    console.log(taskNumber);
+    const taskContent = this.state.taskContent;
+    console.log(taskContent);
+    taskContent[taskNumber] = value;
+    taskContent[taskNumber].key = taskNumber;
+    this.setState({
+      taskContent: taskContent,
     });
   }
 
-  handleTaskEdit(taskId, value) {
-    this.state.taskContent[taskId] = value;
-  }
-
   handleRemoveTask(taskId) {
+    const taskContent = this.state.taskContent;
+    taskContent[taskId].deleted = true;
     this.setState((prevState) => ({
-      taskList: prevState.taskList.filter((_, i) => i !== taskId),
-      taskContent: prevState.taskContent.filter((_, i) => i !== taskId),
+      taskContent: taskContent,
     }));
   }
 
   render() {
+    let self = this;
+    console.log('EEEEE');
+    console.log(this.state.taskContent);
+    let tasksToRender = this.state.taskContent
+      .filter((task) => !task.deleted)
+      .map((task) => (
+        <TaskRow
+          value={task}
+          number={task.number}
+          key={task.key}
+          onChange={self.handleTaskEdit}
+          onRemove={self.handleRemoveTask}
+        />
+      ));
+
     return (
       <Container>
         <Form>
@@ -85,7 +185,7 @@ class AddTask extends React.Component {
             </Col>
           </FormGroup>
           <hr />
-          {this.state.taskList}
+          {tasksToRender}
           <FormGroup row>
             <Col sm={{ size: 4, offset: 5 }}>
               <Button color="primary" size="lg" onClick={this.addTaskRow}>
@@ -113,9 +213,12 @@ class TaskRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: undefined,
-      deadlineDate: undefined,
-      resources: undefined,
+      id: props.value.id,
+      number: props.value.number,
+      text: props.value.text,
+      deadlineDate: props.value.deadlineDate,
+      resources: props.value.resources || [],
+      deleted: props.value.deleted || false,
     };
 
     this.handleTextInput = this.handleTextInput.bind(this);
@@ -177,24 +280,45 @@ class TaskRow extends React.Component {
   }
 
   handleRemoveTask(event) {
-    this.props.onRemove(this.props.id);
+    this.setState(
+      (prevState) => ({
+        deleted: true,
+      }),
+      () => this.props.onRemove(this.props.number)
+    );
   }
 
   handleTextInput(event) {
-    this.state.text = event.target.value;
-    this.props.onChange(this.props.id, this.state);
+    let value = event.target.value;
+    let self = this;
+    this.setState(
+      (prevState) => ({
+        text: value,
+      }),
+      () => this.props.onChange(this.props.number, self.state)
+    );
   }
 
   handleDateInput(event) {
-    this.state.deadlineDate = event.target.value;
-    this.props.onChange(this.props.id, this.state);
+    let value = event.target.value;
+    let self = this;
+    this.setState(
+      (prevState) => ({
+        deadlineDate: value,
+      }),
+      () => this.props.onChange(this.props.number, self.state)
+    );
   }
 
   handleResourceInput(event) {
-    this.state.resources = [...event.target.selectedOptions].map(
-      (o) => o.value
+    let value = event.target.selectedOptions;
+    let self = this;
+    this.setState(
+      (prevState) => ({
+        resources: [...value].map((o) => o.value),
+      }),
+      () => this.props.onChange(this.props.number, self.state)
     );
-    this.props.onChange(this.props.id, this.state);
   }
 }
 
