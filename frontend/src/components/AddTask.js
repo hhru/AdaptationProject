@@ -109,7 +109,10 @@ class AddTask extends React.Component {
                 };
               }),
             }),
-            () => self.setState({ keyCounter: newKey }, () => alert('Успешно сохранено!'))
+            () =>
+              self.setState({ keyCounter: newKey }, () =>
+                alert('Успешно сохранено!')
+              )
           )
         );
       })
@@ -165,7 +168,7 @@ class AddTask extends React.Component {
             <Col sm={3}>
               <Row>
                 <Col sm={9}>
-                  <h6>Постановка задачи</h6>
+                  <h6>Ресурсы</h6>
                 </Col>
               </Row>
             </Col>
@@ -220,7 +223,7 @@ class TaskRow extends React.Component {
           <Input
             type="textarea"
             name="text"
-            id="exampleText"
+            id="taskText"
             value={this.state.text}
             onChange={this.handleTextInput}
           />
@@ -229,7 +232,7 @@ class TaskRow extends React.Component {
           <Input
             type="date"
             name="date"
-            id="exampleDate"
+            id="taskDate"
             placeholder="date placeholder"
             value={this.state.deadlineDate}
             onChange={this.handleDateInput}
@@ -241,7 +244,7 @@ class TaskRow extends React.Component {
               <Input
                 type="select"
                 name="selectMulti"
-                id="exampleSelectMulti"
+                id="taskResources"
                 multiple
                 value={this.state.resources}
                 onChange={this.handleResourceInput}
