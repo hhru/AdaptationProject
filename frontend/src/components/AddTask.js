@@ -56,6 +56,7 @@ class AddTask extends React.Component {
       })
       .catch(function(error) {
         console.log(error);
+        alert(error);
       });
   }
 
@@ -72,18 +73,6 @@ class AddTask extends React.Component {
   }
 
   submitTasks(event) {
-    console.log({
-      tasks: this.state.taskContent.map((task) => {
-        return {
-          id: task.id,
-          text: task.text,
-          deadlineDate: task.deadlineDate,
-          resources: task.resources.join(','),
-          deleted: task.deleted,
-        };
-      }),
-      key: this.props.match.params.id,
-    });
     const url = '/api/tasks/submit';
     const self = this;
     axios
@@ -120,19 +109,18 @@ class AddTask extends React.Component {
                 };
               }),
             }),
-            () => self.setState({ keyCounter: newKey })
+            () => self.setState({ keyCounter: newKey }, () => alert('Успешно сохранено!'))
           )
         );
       })
       .catch(function(error) {
         console.log(error);
+        alert(error);
       });
   }
 
   handleTaskEdit(taskNumber, value) {
-    console.log(taskNumber);
     const taskContent = this.state.taskContent;
-    console.log(taskContent);
     taskContent[taskNumber] = value;
     taskContent[taskNumber].key = taskNumber;
     this.setState({
@@ -150,8 +138,6 @@ class AddTask extends React.Component {
 
   render() {
     let self = this;
-    console.log('EEEEE');
-    console.log(this.state.taskContent);
     let tasksToRender = this.state.taskContent
       .filter((task) => !task.deleted)
       .map((task) => (
