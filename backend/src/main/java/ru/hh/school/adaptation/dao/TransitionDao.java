@@ -8,6 +8,7 @@ import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.NonUniqueResultException;
 
 public class TransitionDao {
   private final SessionFactory sessionFactory;
@@ -25,11 +26,19 @@ public class TransitionDao {
   }
 
   public Transition getCurrentTransitionByEmployeeId(Integer employeeId) {
-    return sessionFactory.getCurrentSession().createQuery("from Transition T "
+    List<Transition> transition = sessionFactory.getCurrentSession().createQuery("from Transition T "
                     + "where T.employee.id=:employeeId and T.stepStatus=:status", Transition.class)
                     .setParameter("employeeId", employeeId)
                     .setParameter("status", WorkflowStepStatus.CURRENT)
-                    .getSingleResult();
+                    .list();
+
+    if (transition.isEmpty()) {
+      return null;
+    }
+    else if (transition.size() == 1) {
+      return transition.get(0);
+    }
+    throw new NonUniqueResultException();
   }
 
   public void update(Transition transition) {
