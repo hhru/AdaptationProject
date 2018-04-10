@@ -69,8 +69,8 @@ public class EmployeeService {
     employee.setEmploymentDate(employeeCreateDto.employmentDate);
     employeeDao.save(employee);
 
+    employee.setComments(null);
     employee.setWorkflow(transitionService.createTransitionsForNewEmployee(employee));
-    employeeDao.update(employee);
 
     return new EmployeeDto(employee);
   }

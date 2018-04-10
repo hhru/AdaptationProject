@@ -56,12 +56,25 @@ public class TransitionService {
   public List<Transition> createTransitionsForNewEmployee(Employee employee) {
     List<Transition> transitions = new LinkedList<>();
     Transition prev = null;
-    for(WorkflowStepType workflowStepType : WorkflowStepType.values()){
+
+    WorkflowStepType[] workflowIter = WorkflowStepType.values();
+    for (int i = workflowIter.length - 1; i >= 0; i--) {
+      WorkflowStepType workflowStepType = workflowIter[i];
+
       Transition transition = new Transition();
       transition.setNext(prev);
       transition.setEmployee(employee);
       transition.setStepType(workflowStepType);
-      transition.setStepStatus(workflowStepType == WorkflowStepType.ADD ? WorkflowStepStatus.CURRENT : WorkflowStepStatus.NOT_DONE);
+      switch (workflowStepType) {
+        case ADD:
+          transition.setStepStatus(WorkflowStepStatus.DONE);
+          break;
+        case TASK_LIST:
+          transition.setStepStatus(WorkflowStepStatus.CURRENT);
+          break;
+        default:
+          transition.setStepStatus(WorkflowStepStatus.NOT_DONE);
+      }
       transitionDao.save(transition);
       transitions.add(transition);
       prev = transition;

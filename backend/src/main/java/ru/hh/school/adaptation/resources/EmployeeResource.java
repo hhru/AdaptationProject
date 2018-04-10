@@ -4,15 +4,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.hh.school.adaptation.dto.CommentCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
+import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
 
 import javax.inject.Singleton;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -26,10 +29,12 @@ import java.util.List;
 public class EmployeeResource {
   private final EmployeeService employeeService;
   private final TransitionService transitionService;
+  private final CommentService commentService;
 
-  public EmployeeResource(EmployeeService employeeService, TransitionService transitionService) {
+  public EmployeeResource(EmployeeService employeeService, TransitionService transitionService, CommentService commentService) {
     this.employeeService = employeeService;
     this.transitionService = transitionService;
+    this.commentService = commentService;
   }
 
   @GET
@@ -87,6 +92,23 @@ public class EmployeeResource {
   @ResponseBody
   public EmployeeDto updateEmployee(@RequestBody EmployeeUpdateDto employeeUpdateDto){
     return employeeService.updateEmployee(employeeUpdateDto);
+  }
+
+  @POST
+  @Produces("application/json")
+  @Path("/comment/create")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public Integer createEmployee(@RequestBody CommentCreateDto commentCreateDto){
+    return commentService.createCommentFromDto(commentCreateDto);
+  }
+
+  @DELETE
+  @Produces("application/json")
+  @Path("/comment/remove/{id}")
+  @ResponseBody
+  public void removeComment(@PathParam("id") Integer commentId) {
+    commentService.removeComment(commentId);
   }
 
 }
