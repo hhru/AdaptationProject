@@ -13,6 +13,57 @@ class EmployeePage extends React.Component {
     this.state = {
       employeeId: this.props.match.params.id,
       data: {
+        id: 1,
+        currentWorkflowStep: 'ADD',
+        employee: {
+          id: 1,
+          firstName: 'Jason',
+          lastName: 'Statham',
+          middleName: 'Brutal',
+          email: 'die@hard.com',
+          inside: 'inside',
+        },
+        chief: {
+          id: 1,
+          firstName: 'Your',
+          lastName: 'Boss',
+          middleName: 'Topbanana',
+          email: 'awdwada@www.rr',
+          inside: 'inside2',
+        },
+        mentor: {
+          id: 2,
+          firstName: 'Some',
+          lastName: 'Qqq',
+          middleName: 'Chuvachek',
+          email: 'awdwd@aad.tt',
+          inside: 'inside3',
+        },
+        hr: {
+          id: 3,
+          firstName: 'Peter',
+          lastName: 'Parker',
+          middleName: 'Spider',
+          email: 'spiderm@il.web',
+          inside: 'inside4',
+        },
+        employmentDate: null,
+        workflow: [
+          {
+            id: null,
+            type: '',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+        ],
+      },
+    };
+/*
+    this.state = {
+      employeeId: this.props.match.params.id,
+      data: {
         id: null,
         currentWorkflowStep: '',
         employee: {
@@ -59,7 +110,7 @@ class EmployeePage extends React.Component {
           },
         ],
       },
-    };
+    };*/
   }
 
   componentDidMount() {
@@ -104,23 +155,38 @@ class EmployeePage extends React.Component {
     const workflow = this.state.data.workflow;
 
     return (
-      <div>
-        <p>
-          {' '}
-          {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}{' '}
-        </p>
-        <p> {employeeEmail} </p>
-        <p>
-          {' '}
-          {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}{' '}
-        </p>
-        <p>
-          {' '}
-          {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}{' '}
-        </p>
-        <p> {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`} </p>
-        <p> {`Дата выхода: ${employmentDate}`} </p>
-        <Workflow data={workflow} />
+      <div class="container">
+        <div class="jumbotron p-3 p-md-5 rounded">
+          <div class="row">
+            <div class="col-md-8 blog-main">
+              <div class="blog-post">
+                <h2 class="blog-post-title">
+                  {' '}
+                  {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}{' '}
+                </h2>
+                <p class="blog-post-meta"> {employeeEmail} </p>
+              </div>
+              <p>
+                {' '}
+                {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}{' '}
+              </p>
+              <p>
+                {' '}
+                {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}{' '}
+              </p>
+              <p> {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`} </p>
+            </div>
+            <div class="col-md-4 blog-sidebar">
+              <div class="p-3">
+                <p> {`Дата выхода: ${employmentDate}`} </p>
+                <p> {`Остлаось: 5 дн.`} </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <Workflow data={workflow} />
+          </div>
+        </div>
       </div>
     );
   }
