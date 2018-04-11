@@ -6,6 +6,8 @@ import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 
+import '!style-loader!css-loader!./app.css';
+
 class EmployeePage extends React.Component {
   constructor(props) {
     super(props);
@@ -249,13 +251,13 @@ class EmployeePage extends React.Component {
               <Workflow data={workflow} />
             </div>
             <div class="col-md-5">
-              <div>
+              <div class="ml-2">
                 <h4>
                   <span class="text-muted">Комментарии</span>
                 </h4>
               </div>
               <div>
-                <ul class="list-group mb-3 anyClass">
+                <ul class="list-group mb-0 anyClass">
                   <li class="list-group-item d-flex justify-content-between lh-condensed">
                     <div>
                       <h6 class="my-0 mb-2">Pechkin:</h6>
@@ -303,7 +305,9 @@ class EmployeePage extends React.Component {
                     <span class="text-muted">tag1</span>
                   </li>
                 </ul>
-                <form />
+                <form>
+                  <input class="form-control" placeholder="" type="text" />
+                </form>
               </div>
             </div>
             <div class="col-md-1" />
