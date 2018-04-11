@@ -2,3 +2,8 @@
   font-size: 20px;
   color: red;
 }
+
+.anyClass {
+  height: 150px;
+  overflow-y: scroll;
+}
