@@ -69,7 +69,7 @@ public class TaskService {
 
   private void notifyHr(Employee employee){
     Map<String, String> params = new HashMap<>();
-    String fio = String.format("{} {} {}",
+    String fio = String.format("%s %s %s",
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
