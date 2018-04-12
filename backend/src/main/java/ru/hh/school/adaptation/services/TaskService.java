@@ -73,7 +73,7 @@ public class TaskService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
-    params.put("{{username}}", fio);
+    params.put("{{userName}}", fio);
     mailService.sendMail(employee.getHr().getSelf().getEmail(),"hr_task_notify", params);
   }
 
