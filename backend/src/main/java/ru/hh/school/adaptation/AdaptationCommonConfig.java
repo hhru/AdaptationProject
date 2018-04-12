@@ -11,24 +11,31 @@ import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
+import ru.hh.school.adaptation.dao.TaskDao;
+import ru.hh.school.adaptation.dao.TaskFormDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.entities.Task;
+import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.TaskResource;
 import ru.hh.school.adaptation.resources.MainResource;
-import ru.hh.school.adaptation.resources.PersonalInfoResource;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
+import ru.hh.school.adaptation.services.TaskService;
 import ru.hh.school.adaptation.services.TransitionService;
 import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.WorkflowService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
+import ru.hh.school.adaptation.resources.AuthResource;
+import ru.hh.school.adaptation.resources.PersonalInfoResource;
+
 
 @Configuration
 @Import({
@@ -36,17 +43,21 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
     EmployeeDao.class,
     UserDao.class,
     TransitionDao.class,
-    PersonalInfoDao.class,
-
+    TaskDao.class,
+    TaskFormDao.class,
+    EmployeeResource.class,
+    EmployeeService.class,
+    TransitionService.class,
+    TaskService.class,
     UserService.class,
     HhApiService.class,
     AuthService.class,
-    EmployeeService.class,
-    TransitionService.class,
-    AuthService.class,
+    AuthResource.class,
+    MainResource.class,
+    TaskResource.class,
+    PersonalInfoDao.class,
     PersonalInfoService.class,
     WorkflowService.class,
-
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
@@ -60,11 +71,13 @@ public class AdaptationCommonConfig {
   @Bean
   MappingConfig mappingConfig() {
     return new MappingConfig(
-                             MailTemplate.class,
-                             Employee.class,
-                             User.class,
-                             PersonalInfo.class,
-                             Transition.class
+        MailTemplate.class,
+        Employee.class,
+        User.class,
+        PersonalInfo.class,
+        Transition.class,
+        Task.class,
+        TaskForm.class
     );
   }
 
@@ -74,8 +87,8 @@ public class AdaptationCommonConfig {
     String clientSecret = fileSettings.getString("oauth.client.secret");
     String redirectUri = fileSettings.getString("oauth.redirect-uri");
     return new ServiceBuilder(clientId)
-            .apiSecret(clientSecret)
-            .callback(redirectUri)
-            .build(HHApi.instance());
+        .apiSecret(clientSecret)
+        .callback(redirectUri)
+        .build(HHApi.instance());
   }
 }

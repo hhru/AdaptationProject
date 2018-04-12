@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -64,6 +65,9 @@ public class Employee {
   @OneToMany(mappedBy = "employee")
   @OrderBy("step_type")
   private List<Transition> workflow;
+
+  @OneToOne(mappedBy = "employee")
+  private TaskForm taskForm;
 
   public Integer getId() {
     return id;
@@ -147,5 +151,13 @@ public class Employee {
 
   public void setWorkflow(List<Transition> workflow) {
     this.workflow = workflow;
+  }
+
+  public TaskForm getTaskForm() {
+    return taskForm;
+  }
+
+  public void setTaskForm(TaskForm taskForm) {
+    this.taskForm = taskForm;
   }
 }
