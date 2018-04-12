@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Lazy;
 @Singleton
 public class WorkflowService {
   private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
-  private static final String addTaskLink = "https://adaptation.host/add_tasks/{}";
+  private static final String addTaskLink = "https://adaptation.host/add_tasks/%s";
 
   private MailService mailService;
   private TransitionService transitionService;
