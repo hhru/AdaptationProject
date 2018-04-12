@@ -6,12 +6,18 @@ import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 
+import { Jumbotron } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
+import { Form, FormGroup, Input } from 'reactstrap';
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Button } from 'reactstrap';
 import '!style-loader!css-loader!./app.css';
 
 class EmployeePage extends React.Component {
   constructor(props) {
     super(props);
-
+    /*
     this.state = {
       employeeId: this.props.match.params.id,
       data: {
@@ -113,12 +119,44 @@ class EmployeePage extends React.Component {
             status: 'NOT_DONE',
             deadlineDate: null,
             comment: null,
-            overdue: false,
+            overdue: true,
+          },
+        ],
+        comments: [
+          {
+            id: 1,
+            name: 'Jeka',
+            text: 'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
+            tag: 'tag1',
+          },
+          {
+            id: 2,
+            name: 'Jeka',
+            text: 'Надо не забыть сделать ему пропуск',
+            tag: 'tag2',
+          },
+          {
+            id: 3,
+            name: 'Leha',
+            text: 'Это тот чувак с бородой с третьего этажа',
+            tag: 'tag2',
+          },
+          {
+            id: 4,
+            name: 'Jeka',
+            text: 'Оставляем на второй испытательный срок',
+            tag: 'tag2',
+          },
+          {
+            id: 5,
+            name: 'Jeka',
+            text: 'Ghjcnj tot jlby rjvvtyn xnj,s gjgjkybnm cgbcjr',
+            tag: 'tag2',
           },
         ],
       },
-    };
-    /*
+    };*/
+
     this.state = {
       employeeId: this.props.match.params.id,
       data: {
@@ -168,7 +206,7 @@ class EmployeePage extends React.Component {
           },
         ],
       },
-    };*/
+    };
   }
 
   componentDidMount() {
@@ -181,6 +219,21 @@ class EmployeePage extends React.Component {
         self.setState({
           data: response.data,
         });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  nextStep(self) {
+    //self.state.data.workflow[0].overdue=!self.state.data.workflow[0].overdue;
+
+    const url = '/api/employee/' + '1/' + 'step/next';
+    axios
+      .put(url)
+      .then(function(response) {
+        console.log('qqq');
+        //self.forceUpdate();
       })
       .catch(function(error) {
         console.log(error);
@@ -211,109 +264,108 @@ class EmployeePage extends React.Component {
     } = this.state.data.hr;
     const employmentDate = this.state.data.employmentDate;
     const workflow = this.state.data.workflow;
+    const comments = [
+      {
+        id: 1,
+        name: 'Jeka',
+        text:
+          'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
+        tag: 'tag1',
+      },
+      {
+        id: 2,
+        name: 'Jeka',
+        text: 'Надо не забыть сделать ему пропуск',
+        tag: 'tag2',
+      },
+      {
+        id: 3,
+        name: 'Leha',
+        text: 'Это тот чувак с бородой с третьего этажа',
+        tag: 'tag2',
+      },
+      {
+        id: 4,
+        name: 'Jeka',
+        text: 'Оставляем на второй испытательный срок',
+        tag: 'tag2',
+      },
+      {
+        id: 5,
+        name: 'Jeka',
+        text: 'Ghjcnj tot jlby rjvvtyn xnj,s gjgjkybnm cgbcjr',
+        tag: 'tag2',
+      },
+    ];
 
     return (
-      <div class="container">
-        <div class="jumbotron p-md-5 rounded">
-          <div class="row mb-3">
-            <div class="col-md-1" />
-            <div class="col-md-7">
-              <h3 class="mb-0 font-weight-bold">
-                {' '}
-                {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}{' '}
+      <Container>
+        <Jumbotron>
+          <Row className="mb-3">
+            <Col sm={{ size: 7, offset: 1 }}>
+              <h3 className="mb-0 font-weight-bold">
+                {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
               </h3>
-              <div class="mb-1 ml-2 text-info"> {employeeEmail} </div>
+              <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
               <br />
-              <div class="ml-4">
-                <p class="mb-2 text-muted">
-                  {' '}
-                  {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}{' '}
+              <div className="ml-4">
+                <p className="mb-2 text-muted">
+                  {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}
                 </p>
-                <p class="mb-2 text-muted">
-                  {' '}
-                  {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}{' '}
+                <p className="mb-2 text-muted">
+                  {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}
                 </p>
-                <p class="text-muted">
+                <p className="text-muted">
                   {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`}
                 </p>
               </div>
-            </div>
-            <div class="col-md-4 mt-5 blog-sidebar">
-              <div class="p-2">
-                <p class="font-italic"> {`Дата выхода: ${employmentDate}`} </p>
-                <p class="font-italic"> {`Остлаось: 5 дн.`} </p>
+            </Col>
+            <Col sm={{ size: 4 }} className="mt-5">
+              <div className="p-2">
+                <p className="font-italic">
+                  {' '}
+                  {`Дата выхода: ${employmentDate}`}{' '}
+                </p>
+                <p className="font-italic"> {`Остлаось: 5 дн.`} </p>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-1" />
-            <div class="col-md-5 mt-5">
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={{ size: 5, offset: 1 }} className="mt-5">
               <Workflow data={workflow} />
-            </div>
-            <div class="col-md-5">
-              <div class="ml-2">
+              <Button
+                outline
+                color="secondary"
+                className="mt-5"
+                onClick={() => this.nextStep(this)}
+              >
+                Перевести далее
+              </Button>
+            </Col>
+            <Col sm={{ size: 5 }}>
+              <div className="ml-2">
                 <h4>
-                  <span class="text-muted">Комментарии</span>
+                  <span className="text-muted">Комментарии</span>
                 </h4>
               </div>
               <div>
-                <ul class="list-group mb-0 anyClass">
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0 mb-2">Pechkin:</h6>
-                      <span>
-                        Тот чувак с бородой с 3-го этажа. А что если здесь будет
-                        много текста который наверняка не влезет в одну строчку
-                        и браузеру придется его переносить на новую строку
-                      </span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0">Pechkin:</h6>
-                      <span>vnature chetko</span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0">Pechkin:</h6>
-                      <span>vnature chetko</span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0">Pechkin:</h6>
-                      <span>vnature chetko</span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0">Pechkin:</h6>
-                      <span>vnature chetko</span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 class="my-0">Pechkin:</h6>
-                      <span>vnature chetko</span>
-                    </div>
-                    <span class="text-muted">tag1</span>
-                  </li>
-                </ul>
-                <form>
-                  <input class="form-control" placeholder="" type="text" />
-                </form>
+                <Comments data={comments} />
+                <Form>
+                  <FormGroup>
+                    <Input
+                      rows="1"
+                      type="text"
+                      name="text"
+                      placeholder="Написать комментарий"
+                    />
+                  </FormGroup>
+                </Form>
               </div>
-            </div>
-            <div class="col-md-1" />
-          </div>
-        </div>
-      </div>
+            </Col>
+          </Row>
+        </Jumbotron>
+      </Container>
     );
   }
 }
@@ -333,6 +385,7 @@ class Workflow extends React.Component {
             overdue={workflowStageData.overdue}
             type={workflowStageData.type}
             key={workflowStageData.id}
+            id={workflowStageData.id}
           />
         ))}
       </div>
@@ -344,21 +397,25 @@ class WorkflowStage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      popoverOpen: false,
+    };
     this.selectIcon = this.selectIcon.bind(this);
   }
 
   selectIcon(status, overdue) {
     switch (overdue) {
       case true:
-        return <FaExclamationCircle size={50} color="red" />;
+        return <FaExclamationCircle size={50} color="#DF6B62" />;
       default:
         switch (status) {
           case 'DONE':
-            return <FaCheckCircle size={50} color="green" />;
+            return <FaCheckCircle size={50} color="#70BD71" />;
           case 'CURRENT':
-            return <FaAdjust size={50} color="yellow" />;
+            return <FaAdjust size={50} color="#BDB370" />;
           default:
-            return <FaCircle size={50} color="grey" />;
+            return <FaCircle size={50} color="#C2C2C2" />;
         }
     }
   }
@@ -366,34 +423,120 @@ class WorkflowStage extends React.Component {
   typeTranslate(type) {
     switch (type) {
       case 'ADD':
-        return <span>Подготовка к сопровождению</span>;
+        return 'Подготовка к сопровождению';
       case 'TASK_LIST':
-        return <span>Задачи на испытательный срок</span>;
+        return 'Задачи на испытательный срок';
       case 'WELCOME_MEETING':
-        return <span>Велком встреча</span>;
+        return 'Велком встреча';
       case 'INTERIM_MEETING':
-        return <span>Промежуточная встреча</span>;
+        return 'Промежуточная встреча';
       case 'INTERIM_MEETING_RESULT':
-        return <span>Результаты промежуточной встречи</span>;
+        return 'Результаты промежуточной встречи';
       case 'FINAL_MEETING':
-        return <span>Итоговая встреча</span>;
+        return 'Итоговая встреча';
       case 'FINAL_MEETING_RESULT':
-        return <span>Результаты итоговой встречи</span>;
+        return 'Результаты итоговой встречи';
       case 'QUESTIONNAIRE':
-        return <span>Опросник</span>;
+        return 'Опросник';
     }
+  }
+
+  getDescription(type) {
+    switch (type) {
+      case 'ADD':
+        return 'Ожидается день выхода на работу. Сейчас начальник готовит задачи на испытательный срок.';
+      case 'TASK_LIST':
+        return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
+      case 'WELCOME_MEETING':
+        return 'Необходимо забронировать переговорку и провести велком встречу.';
+      case 'INTERIM_MEETING':
+        return 'Необходимо забронировать переговорку и провести промежуточную встречу.';
+      case 'INTERIM_MEETING_RESULT':
+        return 'Необходимо заполнить результаты промежуточной встречи.';
+      case 'FINAL_MEETING':
+        return 'Необходимо забронировать переговорку и провести итоговую встречу.';
+      case 'FINAL_MEETING_RESULT':
+        return 'Необходимо заполнить результаты итоговой встречи.';
+      case 'QUESTIONNAIRE':
+        return 'Сотрудник получил опросник для новчика и работает над его заполнением.';
+    }
+  }
+
+  toggle() {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen,
+    });
   }
 
   render() {
     const { deadlineDate, status, overdue, type } = this.props;
 
     return (
-      <div>
+      <div
+        id={'Popover-' + this.props.id}
+        className="workflow-leonid"
+        onClick={this.toggle}
+      >
         {deadlineDate}
         {this.selectIcon(status, overdue)}
-        {this.typeTranslate(type)}
+        <span className="ml-3">{this.typeTranslate(type)}</span>
         <br />
+        <Popover
+          placement="bottom"
+          isOpen={this.state.popoverOpen}
+          target={'Popover-' + this.props.id}
+          toggle={this.toggle}
+        >
+          <PopoverHeader>{this.typeTranslate(type)}</PopoverHeader>
+          <PopoverBody>{this.getDescription(type)}</PopoverBody>
+        </Popover>
       </div>
+    );
+  }
+}
+
+class Comments extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <ListGroup className="mb-0 anyClass">
+        {this.props.data.map((commentsData) => (
+          <CommentsData
+            tag={commentsData.tag}
+            text={commentsData.text}
+            name={commentsData.name}
+            key={commentsData.id}
+            id={commentsData.id}
+          />
+        ))}
+      </ListGroup>
+    );
+  }
+}
+
+class CommentsData extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  nameWithDots(name) {
+    return name + ':';
+  }
+
+  render() {
+    const { tag, text, name } = this.props;
+
+    return (
+      <ListGroupItem className="d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 className="my-0 mb-2">{this.nameWithDots(name)}</h6>
+          <span>{text}</span>
+        </div>
+        <span className="text-muted">{tag}</span>
+      </ListGroupItem>
     );
   }
 }

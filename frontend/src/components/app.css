@@ -4,8 +4,8 @@
 }
 
 .anyClass {
-  height: 450px;
-  overflow-y: scroll;
+  max-height: 450px;
+  overflow-y: auto;
 }
 
 input[type='text'],
@@ -13,4 +13,9 @@ textarea {
   outline: none;
   box-shadow: none !important;
   border: 1px solid #ccc !important;
+}
+
+.workflow-leonid:hover {
+  cursor: pointer;
+  background-color: #d9d9d9;
 }
