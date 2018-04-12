@@ -24,16 +24,17 @@ import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.resources.EmployeeResource;
 import ru.hh.school.adaptation.resources.TaskResource;
+import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.EmployeeService;
+import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.TaskService;
 import ru.hh.school.adaptation.services.TransitionService;
-import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.UserService;
+import ru.hh.school.adaptation.services.WorkflowService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
-import ru.hh.school.adaptation.services.PersonalInfoService;
 
 
 @Configuration
@@ -57,7 +58,6 @@ import ru.hh.school.adaptation.services.PersonalInfoService;
     PersonalInfoDao.class,
     PersonalInfoService.class,
     WorkflowService.class,
-
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
@@ -70,10 +70,12 @@ public class AdaptationCommonConfig {
 
   @Bean
   MappingConfig mappingConfig() {
-    return new MappingConfig(MailTemplate.class,
-                             Employee.class,
-                             User.class,
-                             PersonalInfo.class,Transition.class,
+    return new MappingConfig(
+        MailTemplate.class,
+        Employee.class,
+        User.class,
+        PersonalInfo.class,
+        Transition.class,
         Task.class,
         TaskForm.class
     );
