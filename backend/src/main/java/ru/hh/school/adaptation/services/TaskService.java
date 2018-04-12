@@ -74,7 +74,7 @@ public class TaskService {
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
     params.put("{{userName}}", fio);
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),"hr_task_notify", params);
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify", params);
   }
 
   @Transactional
