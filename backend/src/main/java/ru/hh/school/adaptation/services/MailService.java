@@ -14,18 +14,29 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hh.nab.core.util.FileSettings;
+import ru.hh.school.adaptation.dao.MailTemplateDao;
+import ru.hh.school.adaptation.entities.MailTemplate;
 
 @Singleton
 public class MailService {
   private final Session session;
+  private MailTemplateDao mailTemplateDao;
   private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 
   @Inject
-  public MailService(FileSettings fileSettings){
-    session = Session.getInstance(fileSettings.getProperties());
+  public MailService(FileSettings fileSettings, MailTemplateDao mailTemplateDao){
+    this.session = Session.getInstance(fileSettings.getProperties());
+    this.mailTemplateDao = mailTemplateDao;
   }
 
-  public void sendMail(String userEmail, String messageHtml, String subject) {
+  public void sendMail(String userEmail, String messageName, Map<String, String> parameterMap){
+    MailTemplate mailTemplate = mailTemplateDao.getRecordByName(messageName);
+    String text = applyTemplate(mailTemplate.getHtml(), parameterMap);
+    String title = applyTemplate(mailTemplate.getTitle(), parameterMap);
+    sendMail(userEmail, text, title);
+  }
+
+  private void sendMail(String userEmail, String messageHtml, String subject) {
     if (messageHtml == null) {
       throw new IllegalArgumentException("message is null");
     }

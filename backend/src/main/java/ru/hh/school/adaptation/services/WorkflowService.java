@@ -5,9 +5,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hh.nab.core.util.FileSettings;
-import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
+import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.WorkflowStepType;
 
 import java.io.BufferedReader;
@@ -34,22 +34,24 @@ import org.springframework.context.annotation.Lazy;
 
 @Singleton
 public class WorkflowService {
+  private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
+  private static final String addTaskLink = "https://adaptation.host/add_tasks/{}";
+
   private MailService mailService;
   private TransitionService transitionService;
-  private MailTemplateDao mailTemplateDao;
+  private TaskService taskService;
   private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
   private CookieManager cookieManager = new CookieManager();
-  private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
   private String host;
   private String projectKey;
   private String issueType;
   private String assignee;
 
-  public WorkflowService(FileSettings fileSettings, MailService mailService,
-                         @Lazy TransitionService transitionService, MailTemplateDao mailTemplateDao) {
+  public WorkflowService(FileSettings fileSettings, MailService mailService, TaskService taskService,
+                         @Lazy TransitionService transitionService) {
     this.mailService = mailService;
     this.transitionService = transitionService;
-    this.mailTemplateDao = mailTemplateDao;
+    this.taskService = taskService;
 
     Properties properties = fileSettings.getProperties();
     host = properties.getProperty("jira.host");
@@ -91,44 +93,38 @@ public class WorkflowService {
   private void onAdd(Employee employee) {
     long delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
     scheduledExecutorService.schedule(() -> onAddSheduled(employee), delay, TimeUnit.SECONDS);
+
+    TaskForm taskForm = taskService.createTaskForm(employee);
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{url}}", "http://missions.com");
-    mailService.sendMail(employee.getChief().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("chief_missions").getHtml(), params), "Задачи на испытательный срок");
+    params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
+    mailService.sendMail(employee.getChief().getEmail(),"chief_missions", params);
   }
 
   private void onAddSheduled(Employee employee) {
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName());
     params.put("{{isMale}}", employee.getGender() == Gender.MALE ? "провел" : "провела");
-    mailService.sendMail(employee.getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("welcome").getHtml(), params), "Приветственное письмо");
+    mailService.sendMail(employee.getSelf().getEmail(), "welcome", params);
     transitionService.setEmployeeNextTransition(employee);
   }
 
   private void onTaskList(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{missions}}", "1. Write cool code");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("hr_missions").getHtml(), params), "Задачи на испытательный срок");
+
   }
 
   private void onWelcomeMeeting(Employee employee) {
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{meetingType}}", "welcome-встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("meeting_room").getHtml(), params), "Забронировать переговорку");
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
   }
 
   private void onInterimMeeting(Employee employee) {
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{meetingType}}", "промежуточной встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("meeting_room").getHtml(), params), "Забронировать переговорку");
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
   }
 
   private void onInterimMeetingResult(Employee employee) {
@@ -136,16 +132,14 @@ public class WorkflowService {
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{meetingType}}", "промежуточная");
     params.put("{{url}}", "http://results.com");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("meeting_results").getHtml(), params), "Результаты встречи");
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_results", params);
   }
 
   private void onFinalMeeting(Employee employee) {
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{meetingType}}", "итоговой встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("meeting_room").getHtml(), params), "Забронировать переговорку");
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
   }
 
   private void onFinalMeetingResult(Employee employee) {
@@ -153,15 +147,13 @@ public class WorkflowService {
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{meetingType}}", "итоговая");
     params.put("{{url}}", "http://results.com");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("meeting_results").getHtml(), params), "Результаты встречи");
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_results", params);
   }
 
   private void onQuestionnaire(Employee employee) {
     Map<String, String> params = new HashMap<>();
     params.put("{{url}}", "http://questionnaire.com");
-    mailService.sendMail(employee.getSelf().getEmail(),
-            mailService.applyTemplate(mailTemplateDao.getRecordByName("questionnaire").getHtml(), params), "Опросник для новичка");
+    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
 
     String jiraParams = new JSONObject()
             .put("fields", new JSONObject()

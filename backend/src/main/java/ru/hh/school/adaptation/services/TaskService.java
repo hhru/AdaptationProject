@@ -12,8 +12,10 @@ import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Singleton
@@ -22,11 +24,13 @@ public class TaskService {
   private TaskFormDao taskFormDao;
   private TaskDao taskDao;
   private EmployeeDao employeeDao;
+  private MailService mailService;
 
-  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao) {
+  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao, MailService mailService) {
     this.taskFormDao = taskFormDao;
     this.taskDao = taskDao;
     this.employeeDao = employeeDao;
+    this.mailService = mailService;
   }
 
   @Transactional
@@ -59,12 +63,22 @@ public class TaskService {
       }
     }
     taskForm.setTasks(taskList);
+    notifyHr(taskForm.getEmployee());
     return new TaskFormDto(taskForm);
   }
 
+  private void notifyHr(Employee employee){
+    Map<String, String> params = new HashMap<>();
+    String fio = String.format("{} {} {}",
+        employee.getSelf().getLastName(),
+        employee.getSelf().getFirstName(),
+        employee.getSelf().getMiddleName());
+    params.put("{{username}}", fio);
+    mailService.sendMail(employee.getHr().getSelf().getEmail(),"hr_task_notify", params);
+  }
+
   @Transactional
-  public TaskForm createTaskForm(Integer employeeId) {
-    Employee employee = employeeDao.getRecordById(employeeId);
+  public TaskForm createTaskForm(Employee employee) {
     TaskForm taskForm = employee.getTaskForm();
     if (taskForm == null) {
       taskForm = new TaskForm();

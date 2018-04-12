@@ -20,12 +20,16 @@ public class MailTemplate {
   @Column(name = "html")
   private String html;
 
+  @Column(name = "title")
+  private String title;
+
   public MailTemplate() {
   }
 
-  public MailTemplate(String name, String html) {
+  public MailTemplate(String name, String html, String title) {
     this.name = name;
     this.html = html;
+    this.title = title;
   }
 
   public Integer getId() {
@@ -50,5 +54,13 @@ public class MailTemplate {
 
   public void setHtml(String html) {
     this.html = html;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 }
