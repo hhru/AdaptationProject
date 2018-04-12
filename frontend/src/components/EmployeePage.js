@@ -17,7 +17,7 @@ import '!style-loader!css-loader!./app.css';
 class EmployeePage extends React.Component {
   constructor(props) {
     super(props);
-    /*
+    
     this.state = {
       employeeId: this.props.match.params.id,
       data: {
@@ -25,37 +25,37 @@ class EmployeePage extends React.Component {
         currentWorkflowStep: 'ADD',
         employee: {
           id: 1,
-          firstName: 'Jason',
-          lastName: 'Statham',
-          middleName: 'Brutal',
+          firstName: 'Джон',
+          lastName: 'МакКлейн',
+          middleName: 'МакКлейн',
           email: 'die@hard.com',
           inside: 'inside',
         },
         chief: {
           id: 1,
-          firstName: 'Your',
-          lastName: 'Boss',
-          middleName: 'Topbanana',
+          firstName: 'Леонид',
+          lastName: 'Гусев',
+          middleName: 'Викторович',
           email: 'awdwada@www.rr',
           inside: 'inside2',
         },
         mentor: {
           id: 2,
-          firstName: 'Some',
-          lastName: 'Qqq',
-          middleName: 'Chuvachek',
+          firstName: 'Леонид',
+          lastName: 'Гусев',
+          middleName: 'Викторович',
           email: 'awdwd@aad.tt',
           inside: 'inside3',
         },
         hr: {
           id: 3,
-          firstName: 'Peter',
-          lastName: 'Parker',
-          middleName: 'Spider',
+          firstName: 'Билл',
+          lastName: 'Гейтс',
+          middleName: null,
           email: 'spiderm@il.web',
           inside: 'inside4',
         },
-        employmentDate: null,
+        employmentDate: '2018-04-09',
         workflow: [
           {
             id: 1,
@@ -155,8 +155,8 @@ class EmployeePage extends React.Component {
           },
         ],
       },
-    };*/
-
+    };
+/*
     this.state = {
       employeeId: this.props.match.params.id,
       data: {
@@ -207,6 +207,7 @@ class EmployeePage extends React.Component {
         ],
       },
     };
+    */
   }
 
   componentDidMount() {
@@ -228,7 +229,7 @@ class EmployeePage extends React.Component {
   nextStep(self) {
     //self.state.data.workflow[0].overdue=!self.state.data.workflow[0].overdue;
 
-    const url = '/api/employee/' + '1/' + 'step/next';
+    const url = '/api/employee/' + '1/' + 'step/next1';
     axios
       .put(url)
       .then(function(response) {
@@ -236,8 +237,38 @@ class EmployeePage extends React.Component {
         //self.forceUpdate();
       })
       .catch(function(error) {
+        for (var i = 0; i < self.state.data.workflow.length; i++) {
+          if (self.state.data.workflow[i].status == "CURRENT") {
+            self.state.data.workflow[i].status = "DONE";
+            self.state.data.workflow[i].overdue = false;
+            if (i < self.state.data.workflow.length-1) {
+              self.state.data.workflow[i+1].status = "CURRENT";
+            }
+            break;
+          }
+        }
+        self.forceUpdate();
         console.log(error);
       });
+  }
+
+  timeLeft(emplData) {
+    var result = "Осталось: "
+    var emplYear = parseInt(emplData.split('-')[0]);
+    var emplMonth = parseInt(emplData.split('-')[1]);
+    var emplDay = parseInt(emplData.split('-')[2]);
+    var now = new Date();
+    if (emplYear-now.getFullYear() > 0) {
+     result += emplYear-now.getFullYear() + "лет ";
+    }
+    if (emplMonth-(now.getMonth()+1) > 0) {
+     result += emplMonth-(now.getMonth()+1) + "мес ";
+    }
+    if (emplDay-now.getDate() > 0) {
+     result += emplDay-now.getDate() + "дн";
+    }
+    console.log(now.getMonth());
+    return result;
   }
 
   render() {
@@ -297,6 +328,7 @@ class EmployeePage extends React.Component {
         tag: 'tag2',
       },
     ];
+    const timeLeft = this.timeLeft(this.state.data.employmentDate);
 
     return (
       <Container>
@@ -310,23 +342,22 @@ class EmployeePage extends React.Component {
               <br />
               <div className="ml-4">
                 <p className="mb-2 text-muted">
-                  {`Начальник: ${chiefFirstName} ${chiefMiddleName} ${chiefLastName}`}
+                  {`Начальник: ${chiefFirstName} ${chiefMiddleName==null?"":chiefMiddleName} ${chiefLastName}`}
                 </p>
                 <p className="mb-2 text-muted">
-                  {`Ментор: ${mentorFirstName} ${mentorMiddleName} ${mentorLastName}`}
+                  {`Ментор: ${mentorFirstName} ${mentorMiddleName==null?"":chiefMiddleName} ${mentorLastName}`}
                 </p>
                 <p className="text-muted">
-                  {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`}
+                  {`HR: ${hrFirstName} ${hrMiddleName==null?"":hrMiddleName} ${hrLastName}`}
                 </p>
               </div>
             </Col>
             <Col sm={{ size: 4 }} className="mt-5">
               <div className="p-2">
                 <p className="font-italic">
-                  {' '}
-                  {`Дата выхода: ${employmentDate}`}{' '}
+                  {`Дата выхода: ${employmentDate}`}
                 </p>
-                <p className="font-italic"> {`Остлаось: 5 дн.`} </p>
+                <p className="font-italic"> {timeLeft} </p>
               </div>
             </Col>
           </Row>
@@ -334,12 +365,7 @@ class EmployeePage extends React.Component {
           <Row>
             <Col sm={{ size: 5, offset: 1 }} className="mt-5">
               <Workflow data={workflow} />
-              <Button
-                outline
-                color="secondary"
-                className="mt-5"
-                onClick={() => this.nextStep(this)}
-              >
+              <Button outline color="secondary" className="mt-5" onClick={() => this.nextStep(this)}>
                 Перевести далее
               </Button>
             </Col>
