@@ -21,6 +21,7 @@ class EmployeePage extends React.Component {
     this.state = {
       modal: false,
       alert: false,
+      commentValue: '',
       employeeId: this.props.match.params.id,
       data: {
         id: 1,
@@ -163,6 +164,7 @@ class EmployeePage extends React.Component {
     this.state = {
       modal: false,
       alert: false,
+      commentValue: "",
       employeeId: this.props.match.params.id,
       data: {
         id: null,
@@ -216,8 +218,16 @@ class EmployeePage extends React.Component {
 
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleAlert = this.toggleAlert.bind(this);
+    this.onCommentChange = this.onCommentChange.bind(this);
+    this.commentBoxSubmit = this.commentBoxSubmit.bind(this);
 
     var nextStep = new NextStep();
+  }
+
+  onCommentChange(e) {
+    this.setState({
+      commentValue: e.target.value,
+    });
   }
 
   componentDidMount() {
@@ -308,7 +318,16 @@ class EmployeePage extends React.Component {
 
   commentBoxSubmit(e) {
     e.preventDefault();
-    console.log(e);
+    console.log(this.state.commentValue);
+    this.state.data.comments.push({
+      id: this.state.data.comments.length + 1,
+      name: 'Eta ty',
+      text: this.state.commentValue,
+      tag: 'tag2',
+    });
+    this.setState({
+      commentValue: '',
+    });
   }
 
   render() {
@@ -335,39 +354,6 @@ class EmployeePage extends React.Component {
     } = this.state.data.hr;
     const employmentDate = this.state.data.employmentDate;
     const workflow = this.state.data.workflow;
-    const comments = [
-      {
-        id: 1,
-        name: 'Jeka',
-        text:
-          'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
-        tag: 'tag1',
-      },
-      {
-        id: 2,
-        name: 'Jeka',
-        text: 'Надо не забыть сделать ему пропуск',
-        tag: 'tag2',
-      },
-      {
-        id: 3,
-        name: 'Leha',
-        text: 'Это тот чувак с бородой с третьего этажа',
-        tag: 'tag2',
-      },
-      {
-        id: 4,
-        name: 'Jeka',
-        text: 'Оставляем на второй испытательный срок',
-        tag: 'tag2',
-      },
-      {
-        id: 5,
-        name: 'Jeka',
-        text: 'Ghjcnj tot jlby rjvvtyn xnj,s gjgjkybnm cgbcjr',
-        tag: 'tag2',
-      },
-    ];
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
 
     return (
@@ -424,14 +410,16 @@ class EmployeePage extends React.Component {
                 </h4>
               </div>
               <div>
-                <Comments data={comments} />
-                <Form className="commentForm" onSubmit={this.commentBoxSubmit}>
+                <Comments data={this.state.data.comments} />
+                <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
                   <FormGroup>
                     <Input
                       rows="1"
                       type="text"
                       name="text"
                       placeholder="Написать комментарий"
+                      onChange={this.onCommentChange}
+                      value={this.state.commentValue}
                     />
                   </FormGroup>
                 </Form>
@@ -673,7 +661,7 @@ class CommentsData extends React.Component {
   }
 
   render() {
-    const { tag, text, name } = this.props;
+    const { tag, text, name, id } = this.props;
 
     return (
       <ListGroupItem className="d-flex justify-content-between lh-condensed">
@@ -681,7 +669,7 @@ class CommentsData extends React.Component {
           <h6 className="my-0 mb-2">{this.nameWithDots(name)}</h6>
           <span>{text}</span>
         </div>
-        <span className="text-muted">{tag}</span>
+        <span className="text-muted comment-delete">x</span>
       </ListGroupItem>
     );
   }

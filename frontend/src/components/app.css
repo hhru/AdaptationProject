@@ -19,3 +19,13 @@ textarea {
   cursor: pointer;
   background-color: #d9d9d9;
 }
+
+.comment-delete {
+  height: 10px;
+  font-size: medium;
+}
+
+.comment-delete:hover {
+  cursor: pointer;
+  font-weight: bold;
+}
