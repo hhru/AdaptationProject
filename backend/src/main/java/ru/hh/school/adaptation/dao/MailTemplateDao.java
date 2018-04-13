@@ -27,8 +27,8 @@ public class MailTemplateDao {
   }
 
   @Transactional
-  public MailTemplate createRecord(String nameTemplate, String htmlTemplate) {
-    MailTemplate template = new MailTemplate(nameTemplate, htmlTemplate);
+  public MailTemplate createRecord(String nameTemplate, String htmlTemplate, String title) {
+    MailTemplate template = new MailTemplate(nameTemplate, htmlTemplate, title);
     sessionFactory.getCurrentSession().save(template);
     return template;
   }
