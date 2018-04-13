@@ -6,19 +6,21 @@ import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 
-import { Jumbotron } from 'reactstrap';
+import { Jumbotron, Alert } from 'reactstrap';
 import { Container, Row, Col } from 'reactstrap';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Form, FormGroup, Input } from 'reactstrap';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import '!style-loader!css-loader!./app.css';
 
 class EmployeePage extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
+      modal: false,
+      alert: false,
       employeeId: this.props.match.params.id,
       data: {
         id: 1,
@@ -126,7 +128,8 @@ class EmployeePage extends React.Component {
           {
             id: 1,
             name: 'Jeka',
-            text: 'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
+            text:
+              'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
             tag: 'tag1',
           },
           {
@@ -156,8 +159,10 @@ class EmployeePage extends React.Component {
         ],
       },
     };
-/*
+    /*
     this.state = {
+      modal: false,
+      alert: false,
       employeeId: this.props.match.params.id,
       data: {
         id: null,
@@ -208,6 +213,11 @@ class EmployeePage extends React.Component {
       },
     };
     */
+
+    this.toggleModal = this.toggleModal.bind(this);
+    this.toggleAlert = this.toggleAlert.bind(this);
+
+    var nextStep = new NextStep();
   }
 
   componentDidMount() {
@@ -222,53 +232,83 @@ class EmployeePage extends React.Component {
         });
       })
       .catch(function(error) {
+        self.toggleAlert();
         console.log(error);
       });
   }
 
   nextStep(self) {
-    //self.state.data.workflow[0].overdue=!self.state.data.workflow[0].overdue;
-
-    const url = '/api/employee/' + '1/' + 'step/next1';
+    const url = '/api/employee/' + self.state.employeeId + '/step/next1';
     axios
       .put(url)
       .then(function(response) {
         console.log('qqq');
-        //self.forceUpdate();
       })
       .catch(function(error) {
         for (var i = 0; i < self.state.data.workflow.length; i++) {
-          if (self.state.data.workflow[i].status == "CURRENT") {
-            self.state.data.workflow[i].status = "DONE";
+          if (self.state.data.workflow[i].status == 'CURRENT') {
+            self.state.data.workflow[i].status = 'DONE';
             self.state.data.workflow[i].overdue = false;
-            if (i < self.state.data.workflow.length-1) {
-              self.state.data.workflow[i+1].status = "CURRENT";
+            if (i < self.state.data.workflow.length - 1) {
+              self.state.data.workflow[i + 1].status = 'CURRENT';
             }
             break;
           }
         }
         self.forceUpdate();
+        self.toggleAlert();
         console.log(error);
       });
   }
 
-  timeLeft(emplData) {
-    var result = "Осталось: "
-    var emplYear = parseInt(emplData.split('-')[0]);
-    var emplMonth = parseInt(emplData.split('-')[1]);
-    var emplDay = parseInt(emplData.split('-')[2]);
-    var now = new Date();
-    if (emplYear-now.getFullYear() > 0) {
-     result += emplYear-now.getFullYear() + "лет ";
+  timeLeft(emplDataString) {
+    var result = 'До конца испытательного срока: ';
+    var emplYear = parseInt(emplDataString.split('-')[0]);
+    var emplMonth = parseInt(emplDataString.split('-')[1]);
+    var emplDay = parseInt(emplDataString.split('-')[2]);
+
+    var emplData = new Date(emplYear, emplMonth + 2, emplDay);
+    var delta = emplData - new Date();
+    var yearLeft = parseInt(delta / 1000 / 60 / 60 / 24 / 30.4 / 12);
+    var monthLeft = parseInt(
+      delta / 1000 / 60 / 60 / 24 / 30.4 - yearLeft * 12
+    );
+    var dayLeft = parseInt(
+      delta / 1000 / 60 / 60 / 24 - monthLeft * 30.4 - yearLeft * 30.4 * 12
+    );
+
+    if (yearLeft > 0) {
+      result += yearLeft + ' лет ';
     }
-    if (emplMonth-(now.getMonth()+1) > 0) {
-     result += emplMonth-(now.getMonth()+1) + "мес ";
+    if (monthLeft > 0) {
+      result += monthLeft + ' мес. ';
     }
-    if (emplDay-now.getDate() > 0) {
-     result += emplDay-now.getDate() + "дн";
+    if (dayLeft > 0) {
+      result += dayLeft + ' дн.';
     }
-    console.log(now.getMonth());
     return result;
+  }
+
+  toggleModal() {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  }
+
+  toggleAlert() {
+    this.setState({
+      alert: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        alert: false,
+      });
+    }, 2200);
+  }
+
+  commentBoxSubmit(e) {
+    e.preventDefault();
+    console.log(e);
   }
 
   render() {
@@ -333,29 +373,39 @@ class EmployeePage extends React.Component {
     return (
       <Container>
         <Jumbotron>
-          <Row className="mb-3">
-            <Col sm={{ size: 7, offset: 1 }}>
+          <Row className="mb-4">
+            <Col sm={{ size: 5, offset: 1 }}>
               <h3 className="mb-0 font-weight-bold">
                 {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
               </h3>
               <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
-              <br />
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col sm={{ size: 5, offset: 1 }}>
               <div className="ml-4">
                 <p className="mb-2 text-muted">
-                  {`Начальник: ${chiefFirstName} ${chiefMiddleName==null?"":chiefMiddleName} ${chiefLastName}`}
+                  {`Начальник: ${chiefFirstName} ${
+                    chiefMiddleName == null ? '' : chiefMiddleName
+                  } ${chiefLastName}`}
                 </p>
                 <p className="mb-2 text-muted">
-                  {`Ментор: ${mentorFirstName} ${mentorMiddleName==null?"":chiefMiddleName} ${mentorLastName}`}
+                  {`Ментор: ${mentorFirstName} ${
+                    mentorMiddleName == null ? '' : chiefMiddleName
+                  } ${mentorLastName}`}
                 </p>
                 <p className="text-muted">
-                  {`HR: ${hrFirstName} ${hrMiddleName==null?"":hrMiddleName} ${hrLastName}`}
+                  {`HR: ${hrFirstName} ${
+                    hrMiddleName == null ? '' : hrMiddleName
+                  } ${hrLastName}`}
                 </p>
               </div>
             </Col>
-            <Col sm={{ size: 4 }} className="mt-5">
-              <div className="p-2">
-                <p className="font-italic">
-                  {`Дата выхода: ${employmentDate}`}
+            <Col sm={{ size: 5 }} className="mt-0 ml-5">
+              <div className="">
+                <p className="font-italic mb-2">
+                  {`Дата выхода на работу: ${employmentDate}`}
                 </p>
                 <p className="font-italic"> {timeLeft} </p>
               </div>
@@ -363,11 +413,9 @@ class EmployeePage extends React.Component {
           </Row>
 
           <Row>
-            <Col sm={{ size: 5, offset: 1 }} className="mt-5">
+            <Col sm={{ size: 5, offset: 1 }} className="mt-4">
               <Workflow data={workflow} />
-              <Button outline color="secondary" className="mt-5" onClick={() => this.nextStep(this)}>
-                Перевести далее
-              </Button>
+              <NextStep data={this} />
             </Col>
             <Col sm={{ size: 5 }}>
               <div className="ml-2">
@@ -377,7 +425,7 @@ class EmployeePage extends React.Component {
               </div>
               <div>
                 <Comments data={comments} />
-                <Form>
+                <Form className="commentForm" onSubmit={this.commentBoxSubmit}>
                   <FormGroup>
                     <Input
                       rows="1"
@@ -390,9 +438,81 @@ class EmployeePage extends React.Component {
               </div>
             </Col>
           </Row>
+
+          <Row>
+            <Col sm={{ size: 12, offset: 0 }} className="mt-0">
+              <div>
+                <Alert
+                  color="danger"
+                  isOpen={this.state.alert}
+                  toggle={this.toggleAlert}
+                >
+                  Не удалось установить связь с сервером
+                </Alert>
+              </div>
+            </Col>
+          </Row>
         </Jumbotron>
       </Container>
     );
+  }
+}
+
+class NextStep extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.click = this.click.bind(this);
+  }
+
+  click() {
+    var parent = this.props.data;
+
+    parent.nextStep(parent);
+    parent.toggleModal();
+  }
+
+  render() {
+    var parent = this.props.data;
+    return (
+      <div>
+        <Button
+          outline
+          color="secondary"
+          className="mt-5"
+          onClick={parent.toggleModal}
+        >
+          Перевести далее
+        </Button>
+        <Modal
+          isOpen={parent.state.modal}
+          toggle={parent.toggleModal}
+          className={parent.className}
+        >
+          <ModalHeader toggle={parent.toggleModal}>Подтверждение</ModalHeader>
+          <ModalBody>
+            Перевод на следующий этап можно будет откатить в меню
+            редактирования. Наверное, на некоторых этапах в этом окошке можно
+            будет добавлять некторую информацию. А может на каждом? например,
+            комментарии. Ну и конечно же нужно ли вообще это окошко?
+          </ModalBody>
+          <ModalFooter>
+            <Button outline color="secondary" onClick={this.click}>
+              Перевести
+            </Button>
+            <Button outline color="danger" onClick={parent.toggleModal}>
+              Отмена
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+    /*
+    return (
+      <Button outline color="secondary" className="mt-5" onClick={() => parent.nextStep(parent)}>
+        Перевести далее
+      </Button>
+    );*/
   }
 }
 
