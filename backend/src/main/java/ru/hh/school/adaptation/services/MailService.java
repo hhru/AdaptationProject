@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +48,12 @@ public class MailService {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.name")));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userEmail));
-        message.setSubject(subject);
+        message.setSubject(MimeUtility.encodeText(subject, "utf-8", "B"));
         message.setContent(messageHtml, "text/html; charset=utf-8");
 
         Transport.send(message);
         logger.info("Email for {} has been send", userEmail);
-      } catch (MessagingException e) {
+      } catch (MessagingException | UnsupportedEncodingException e) {
         logger.warn("Something went wrong with sending email for {} ", userEmail);
       }
     };
