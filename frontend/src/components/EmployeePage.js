@@ -69,6 +69,7 @@ class EmployeePage extends React.Component {
             overdue: false,
           },
         ],
+        comments: [],
       },
     };
 
@@ -175,7 +176,7 @@ class EmployeePage extends React.Component {
 
   commentBoxSubmit(e) {
     e.preventDefault();
-    if (this.state.commentValue.length == 0) return;
+    if (this.state.commentValue == '') return;
     var newId = 0;
     if (this.state.data.comments.length > 0)
       newId =
