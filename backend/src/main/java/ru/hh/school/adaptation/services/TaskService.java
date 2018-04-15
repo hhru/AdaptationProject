@@ -1,5 +1,7 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.xmlbeans.XmlException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.TaskDao;
@@ -10,8 +12,11 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
+import ru.hh.school.adaptation.misc.Named;
 
 import javax.inject.Singleton;
+import javax.ws.rs.WebApplicationException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,12 +30,14 @@ public class TaskService {
   private TaskDao taskDao;
   private EmployeeDao employeeDao;
   private MailService mailService;
+  private DocumentService documentService;
 
-  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao, MailService mailService) {
+  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao, MailService mailService, DocumentService documentService) {
     this.taskFormDao = taskFormDao;
     this.taskDao = taskDao;
     this.employeeDao = employeeDao;
     this.mailService = mailService;
+    this.documentService = documentService;
   }
 
   @Transactional
@@ -73,7 +80,9 @@ public class TaskService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
+    String taskUrl = String.format("https://www.adaptation.host/api/employee/tasks/%d/doc", employee.getId());
     params.put("{{userName}}", fio);
+    params.put("{{taskUrl}}", taskUrl);
     mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify", params);
   }
 
@@ -111,5 +120,14 @@ public class TaskService {
   @Transactional(readOnly = true)
   public TaskFormDto getTasksDtoByKey(String key) {
     return new TaskFormDto(getTasksByKey(key));
+  }
+
+  @Transactional
+  public Named<byte[]> generateTaskDoc(Integer employeeId) {
+    try {
+      return documentService.generateTaskDoc(employeeDao.getRecordById(employeeId));
+    } catch (InvalidFormatException | IOException | XmlException | NullPointerException e) {
+      throw new WebApplicationException("Bad document", e);
+    }
   }
 }

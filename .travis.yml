@@ -19,6 +19,7 @@ matrix:
         - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
         - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
         - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
+        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/task_template.docx $DEPLOY_USER@$DEPLOY_HOST:~/app
         - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
           $DEPLOY_USER@$DEPLOY_HOST:~/app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
         - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/

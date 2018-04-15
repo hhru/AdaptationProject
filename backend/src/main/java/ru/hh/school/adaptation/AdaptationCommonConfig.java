@@ -25,6 +25,7 @@ import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.resources.EmployeeResource;
 import ru.hh.school.adaptation.resources.TaskResource;
 import ru.hh.school.adaptation.resources.MainResource;
+import ru.hh.school.adaptation.services.DocumentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.TaskService;
@@ -61,7 +62,8 @@ import ru.hh.school.adaptation.resources.PersonalInfoResource;
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
-    PersonalInfoResource.class
+    PersonalInfoResource.class,
+    DocumentService.class,
 })
 public class AdaptationCommonConfig {
 
