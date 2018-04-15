@@ -24,149 +24,6 @@ class EmployeePage extends React.Component {
       commentValue: '',
       employeeId: this.props.match.params.id,
       data: {
-        id: 1,
-        currentWorkflowStep: 'ADD',
-        employee: {
-          id: 1,
-          firstName: 'Джон',
-          lastName: 'МакКлейн',
-          middleName: 'МакКлейн',
-          email: 'die@hard.com',
-          inside: 'inside',
-        },
-        chief: {
-          id: 1,
-          firstName: 'Леонид',
-          lastName: 'Гусев',
-          middleName: 'Викторович',
-          email: 'awdwada@www.rr',
-          inside: 'inside2',
-        },
-        mentor: {
-          id: 2,
-          firstName: 'Леонид',
-          lastName: 'Гусев',
-          middleName: 'Викторович',
-          email: 'awdwd@aad.tt',
-          inside: 'inside3',
-        },
-        hr: {
-          id: 3,
-          firstName: 'Билл',
-          lastName: 'Гейтс',
-          middleName: null,
-          email: 'spiderm@il.web',
-          inside: 'inside4',
-        },
-        employmentDate: '2018-04-09',
-        workflow: [
-          {
-            id: 1,
-            type: 'ADD',
-            status: 'DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 2,
-            type: 'TASK_LIST',
-            status: 'DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 3,
-            type: 'WELCOME_MEETING',
-            status: 'CURRENT',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 4,
-            type: 'INTERIM_MEETING',
-            status: 'NOT_DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 5,
-            type: 'INTERIM_MEETING_RESULT',
-            status: 'NOT_DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 6,
-            type: 'FINAL_MEETING',
-            status: 'NOT_DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 7,
-            type: 'FINAL_MEETING_RESULT',
-            status: 'NOT_DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: false,
-          },
-          {
-            id: 8,
-            type: 'QUESTIONNAIRE',
-            status: 'NOT_DONE',
-            deadlineDate: null,
-            comment: null,
-            overdue: true,
-          },
-        ],
-        comments: [
-          {
-            id: 1,
-            name: 'Евгений',
-            text:
-              'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
-            tag: 'tag1',
-          },
-          {
-            id: 2,
-            name: 'Евгений',
-            text: 'Надо не забыть сделать ему пропуск',
-            tag: 'tag2',
-          },
-          {
-            id: 3,
-            name: 'Алексей',
-            text: 'Это тот чувак с бородой с третьего этажа',
-            tag: 'tag2',
-          },
-          {
-            id: 4,
-            name: 'Евгений',
-            text: 'Оставляем на второй испытательный срок',
-            tag: 'tag2',
-          },
-          {
-            id: 5,
-            name: 'Евгений',
-            text: 'Ghjcnj tot jlby rjvvtyn xnj,s gjgjkybnm cgbcjr',
-            tag: 'tag2',
-          },
-        ],
-      },
-    };
-    /*
-    this.state = {
-      modal: false,
-      alert: false,
-      commentValue: "",
-      employeeId: this.props.match.params.id,
-      data: {
         id: null,
         currentWorkflowStep: '',
         employee: {
@@ -214,7 +71,6 @@ class EmployeePage extends React.Component {
         ],
       },
     };
-    */
 
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleAlert = this.toggleAlert.bind(this);
@@ -253,10 +109,6 @@ class EmployeePage extends React.Component {
     axios
       .put(url)
       .then(function(response) {
-        console.log('qqq');
-      })
-      .catch(function(error) {
-        //****************************************************это then
         for (var i = 0; i < self.state.data.workflow.length; i++) {
           if (self.state.data.workflow[i].status == 'CURRENT') {
             self.state.data.workflow[i].status = 'DONE';
@@ -269,7 +121,8 @@ class EmployeePage extends React.Component {
         }
         self.forceUpdate();
         self.toggleAlert();
-        //****************************************************
+      })
+      .catch(function(error) {
         console.log(error);
       });
   }
