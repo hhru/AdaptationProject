@@ -128,32 +128,32 @@ class EmployeePage extends React.Component {
         comments: [
           {
             id: 1,
-            name: 'Jeka',
+            name: 'Евгений',
             text:
               'Этот чувак дико тупил на встерче, спрашивал тупые вопросы и опоздал на полчаса и похоже ниче не понял че ему сказали и не оставил обратной связи',
             tag: 'tag1',
           },
           {
             id: 2,
-            name: 'Jeka',
+            name: 'Евгений',
             text: 'Надо не забыть сделать ему пропуск',
             tag: 'tag2',
           },
           {
             id: 3,
-            name: 'Leha',
+            name: 'Алексей',
             text: 'Это тот чувак с бородой с третьего этажа',
             tag: 'tag2',
           },
           {
             id: 4,
-            name: 'Jeka',
+            name: 'Евгений',
             text: 'Оставляем на второй испытательный срок',
             tag: 'tag2',
           },
           {
             id: 5,
-            name: 'Jeka',
+            name: 'Евгений',
             text: 'Ghjcnj tot jlby rjvvtyn xnj,s gjgjkybnm cgbcjr',
             tag: 'tag2',
           },
@@ -220,6 +220,7 @@ class EmployeePage extends React.Component {
     this.toggleAlert = this.toggleAlert.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.commentBoxSubmit = this.commentBoxSubmit.bind(this);
+    this.commentRemove = this.commentRemove.bind(this);
 
     var nextStep = new NextStep();
   }
@@ -255,6 +256,7 @@ class EmployeePage extends React.Component {
         console.log('qqq');
       })
       .catch(function(error) {
+        //****************************************************это then
         for (var i = 0; i < self.state.data.workflow.length; i++) {
           if (self.state.data.workflow[i].status == 'CURRENT') {
             self.state.data.workflow[i].status = 'DONE';
@@ -267,6 +269,7 @@ class EmployeePage extends React.Component {
         }
         self.forceUpdate();
         self.toggleAlert();
+        //****************************************************
         console.log(error);
       });
   }
@@ -318,16 +321,37 @@ class EmployeePage extends React.Component {
 
   commentBoxSubmit(e) {
     e.preventDefault();
-    console.log(this.state.commentValue);
+    if (this.state.commentValue.length == 0) return;
+    var newId = 0;
+    if (this.state.data.comments.length > 0)
+      newId =
+        Math.max.apply(
+          Math,
+          this.state.data.comments.map(function(x) {
+            return x.id;
+          })
+        ) + 1;
     this.state.data.comments.push({
-      id: this.state.data.comments.length + 1,
-      name: 'Eta ty',
+      id: newId,
+      name: 'Вы',
       text: this.state.commentValue,
       tag: 'tag2',
     });
     this.setState({
       commentValue: '',
     });
+
+    //privet. kak tebe moi kostyl?
+    setTimeout(() => {
+      document.getElementById('commentBox').scrollTop += 1200;
+    }, 0);
+  }
+
+  commentRemove(commentId) {
+    this.state.data.comments = this.state.data.comments.filter(
+      (x) => x.id != commentId
+    );
+    this.forceUpdate();
   }
 
   render() {
@@ -410,7 +434,10 @@ class EmployeePage extends React.Component {
                 </h4>
               </div>
               <div>
-                <Comments data={this.state.data.comments} />
+                <Comments
+                  data={this.state.data.comments}
+                  func={this.commentRemove}
+                />
                 <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
                   <FormGroup>
                     <Input
@@ -479,10 +506,11 @@ class NextStep extends React.Component {
         >
           <ModalHeader toggle={parent.toggleModal}>Подтверждение</ModalHeader>
           <ModalBody>
-            Перевод на следующий этап можно будет откатить в меню
+            Отменить перевод на следующий этап можно будет в меню
             редактирования. Наверное, на некоторых этапах в этом окошке можно
             будет добавлять некторую информацию. А может на каждом? например,
-            комментарии. Ну и конечно же нужно ли вообще это окошко?
+            комментарии к этапу писать здесь. Ну и конечно же нужно ли вообще
+            это окошко?
           </ModalBody>
           <ModalFooter>
             <Button outline color="secondary" onClick={this.click}>
@@ -582,13 +610,13 @@ class WorkflowStage extends React.Component {
       case 'TASK_LIST':
         return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
       case 'WELCOME_MEETING':
-        return 'Необходимо забронировать переговорку и провести велком встречу.';
+        return 'Необходимо забронировать перговорную конату и провести welcome встречу.';
       case 'INTERIM_MEETING':
-        return 'Необходимо забронировать переговорку и провести промежуточную встречу.';
+        return 'Необходимо забронировать перговорную конату и провести промежуточную встречу.';
       case 'INTERIM_MEETING_RESULT':
         return 'Необходимо заполнить результаты промежуточной встречи.';
       case 'FINAL_MEETING':
-        return 'Необходимо забронировать переговорку и провести итоговую встречу.';
+        return 'Необходимо забронировать перговорную конату и провести итоговую встречу.';
       case 'FINAL_MEETING_RESULT':
         return 'Необходимо заполнить результаты итоговой встречи.';
       case 'QUESTIONNAIRE':
@@ -636,7 +664,7 @@ class Comments extends React.Component {
 
   render() {
     return (
-      <ListGroup className="mb-0 anyClass">
+      <ListGroup id="commentBox" className="mb-0 anyClass">
         {this.props.data.map((commentsData) => (
           <CommentsData
             tag={commentsData.tag}
@@ -644,6 +672,7 @@ class Comments extends React.Component {
             name={commentsData.name}
             key={commentsData.id}
             id={commentsData.id}
+            func={this.props.func}
           />
         ))}
       </ListGroup>
@@ -654,6 +683,24 @@ class Comments extends React.Component {
 class CommentsData extends React.Component {
   constructor(props) {
     super(props);
+
+    this.mouseIn = this.mouseIn.bind(this);
+    this.mouseOut = this.mouseOut.bind(this);
+    this.state = {
+      isHovering: false,
+    };
+  }
+
+  mouseIn() {
+    this.setState({
+      isHovering: true,
+    });
+  }
+
+  mouseOut() {
+    this.setState({
+      isHovering: false,
+    });
   }
 
   nameWithDots(name) {
@@ -664,12 +711,29 @@ class CommentsData extends React.Component {
     const { tag, text, name, id } = this.props;
 
     return (
-      <ListGroupItem className="d-flex justify-content-between lh-condensed">
-        <div>
-          <h6 className="my-0 mb-2">{this.nameWithDots(name)}</h6>
-          <span>{text}</span>
-        </div>
-        <span className="text-muted comment-delete">x</span>
+      <ListGroupItem
+        className=""
+        onMouseEnter={this.mouseIn}
+        onMouseLeave={this.mouseOut}
+      >
+        <Row>
+          <Col sm={{ size: 8, offset: 0 }}>
+            <h6 className="my-0 mb-2">{this.nameWithDots(name)}</h6>
+          </Col>
+          <Col>
+            {this.state.isHovering && (
+              <small
+                className="text-muted comment-delete"
+                onClick={() => this.props.func(id)}
+              >
+                ✖
+              </small>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          <span className="ml-2">{text}</span>
+        </Row>
       </ListGroupItem>
     );
   }
