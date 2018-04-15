@@ -80,7 +80,9 @@ public class TaskService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
+    String taskUrl = String.format("https://www.adaptation.host/api/employee/tasks/%d/doc", employee.getId());
     params.put("{{userName}}", fio);
+    params.put("{{taskUrl}}", taskUrl);
     mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify", params);
   }
 
