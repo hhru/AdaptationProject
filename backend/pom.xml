@@ -135,6 +135,17 @@
         <resources>
             <resource>
                 <directory>src/etc/adaptation</directory>
+                <includes>
+                    <include>*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+
+            <resource>
+                <directory>src/etc/adaptation</directory>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
             </resource>
 
             <resource>
