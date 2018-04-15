@@ -288,10 +288,12 @@ class EmployeePage extends React.Component {
                 </h4>
               </div>
               <div>
-                <Comments
-                  data={this.state.data.comments}
-                  func={this.commentRemove}
-                />
+                {this.state.data.comments != null && (
+                  <Comments
+                    data={this.state.data.comments}
+                    func={this.commentRemove}
+                  />
+                )}
                 <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
                   <FormGroup>
                     <Input
