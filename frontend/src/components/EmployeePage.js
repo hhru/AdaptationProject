@@ -105,7 +105,7 @@ class EmployeePage extends React.Component {
   }
 
   nextStep(self) {
-    const url = '/api/employee/' + self.state.employeeId + '/step/next1';
+    const url = '/api/employee/' + self.state.employeeId + '/step/next';
     axios
       .put(url)
       .then(function(response) {
