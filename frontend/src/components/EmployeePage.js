@@ -128,6 +128,7 @@ class EmployeePage extends React.Component {
   }
 
   timeLeft(emplDataString) {
+    if (emplDataString == null) return;
     var result = 'До конца испытательного срока: ';
     var emplYear = parseInt(emplDataString.split('-')[0]);
     var emplMonth = parseInt(emplDataString.split('-')[1]);
