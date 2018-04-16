@@ -22,6 +22,7 @@ class EmployeePage extends React.Component {
       modal: false,
       alert: false,
       commentValue: '',
+      comments: [],
       employeeId: this.props.match.params.id,
       data: {
         id: null,
@@ -69,7 +70,6 @@ class EmployeePage extends React.Component {
             overdue: false,
           },
         ],
-        comments: [],
       },
     };
 
@@ -178,15 +178,16 @@ class EmployeePage extends React.Component {
     e.preventDefault();
     if (this.state.commentValue == '') return;
     var newId = 0;
-    if (this.state.data.comments.length > 0)
+    if (this.state.comments.length > 0) {
       newId =
         Math.max.apply(
           Math,
-          this.state.data.comments.map(function(x) {
+          this.state.comments.map(function(x) {
             return x.id;
           })
         ) + 1;
-    this.state.data.comments.push({
+    }
+    this.state.comments.push({
       id: newId,
       name: 'Вы',
       text: this.state.commentValue,
@@ -203,9 +204,7 @@ class EmployeePage extends React.Component {
   }
 
   commentRemove(commentId) {
-    this.state.data.comments = this.state.data.comments.filter(
-      (x) => x.id != commentId
-    );
+    this.state.comments = this.state.comments.filter((x) => x.id != commentId);
     this.forceUpdate();
   }
 
@@ -289,9 +288,9 @@ class EmployeePage extends React.Component {
                 </h4>
               </div>
               <div>
-                {this.state.data.comments != null && (
+                {this.state.comments != null && (
                   <Comments
-                    data={this.state.data.comments}
+                    data={this.state.comments}
                     func={this.commentRemove}
                   />
                 )}
