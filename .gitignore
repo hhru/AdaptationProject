@@ -14,3 +14,4 @@ dependency-reduced-pom.xml
 *.log
 node_modules
 frontend/dist
+backend/nbactions.xml

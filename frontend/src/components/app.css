@@ -2,3 +2,29 @@
   font-size: 20px;
   color: red;
 }
+
+.anyClass {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+input[type='text'],
+textarea {
+  outline: none;
+  box-shadow: none !important;
+  border: 1px solid #ccc !important;
+}
+
+.workflow-leonid:hover {
+  cursor: pointer;
+  background-color: #e1e5eb;
+}
+
+.comment-delete:hover {
+  cursor: pointer;
+}
+
+.comment-delete {
+  font-size: 10pt;
+  float: right;
+}
