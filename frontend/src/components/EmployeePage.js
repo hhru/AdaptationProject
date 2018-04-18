@@ -20,7 +20,14 @@ class EmployeePage extends React.Component {
 
     this.state = {
       modal: false,
-      alert: false,
+      interimResult: false,
+      finalResult: false,
+      currentWorkflowType: '',
+      alert: {
+        status: false,
+        message: '',
+        color: '',
+      },
       commentValue: '',
       employeeId: this.props.match.params.id,
       data: {
@@ -124,7 +131,6 @@ class EmployeePage extends React.Component {
             break;
           }
         }
-        self.forceUpdate();
       })
       .catch(function(error) {
         self.toggleAlert({
@@ -215,7 +221,6 @@ class EmployeePage extends React.Component {
 
   commentRemove(commentId) {
     this.state.comments = this.state.comments.filter((x) => x.id != commentId);
-    this.forceUpdate();
   }
 
   dateFormat(date) {
@@ -294,7 +299,10 @@ class EmployeePage extends React.Component {
         <Row>
           <Col sm={{ size: 5, offset: 1 }} className="mt-4">
             <Workflow data={workflow} parent={this} />
-            <NextStep data={this} />
+            <Row>
+              <NextStep parent={this} />
+              <MeetingResult parent={this} />
+            </Row>
           </Col>
           <Col sm={{ size: 5 }}>
             <div className="ml-2">
@@ -337,6 +345,79 @@ class EmployeePage extends React.Component {
   }
 }
 
+class MeetingResult extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.interimResult = this.interimResult.bind(this);
+    this.finalResult = this.finalResult.bind(this);
+  }
+
+  finalResult() {
+    this.props.parent.toggleAlert({
+      status: true,
+      message: 'Результаты отправлены',
+      color: 'success',
+    });
+    this.props.parent.setState({
+      finalResult: true,
+    });
+  }
+
+  interimResult() {
+    this.props.parent.toggleAlert({
+      status: true,
+      message: 'Результаты отправлены',
+      color: 'success',
+    });
+    this.props.parent.setState({
+      interimResult: true,
+    });
+  }
+
+  getCurrentType(parent) {
+    var result = parent.state.data.workflow.filter(
+      (x) => x.status == 'CURRENT'
+    );
+    if (result.length == 0) {
+      return 'NONE';
+    }
+    return result[0].type;
+  }
+
+  render() {
+    var parent = this.props.parent;
+    var currentWorkflowType = this.getCurrentType(parent);
+
+    return (
+      <div>
+        {parent.state.interimResult == false &&
+          currentWorkflowType == 'INTERIM_MEETING_RESULT' && (
+            <Button
+              outline
+              color="info"
+              className="mt-5 ml-3"
+              onClick={this.interimResult}
+            >
+              Заполнить результаты встречи
+            </Button>
+          )}
+        {parent.state.finalResult == false &&
+          currentWorkflowType == 'FINAL_MEETING_RESULT' && (
+            <Button
+              outline
+              color="info"
+              className="mt-5 ml-3"
+              onClick={this.finalResult}
+            >
+              Заполнить результаты встречи
+            </Button>
+          )}
+      </div>
+    );
+  }
+}
+
 class NextStep extends React.Component {
   constructor(props) {
     super(props);
@@ -345,24 +426,42 @@ class NextStep extends React.Component {
   }
 
   click() {
-    var parent = this.props.data;
+    var parent = this.props.parent;
 
     parent.nextStep(parent);
     parent.toggleModal();
   }
 
+  getCurrentType(parent) {
+    var result = parent.state.data.workflow.filter(
+      (x) => x.status == 'CURRENT'
+    );
+    if (result.length == 0) {
+      return 'NONE';
+    }
+    return result[0].type;
+  }
+
   render() {
-    var parent = this.props.data;
+    var parent = this.props.parent;
+    var currentWorkflowType = this.getCurrentType(parent);
+    var isDisabled =
+      currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE'
+        ? true
+        : false;
+
     return (
       <div>
         <Button
           outline
+          disabled={isDisabled}
           color="secondary"
           className="mt-5"
           onClick={parent.toggleModal}
         >
           Перевести далее
         </Button>
+
         <Modal
           isOpen={parent.state.modal}
           toggle={parent.toggleModal}
@@ -371,10 +470,6 @@ class NextStep extends React.Component {
           <ModalHeader toggle={parent.toggleModal}>
             Перевести на следующий этап?
           </ModalHeader>
-          <ModalBody>
-            Отменить перевод на следующий этап можно будет в меню
-            редактирования.
-          </ModalBody>
           <ModalFooter>
             <Button outline color="secondary" onClick={this.click}>
               Перевести
@@ -419,12 +514,10 @@ class WorkflowStage extends React.Component {
 
     this.state = {
       popoverOpen: false,
-      mailSended: false,
     };
 
     this.toggle = this.toggle.bind(this);
     this.selectIcon = this.selectIcon.bind(this);
-    this.welcomeMail = this.welcomeMail.bind(this);
   }
 
   selectIcon(status, overdue) {
@@ -491,19 +584,6 @@ class WorkflowStage extends React.Component {
     });
   }
 
-  welcomeMail(e) {
-    e.stopPropagation();
-    this.props.parent.toggleAlert({
-      status: true,
-      message: 'Письмо отправлено',
-      color: 'success',
-    });
-    this.setState({
-      mailSended: true,
-    });
-    console.log('sended');
-  }
-
   render() {
     const { deadlineDate, status, overdue, type } = this.props;
 
@@ -515,18 +595,6 @@ class WorkflowStage extends React.Component {
       >
         {this.selectIcon(status, overdue)}
         <span className="ml-3">{this.typeTranslate(type)}</span>
-        {this.state.mailSended == false &&
-          type == 'WELCOME_MEETING' &&
-          status == 'CURRENT' && (
-            <Button
-              outline
-              color="info"
-              className="ml-2"
-              onClick={this.welcomeMail}
-            >
-              отправить welcome-письмо
-            </Button>
-          )}
         <Popover
           placement="bottom"
           isOpen={this.state.popoverOpen}
