@@ -61,7 +61,16 @@ public class TransitionService {
       transition.setNext(prev);
       transition.setEmployee(employee);
       transition.setStepType(workflowStepType);
-      transition.setStepStatus(workflowStepType == WorkflowStepType.ADD ? WorkflowStepStatus.CURRENT : WorkflowStepStatus.NOT_DONE);
+      switch (workflowStepType) {
+        case ADD:
+          transition.setStepStatus(WorkflowStepStatus.DONE);
+          break;
+        case TASK_LIST:
+          transition.setStepStatus(WorkflowStepStatus.CURRENT);
+          break;
+        default:
+          transition.setStepStatus(WorkflowStepStatus.NOT_DONE);
+      }
       transitionDao.save(transition);
       transitions.add(transition);
       prev = transition;

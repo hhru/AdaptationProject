@@ -29,6 +29,14 @@ import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.WorkflowService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
+import ru.hh.school.adaptation.services.workflow.Add;
+import ru.hh.school.adaptation.services.workflow.TaskList;
+import ru.hh.school.adaptation.services.workflow.WelcomeMeeting;
+import ru.hh.school.adaptation.services.workflow.InterimMeeteing;
+import ru.hh.school.adaptation.services.workflow.InterimMeetingResult;
+import ru.hh.school.adaptation.services.workflow.FinalMeeting;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingResult;
+import ru.hh.school.adaptation.services.workflow.Questionnaire;
 
 @Configuration
 @Import({
@@ -50,7 +58,16 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
-    PersonalInfoResource.class
+    PersonalInfoResource.class,
+
+    Add.class,
+    TaskList.class,
+    WelcomeMeeting.class,
+    InterimMeeteing.class,
+    InterimMeetingResult.class,
+    FinalMeeting.class,
+    FinalMeetingResult.class,
+    Questionnaire.class,
 })
 public class AdaptationCommonConfig {
 
