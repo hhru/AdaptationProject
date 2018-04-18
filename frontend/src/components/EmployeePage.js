@@ -406,11 +406,14 @@ class WorkflowStage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
     this.state = {
       popoverOpen: false,
+      mailSended: false,
     };
+
+    this.toggle = this.toggle.bind(this);
     this.selectIcon = this.selectIcon.bind(this);
+    this.welcomeMail = this.welcomeMail.bind(this);
   }
 
   selectIcon(status, overdue) {
@@ -477,6 +480,16 @@ class WorkflowStage extends React.Component {
     });
   }
 
+  welcomeMail(e) {
+    e.stopPropagation();
+    //TODO: sozdat resurs dlya otpravki welcome
+    //TODO: alert o statuse otpravki
+    this.setState({
+      mailSended: true,
+    });
+    console.log('sended');
+  }
+
   render() {
     const { deadlineDate, status, overdue, type } = this.props;
 
@@ -486,10 +499,20 @@ class WorkflowStage extends React.Component {
         className="workflow-leonid"
         onClick={this.toggle}
       >
-        {deadlineDate}
         {this.selectIcon(status, overdue)}
         <span className="ml-3">{this.typeTranslate(type)}</span>
-        <br />
+        {this.state.mailSended == false &&
+          type == 'WELCOME_MEETING' &&
+          status == 'CURRENT' && (
+            <Button
+              outline
+              color="info"
+              className="ml-5"
+              onClick={this.welcomeMail}
+            >
+              Welcome письмо
+            </Button>
+          )}
         <Popover
           placement="bottom"
           isOpen={this.state.popoverOpen}
