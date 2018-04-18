@@ -100,7 +100,11 @@ class EmployeePage extends React.Component {
         });
       })
       .catch(function(error) {
-        self.toggleAlert();
+        self.toggleAlert({
+          status: true,
+          message: 'Не удалось установить связь с сервером',
+          color: 'danger',
+        });
         console.log(error);
       });
   }
@@ -123,7 +127,11 @@ class EmployeePage extends React.Component {
         self.forceUpdate();
       })
       .catch(function(error) {
-        self.toggleAlert();
+        self.toggleAlert({
+          status: true,
+          message: 'Не удалось установить связь с сервером',
+          color: 'danger',
+        });
         console.log(error);
       });
   }
@@ -163,13 +171,15 @@ class EmployeePage extends React.Component {
     });
   }
 
-  toggleAlert() {
+  toggleAlert(alertObj) {
     this.setState({
-      alert: true,
+      alert: alertObj,
     });
     setTimeout(() => {
       this.setState({
-        alert: false,
+        alert: {
+          status: false,
+        },
       });
     }, 2200);
   }
@@ -208,6 +218,12 @@ class EmployeePage extends React.Component {
     this.forceUpdate();
   }
 
+  dateFormat(date) {
+    return (
+      date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0]
+    );
+  }
+
   render() {
     const {
       firstName: employeeFirstName,
@@ -230,7 +246,7 @@ class EmployeePage extends React.Component {
       middleName: hrMiddleName,
       lastName: hrLastName,
     } = this.state.data.hr;
-    const employmentDate = this.state.data.employmentDate;
+    const employmentDate = this.dateFormat(this.state.data.employmentDate);
     const workflow = this.state.data.workflow;
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
 
@@ -267,17 +283,17 @@ class EmployeePage extends React.Component {
           </Col>
           <Col sm={{ size: 5 }} className="mt-0 ml-5">
             <div className="">
-              <p className="font-italic mb-2">
+              <p className="mb-2">
                 {`Дата выхода на работу: ${employmentDate}`}
               </p>
-              <p className="font-italic"> {timeLeft} </p>
+              <p className=""> {timeLeft} </p>
             </div>
           </Col>
         </Row>
 
         <Row>
           <Col sm={{ size: 5, offset: 1 }} className="mt-4">
-            <Workflow data={workflow} />
+            <Workflow data={workflow} parent={this} />
             <NextStep data={this} />
           </Col>
           <Col sm={{ size: 5 }}>
@@ -312,13 +328,7 @@ class EmployeePage extends React.Component {
         <Row>
           <Col sm={{ size: 12, offset: 0 }} className="mt-0">
             <div>
-              <Alert
-                color="danger"
-                isOpen={this.state.alert}
-                toggle={this.toggleAlert}
-              >
-                Не удалось установить связь с сервером
-              </Alert>
+              <CustomAlert self={this} />
             </div>
           </Col>
         </Row>
@@ -395,6 +405,7 @@ class Workflow extends React.Component {
             type={workflowStageData.type}
             key={workflowStageData.id}
             id={workflowStageData.id}
+            parent={this.props.parent}
           />
         ))}
       </div>
@@ -439,7 +450,7 @@ class WorkflowStage extends React.Component {
       case 'TASK_LIST':
         return 'Согласование задач';
       case 'WELCOME_MEETING':
-        return 'Welcome встреча';
+        return 'Welcome-встреча';
       case 'INTERIM_MEETING':
         return 'Промежуточная встреча';
       case 'INTERIM_MEETING_RESULT':
@@ -460,7 +471,7 @@ class WorkflowStage extends React.Component {
       case 'TASK_LIST':
         return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
       case 'WELCOME_MEETING':
-        return 'Ожидается день выхода на работу. Не забудь отправить welcome письмо и провести welcome встречу.';
+        return 'Ожидается день выхода на работу. Не забудь отправить welcome-письмо и провести welcome-встречу.';
       case 'INTERIM_MEETING':
         return 'Необходимо забронировать перговорную конату и провести промежуточную встречу.';
       case 'INTERIM_MEETING_RESULT':
@@ -482,8 +493,11 @@ class WorkflowStage extends React.Component {
 
   welcomeMail(e) {
     e.stopPropagation();
-    //TODO: sozdat resurs dlya otpravki welcome
-    //TODO: alert o statuse otpravki
+    this.props.parent.toggleAlert({
+      status: true,
+      message: 'Письмо отправлено',
+      color: 'success',
+    });
     this.setState({
       mailSended: true,
     });
@@ -507,10 +521,10 @@ class WorkflowStage extends React.Component {
             <Button
               outline
               color="info"
-              className="ml-5"
+              className="ml-2"
               onClick={this.welcomeMail}
             >
-              Welcome письмо
+              отправить welcome-письмо
             </Button>
           )}
         <Popover
@@ -605,6 +619,24 @@ class CommentsData extends React.Component {
           <span className="ml-2">{text}</span>
         </Row>
       </ListGroupItem>
+    );
+  }
+}
+
+class CustomAlert extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    var parent = this.props.self;
+    return (
+      <Alert
+        color={parent.state.alert.color}
+        isOpen={parent.state.alert.status}
+      >
+        {parent.state.alert.message}
+      </Alert>
     );
   }
 }
