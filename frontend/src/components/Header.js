@@ -25,7 +25,7 @@ class Header extends React.Component {
           <Nav className="ml-auto" navbar>
             <NavItem className="mr-3">
               <NavLink className="text-white" href="/components/">
-                Привет Маргарита!
+                Привет, Маргарита!
               </NavLink>
             </NavItem>
           </Nav>

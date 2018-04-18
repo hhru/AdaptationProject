@@ -22,7 +22,6 @@ class EmployeePage extends React.Component {
       modal: false,
       alert: false,
       commentValue: '',
-      comments: [],
       employeeId: this.props.match.params.id,
       data: {
         id: null,
@@ -71,6 +70,7 @@ class EmployeePage extends React.Component {
           },
         ],
       },
+      comments: [],
     };
 
     this.toggleModal = this.toggleModal.bind(this);
@@ -121,9 +121,9 @@ class EmployeePage extends React.Component {
           }
         }
         self.forceUpdate();
-        self.toggleAlert();
       })
       .catch(function(error) {
+        self.toggleAlert();
         console.log(error);
       });
   }
@@ -236,94 +236,92 @@ class EmployeePage extends React.Component {
 
     return (
       <Container>
-        <Jumbotron>
-          <Row className="mb-4">
-            <Col sm={{ size: 5, offset: 1 }}>
-              <h3 className="mb-0 font-weight-bold">
-                {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
-              </h3>
-              <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
-            </Col>
-          </Row>
+        <Row className="mb-4">
+          <Col sm={{ size: 5, offset: 1 }}>
+            <h3 className="mb-0 font-weight-bold">
+              {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
+            </h3>
+            <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
+          </Col>
+        </Row>
 
-          <Row className="mb-2">
-            <Col sm={{ size: 5, offset: 1 }}>
-              <div className="ml-4">
-                <p className="mb-2 text-muted">
-                  {`Начальник: ${chiefFirstName} ${
-                    chiefMiddleName == null ? '' : chiefMiddleName
-                  } ${chiefLastName}`}
-                </p>
-                <p className="mb-2 text-muted">
-                  {`Ментор: ${mentorFirstName} ${
-                    mentorMiddleName == null ? '' : chiefMiddleName
-                  } ${mentorLastName}`}
-                </p>
-                <p className="text-muted">
-                  {`HR: ${hrFirstName} ${
-                    hrMiddleName == null ? '' : hrMiddleName
-                  } ${hrLastName}`}
-                </p>
-              </div>
-            </Col>
-            <Col sm={{ size: 5 }} className="mt-0 ml-5">
-              <div className="">
-                <p className="font-italic mb-2">
-                  {`Дата выхода на работу: ${employmentDate}`}
-                </p>
-                <p className="font-italic"> {timeLeft} </p>
-              </div>
-            </Col>
-          </Row>
+        <Row className="mb-2">
+          <Col sm={{ size: 5, offset: 1 }}>
+            <div className="ml-4">
+              <p className="mb-2 text-muted">
+                {`Начальник: ${chiefFirstName} ${
+                  chiefMiddleName == null ? '' : chiefMiddleName
+                } ${chiefLastName}`}
+              </p>
+              <p className="mb-2 text-muted">
+                {`Ментор: ${mentorFirstName} ${
+                  mentorMiddleName == null ? '' : chiefMiddleName
+                } ${mentorLastName}`}
+              </p>
+              <p className="text-muted">
+                {`HR: ${hrFirstName} ${
+                  hrMiddleName == null ? '' : hrMiddleName
+                } ${hrLastName}`}
+              </p>
+            </div>
+          </Col>
+          <Col sm={{ size: 5 }} className="mt-0 ml-5">
+            <div className="">
+              <p className="font-italic mb-2">
+                {`Дата выхода на работу: ${employmentDate}`}
+              </p>
+              <p className="font-italic"> {timeLeft} </p>
+            </div>
+          </Col>
+        </Row>
 
-          <Row>
-            <Col sm={{ size: 5, offset: 1 }} className="mt-4">
-              <Workflow data={workflow} />
-              <NextStep data={this} />
-            </Col>
-            <Col sm={{ size: 5 }}>
-              <div className="ml-2">
-                <h4>
-                  <span className="text-muted">Комментарии</span>
-                </h4>
-              </div>
-              <div>
-                {this.state.comments != null && (
-                  <Comments
-                    data={this.state.comments}
-                    func={this.commentRemove}
+        <Row>
+          <Col sm={{ size: 5, offset: 1 }} className="mt-4">
+            <Workflow data={workflow} />
+            <NextStep data={this} />
+          </Col>
+          <Col sm={{ size: 5 }}>
+            <div className="ml-2">
+              <h4>
+                <span className="text-muted">Комментарии</span>
+              </h4>
+            </div>
+            <div>
+              {this.state.comments != null && (
+                <Comments
+                  data={this.state.comments}
+                  func={this.commentRemove}
+                />
+              )}
+              <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
+                <FormGroup>
+                  <Input
+                    rows="1"
+                    type="text"
+                    name="text"
+                    placeholder="Написать комментарий"
+                    onChange={this.onCommentChange}
+                    value={this.state.commentValue}
                   />
-                )}
-                <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
-                  <FormGroup>
-                    <Input
-                      rows="1"
-                      type="text"
-                      name="text"
-                      placeholder="Написать комментарий"
-                      onChange={this.onCommentChange}
-                      value={this.state.commentValue}
-                    />
-                  </FormGroup>
-                </Form>
-              </div>
-            </Col>
-          </Row>
+                </FormGroup>
+              </Form>
+            </div>
+          </Col>
+        </Row>
 
-          <Row>
-            <Col sm={{ size: 12, offset: 0 }} className="mt-0">
-              <div>
-                <Alert
-                  color="danger"
-                  isOpen={this.state.alert}
-                  toggle={this.toggleAlert}
-                >
-                  Не удалось установить связь с сервером
-                </Alert>
-              </div>
-            </Col>
-          </Row>
-        </Jumbotron>
+        <Row>
+          <Col sm={{ size: 12, offset: 0 }} className="mt-0">
+            <div>
+              <Alert
+                color="danger"
+                isOpen={this.state.alert}
+                toggle={this.toggleAlert}
+              >
+                Не удалось установить связь с сервером
+              </Alert>
+            </div>
+          </Col>
+        </Row>
       </Container>
     );
   }
@@ -360,13 +358,12 @@ class NextStep extends React.Component {
           toggle={parent.toggleModal}
           className={parent.className}
         >
-          <ModalHeader toggle={parent.toggleModal}>Подтверждение</ModalHeader>
+          <ModalHeader toggle={parent.toggleModal}>
+            Перевести на следующий этап?
+          </ModalHeader>
           <ModalBody>
             Отменить перевод на следующий этап можно будет в меню
-            редактирования. Наверное, на некоторых этапах в этом окошке можно
-            будет добавлять некторую информацию. А может на каждом? например,
-            комментарии к этапу писать здесь. Ну и конечно же нужно ли вообще
-            это окошко?
+            редактирования.
           </ModalBody>
           <ModalFooter>
             <Button outline color="secondary" onClick={this.click}>
@@ -379,12 +376,6 @@ class NextStep extends React.Component {
         </Modal>
       </div>
     );
-    /*
-    return (
-      <Button outline color="secondary" className="mt-5" onClick={() => parent.nextStep(parent)}>
-        Перевести далее
-      </Button>
-    );*/
   }
 }
 
@@ -441,11 +432,11 @@ class WorkflowStage extends React.Component {
   typeTranslate(type) {
     switch (type) {
       case 'ADD':
-        return 'Подготовка к сопровождению';
+        return 'Добавлен в систему';
       case 'TASK_LIST':
-        return 'Задачи на испытательный срок';
+        return 'Согласование задач';
       case 'WELCOME_MEETING':
-        return 'Велком встреча';
+        return 'Welcome встреча';
       case 'INTERIM_MEETING':
         return 'Промежуточная встреча';
       case 'INTERIM_MEETING_RESULT':
@@ -455,18 +446,18 @@ class WorkflowStage extends React.Component {
       case 'FINAL_MEETING_RESULT':
         return 'Результаты итоговой встречи';
       case 'QUESTIONNAIRE':
-        return 'Опросник';
+        return 'Опросник новичка';
     }
   }
 
   getDescription(type) {
     switch (type) {
       case 'ADD':
-        return 'Ожидается день выхода на работу. Сейчас начальник готовит задачи на испытательный срок.';
+        return 'Начальнику был выслан бланк для заполнения задач на испытательный период.';
       case 'TASK_LIST':
         return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
       case 'WELCOME_MEETING':
-        return 'Необходимо забронировать перговорную конату и провести welcome встречу.';
+        return 'Ожидается день выхода на работу. Не забудь отправить welcome письмо и провести welcome встречу.';
       case 'INTERIM_MEETING':
         return 'Необходимо забронировать перговорную конату и провести промежуточную встречу.';
       case 'INTERIM_MEETING_RESULT':
@@ -476,7 +467,7 @@ class WorkflowStage extends React.Component {
       case 'FINAL_MEETING_RESULT':
         return 'Необходимо заполнить результаты итоговой встречи.';
       case 'QUESTIONNAIRE':
-        return 'Сотрудник получил опросник для новчика и работает над его заполнением.';
+        return 'Сотрудник получил опросник для новичка и работает над его заполнением.';
     }
   }
 
