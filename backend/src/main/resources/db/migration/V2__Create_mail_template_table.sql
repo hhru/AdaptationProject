@@ -10,7 +10,7 @@ INSERT INTO mail_template VALUES (default, 'welcome', '
 ');
 
 INSERT INTO mail_template VALUES (default, 'chief_missions', 'Привет. Скоро к твоей команде присоеденится новый сотрудник {{userName}}. Пожалуйста, приготовь список задач на испытательный срок, пройдя по ссылке {{url}}');
-INSERT INTO mail_template VALUES (default, 'hr_missions', 'Привет. Скоро к нашей компании присоеденится новый сотрудник {{userName}}. Будущий руководитель подготовил для сотрудника задачи на испытательный период {{missions}}');
+INSERT INTO mail_template VALUES (default, 'hr_missions', 'Привет. Скоро к нашей компании присоеденится новый сотрудник {{userName}}. Будущий руководитель подготовил задачи на испытательный период {{missions}}');
 INSERT INTO mail_template VALUES (default, 'meeting_room', 'Привет. {{userName}} ожидает {{meetingType}}. Не забудь забронировать переговрную комнату для этого события.');
 INSERT INTO mail_template VALUES (default, 'meeting_results', 'Привет. Для сотрудника {{userName}} была проведена {{meetingType}} встреча. Пожалуйста, заполни итоги встречи, перейдя по ссылке {{url}}');
 INSERT INTO mail_template VALUES (default, 'questionnaire', 'Привет. Твой испытательный период практически завершен. Пожалуйста, заполни опросник новчика, перейдя по ссылке {{url}}');

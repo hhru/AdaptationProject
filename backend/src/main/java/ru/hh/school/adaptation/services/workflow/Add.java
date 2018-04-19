@@ -1,11 +1,14 @@
 package ru.hh.school.adaptation.services.workflow;
 
+import org.apache.commons.lang3.time.DateUtils;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
 import ru.hh.school.adaptation.services.MailService;
 
 import javax.inject.Singleton;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +29,19 @@ public class Add {
   }
 
   public void onAdd(Employee employee) {
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+
+    Date d1 = employee.getEmploymentDate();
+    Date d2 = DateUtils.addMonths(d1, 1);
+    d2 = DateUtils.addDays(d2, 15);
+    Date d3 = DateUtils.addMonths(d1, 3);
+
+    String hrEmail = employee.getHr().getSelf().getEmail();
+
+    mailService.sendCalendar(hrEmail, "Welcome-встреча", dateFormat.format(d1));
+    mailService.sendCalendar(hrEmail, "Промежуточная встреча", dateFormat.format(d2));
+    mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(d3));
+
     taskListMail(employee);
 
     long delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
