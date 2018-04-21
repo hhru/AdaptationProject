@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 
 import AddEmployee from './AddEmployee';
-import AddTask from './AddTask';
+import AddTask from './tasks/AddTask';
 import ListEmployees from './ListEmployees';
 import EmployeePage from './EmployeePage';
 import HomePage from './HomePage';
