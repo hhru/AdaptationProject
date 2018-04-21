@@ -5,6 +5,7 @@ import FaCircle from 'react-icons/lib/fa/circle';
 import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
+import EmployeeTasksModal from './tasks/EmployeeTasksModal';
 
 class EmployeePage extends React.Component {
   constructor(props) {
@@ -59,7 +60,10 @@ class EmployeePage extends React.Component {
           },
         ],
       },
+      tasksModal: false,
     };
+
+    this.toggleTasksModal = this.toggleTasksModal.bind(this);
   }
 
   componentDidMount() {
@@ -76,6 +80,13 @@ class EmployeePage extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
+  }
+
+  toggleTasksModal() {
+    console.log('toggle');
+    this.setState({
+      tasksModal: !this.state.tasksModal,
+    });
   }
 
   render() {
@@ -121,6 +132,13 @@ class EmployeePage extends React.Component {
         <p> {`HR: ${hrFirstName} ${hrMiddleName} ${hrLastName}`} </p>
         <p> {`Дата выхода: ${employmentDate}`} </p>
         <Workflow data={workflow} />
+
+        <button onClick={this.toggleTasksModal}>Example Task Modal</button>
+        <EmployeeTasksModal
+          employeeId={this.state.employeeId}
+          isOpen={this.state.tasksModal}
+          parentToggle={this.toggleTasksModal}
+        />
       </div>
     );
   }

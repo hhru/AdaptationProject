@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
 
 class HomePage extends React.Component {
   constructor(props) {

@@ -9,6 +9,7 @@ import {
   Container,
   Row,
 } from 'reactstrap';
+import FunctionalTaskRows from './FunctionalTasks';
 
 class AddTask extends React.Component {
   constructor(props) {
@@ -42,10 +43,7 @@ class AddTask extends React.Component {
                   number: newKey,
                   text: task.text,
                   deadlineDate: task.deadlineDate,
-                  resources:
-                    task.resources !== undefined
-                      ? task.resources.split(',')
-                      : null,
+                  resources: task.resources,
                   deleted: task.deleted,
                 };
               }),
@@ -82,7 +80,7 @@ class AddTask extends React.Component {
             id: task.id,
             text: task.text,
             deadlineDate: task.deadlineDate,
-            resources: task.resources.join(','),
+            resources: task.resources,
             deleted: task.deleted,
           };
         }),
@@ -101,10 +99,7 @@ class AddTask extends React.Component {
                   number: newKey,
                   text: task.text,
                   deadlineDate: task.deadlineDate,
-                  resources:
-                    task.resources !== undefined
-                      ? task.resources.split(',')
-                      : null,
+                  resources: task.resources,
                   deleted: task.deleted,
                 };
               }),
@@ -174,6 +169,8 @@ class AddTask extends React.Component {
             </Col>
           </FormGroup>
           <hr />
+          <FunctionalTaskRows />
+          <hr />
           {tasksToRender}
           <FormGroup row>
             <Col sm={{ size: 4, offset: 5 }}>
@@ -206,7 +203,7 @@ class TaskRow extends React.Component {
       number: props.value.number,
       text: props.value.text,
       deadlineDate: props.value.deadlineDate,
-      resources: props.value.resources || [],
+      resources: props.value.resources,
       deleted: props.value.deleted || false,
     };
 
@@ -242,20 +239,12 @@ class TaskRow extends React.Component {
           <Row>
             <Col md={9}>
               <Input
-                type="select"
-                name="selectMulti"
+                type="textarea"
+                name="text"
                 id="taskResources"
-                multiple
                 value={this.state.resources}
                 onChange={this.handleResourceInput}
-              >
-                <option value="intranet">Intranet</option>
-                <option value="chief">Руководитель</option>
-                <option value="chief-cu">Руководитель КУ</option>
-                <option value="curator">Куратор</option>
-                <option value="mentor">Ментор</option>
-                <option value="wiki">wiki</option>
-              </Input>
+              />
             </Col>
             <Col md={3}>
               <Button color="danger" onClick={this.handleRemoveTask}>
@@ -300,11 +289,11 @@ class TaskRow extends React.Component {
   }
 
   handleResourceInput(event) {
-    let value = event.target.selectedOptions;
+    let value = event.target.value;
     let self = this;
     this.setState(
       (prevState) => ({
-        resources: [...value].map((o) => o.value),
+        resources: value,
       }),
       () => this.props.onChange(this.props.number, self.state)
     );
