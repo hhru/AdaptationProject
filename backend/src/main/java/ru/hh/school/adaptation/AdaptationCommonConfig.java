@@ -47,6 +47,7 @@ import ru.hh.school.adaptation.resources.EmployeeResource;
 import ru.hh.school.adaptation.resources.TaskResource;
 import ru.hh.school.adaptation.resources.QuestionnaireResource;
 import ru.hh.school.adaptation.resources.MainResource;
+import ru.hh.school.adaptation.resources.UserResource;
 
 import ru.hh.school.adaptation.services.workflow.AddStep;
 import ru.hh.school.adaptation.services.workflow.TaskListStep;
@@ -89,6 +90,7 @@ import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
     MainResource.class,
     EmployeeResource.class,
     PersonalInfoResource.class,
+    UserResource.class,
     DocumentService.class,
 
     AddStep.class,

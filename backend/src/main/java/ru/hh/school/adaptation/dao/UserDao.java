@@ -1,9 +1,11 @@
 package ru.hh.school.adaptation.dao;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.User;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class UserDao {
   private final SessionFactory sessionFactory;
@@ -22,6 +24,11 @@ public class UserDao {
             .createQuery("from User where hhid=:hhid", User.class)
             .setParameter("hhid", hhid)
             .uniqueResult();
+  }
+
+  public List<User> getAllRecords() {
+    Session session = sessionFactory.getCurrentSession();
+    return session.createQuery("from User", User.class).list();
   }
 
   public void save(User user) {

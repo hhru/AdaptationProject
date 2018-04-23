@@ -12,9 +12,13 @@ import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.dto.WorkflowStepDto;
+import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
+import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
+import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
@@ -32,11 +36,14 @@ public class EmployeeResource {
   private final EmployeeService employeeService;
   private final TransitionService transitionService;
   private final CommentService commentService;
+  private final AuthService authService;
 
-  public EmployeeResource(EmployeeService employeeService, TransitionService transitionService, CommentService commentService) {
+  public EmployeeResource(EmployeeService employeeService, TransitionService transitionService,
+                          CommentService commentService, AuthService authService) {
     this.employeeService = employeeService;
     this.transitionService = transitionService;
     this.commentService = commentService;
+    this.authService = authService;
   }
 
   @GET
@@ -84,8 +91,10 @@ public class EmployeeResource {
   @Path("/employee/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public EmployeeDto createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto){
-    return employeeService.createEmployee(employeeCreateDto);
+  public EmployeeDto createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto) {
+    User user = authService.getUser().orElseThrow(() -> new AccessDeniedException("The user is not logged in."));
+    EmployeeCreateInternalDto employeeCreateInternalDto = new EmployeeCreateInternalDto(user.getId(), employeeCreateDto);
+    return employeeService.createEmployee(employeeCreateInternalDto);
   }
 
   @PUT

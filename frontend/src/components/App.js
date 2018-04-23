@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 
 import AddEmployee from './AddEmployee';
+import EditEmployee from './EditEmployee';
 import AddTask from './tasks/AddTask';
 import Questionnaire from './questionnaire/Questionnaire';
 import QuestionnaireResult from './questionnaire/QuestionnaireResult';
@@ -41,6 +42,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route exact path="/add_employee" component={this.handleLoginState(AddEmployee)} />
+            <Route exact path="/edit_employee/:id" component={this.handleLoginState(EditEmployee)} />
             <Route exact path="/list_employees" component={this.handleLoginState(ListEmployees)} />
             <Route exact path="/employee/:id" component={this.handleLoginState(EmployeePage)} />
             <Route
