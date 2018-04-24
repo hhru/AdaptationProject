@@ -73,7 +73,11 @@ public class AuthService {
   }
 
   public Optional<User> getUser() {
-    Integer userId = sessionThreadLocal.get().getId();
-    return userService.getUser(userId);
+    try {
+      Integer userId = sessionThreadLocal.get().getId();
+      return userService.getUser(userId);
+    } catch(Exception e) {
+      return Optional.empty();
+    }
   }
 }
