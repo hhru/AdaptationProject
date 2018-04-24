@@ -1,16 +1,34 @@
 import React from 'react';
+import {
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  FormText,
+  Container,
+} from 'reactstrap';
+import axios from 'axios';
 import ReactDOM from 'react-dom';
 
 class AddEmployee extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      gender: '',
+      selfFirstName: '',
+      selfLastName: '',
+      selfMiddleName: '',
+      selfEmail: '',
+
+      chiefFirstName: '',
+      chiefLastName: '',
+      chiefMiddleName: '',
+      chiefEmail: '',
+
+      hrId: 1,
+      gender: 'MALE',
       position: '',
-      email: '',
       employmentDate: '',
     };
 
@@ -30,64 +48,76 @@ class AddEmployee extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const url = '/api/employee/';
-    let data = this.state;
-    //$.post(url, data, function (response) {
-    //}.bind(this));
-    let { firstName, lastName } = this.state;
-    alert(`Сотрудник ${firstName} ${lastName} добавлен в систему`);
+    let body = {
+      self: {
+        firstName: this.state.selfFirstName,
+        lastName: this.state.selfLastName,
+        middleName: this.state.selfMiddleName,
+        email: this.state.selfEmail,
+      },
+      chief: {
+        firstName: this.state.chiefFirstName,
+        lastName: this.state.chiefLastName,
+        middleName: this.state.chiefMiddleName,
+        email: this.state.chiefEmail,
+      },
+      gender: this.state.gender,
+      hrId: this.state.hrId,
+      position: this.state.position,
+      employmentDate: this.state.employmentDate,
+    };
+    console.log(body);
+    const url = '/api/employee/create';
+    const self = this;
+    axios
+      .post(url, body)
+      .then(function(response) {
+        alert('Пользователь успешно создан');
+        self.props.history.push('/employee/' + response.data.id);
+      })
+      .catch(function(error) {
+        console.log(error);
+        alert(error);
+      });
+    // const url = '/api/employee/';
+    // let data = this.state;
+    // //$.post(url, data, function (response) {
+    // //}.bind(this));
+    // let { firstName, lastName } = this.state;
+    // alert(`Сотрудник ${firstName} ${lastName} добавлен в систему`);
   }
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
+      <Container>
+        <Form>
+          <FormGroup row>
+            <h3>Сотрудник</h3>
+          </FormGroup>
           <LabeledInputFormElement
             labelText="Имя"
-            name="firstName"
+            name="selfFirstName"
             type="text"
             onChange={this.handleInputChange}
             isRequired={true}
-            value={this.state.firstName}
+            value={this.state.selfFirstName}
           />
           <LabeledInputFormElement
             labelText="Отчество"
-            name="middleName"
+            name="selfMiddleName"
             type="text"
             onChange={this.handleInputChange}
             isRequired={false}
-            value={this.state.middleName}
+            value={this.state.selfMiddleName}
           />
           <LabeledInputFormElement
             labelText="Фамилия"
-            name="lastName"
+            name="selfLastName"
             type="text"
             onChange={this.handleInputChange}
             isRequired={true}
-            value={this.state.lastName}
+            value={this.state.selfLastName}
           />
-          <span>
-            <label>
-              Пол:
-              <InputFormElement
-                name="gender"
-                type="radio"
-                value="male"
-                onChange={this.handleInputChange}
-                required={true}
-              />
-              М
-              <InputFormElement
-                name="gender"
-                type="radio"
-                value="female"
-                onChange={this.handleInputChange}
-                required={true}
-              />
-              Ж
-            </label>
-            <br />
-          </span>
           <LabeledInputFormElement
             labelText="Должность"
             name="position"
@@ -98,11 +128,11 @@ class AddEmployee extends React.Component {
           />
           <LabeledInputFormElement
             labelText="Email"
-            name="email"
+            name="selfEmail"
             type="email"
             onChange={this.handleInputChange}
             isRequired={true}
-            value={this.state.email}
+            value={this.state.selfEmail}
           />
           <LabeledInputFormElement
             labelText="Дата выхода"
@@ -112,9 +142,45 @@ class AddEmployee extends React.Component {
             isRequired={true}
             value={this.state.employmentDate}
           />
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
+
+          <FormGroup row>
+            <h3>Начальник</h3>
+          </FormGroup>
+          <LabeledInputFormElement
+            labelText="Имя"
+            name="chiefFirstName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.chiefFirstName}
+          />
+          <LabeledInputFormElement
+            labelText="Отчество"
+            name="chiefMiddleName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={false}
+            value={this.state.chiefMiddleName}
+          />
+          <LabeledInputFormElement
+            labelText="Фамилия"
+            name="chiefLastName"
+            type="text"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.chiefLastName}
+          />
+          <LabeledInputFormElement
+            labelText="Email"
+            name="chiefEmail"
+            type="email"
+            onChange={this.handleInputChange}
+            isRequired={true}
+            value={this.state.chiefEmail}
+          />
+          <Button onClick={this.handleSubmit}>Создать</Button>
+        </Form>
+      </Container>
     );
   }
 }
@@ -153,19 +219,20 @@ class LabeledInputFormElement extends React.Component {
       labelText,
     } = this.props;
     return (
-      <span>
-        <label>
-          {labelText + ':'}
-          <InputFormElement
-            name={name}
+      <FormGroup row>
+        <Label for={name} sm={2}>
+          {labelText}
+        </Label>
+        <Col sm={10}>
+          <Input
             type={type}
-            value={value}
+            name={name}
+            id={name}
             onChange={onChange}
-            required={required}
+            value={value}
           />
-        </label>
-        <br />
-      </span>
+        </Col>
+      </FormGroup>
     );
   }
 }
