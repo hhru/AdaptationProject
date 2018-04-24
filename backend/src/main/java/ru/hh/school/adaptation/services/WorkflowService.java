@@ -1,173 +1,90 @@
 package ru.hh.school.adaptation.services;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.Gender;
-import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.WorkflowStepType;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
-import org.springframework.context.annotation.Lazy;
+import ru.hh.school.adaptation.services.workflow.AddStep;
+import ru.hh.school.adaptation.services.workflow.TaskListStep;
+import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
+import ru.hh.school.adaptation.services.workflow.InterimMeeteingStep;
+import ru.hh.school.adaptation.services.workflow.InterimMeetingResultStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingResultStep;
+import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
 
 @Singleton
 public class WorkflowService {
   private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
-  private static final String addTaskLink = "https://adaptation.host/add_tasks/%s";
-
-  private MailService mailService;
-  private TransitionService transitionService;
-  private TaskService taskService;
-  private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
   private CookieManager cookieManager = new CookieManager();
   private String host;
-  private String projectKey;
-  private String issueType;
-  private String assignee;
 
-  public WorkflowService(FileSettings fileSettings, MailService mailService, TaskService taskService,
-                         @Lazy TransitionService transitionService) {
-    this.mailService = mailService;
-    this.transitionService = transitionService;
-    this.taskService = taskService;
+  private AddStep addStep;
+  private TaskListStep taskListStep;
+  private WelcomeMeetingStep welcomeMeetingStep;
+  private InterimMeeteingStep interimMeeteingStep;
+  private InterimMeetingResultStep interimMeetingResultStep;
+  private FinalMeetingStep finalMeetingStep;
+  private FinalMeetingResultStep finalMeetingResultStep;
+  private QuestionnaireStep questionnaireStep;
+
+  public WorkflowService(FileSettings fileSettings, AddStep addStep, TaskListStep taskListStep, WelcomeMeetingStep welcomeMeetingStep,
+                         InterimMeeteingStep interimMeeteingStep, InterimMeetingResultStep interimMeetingResultStep,
+                         FinalMeetingStep finalMeetingStep, FinalMeetingResultStep finalMeetingResultStep, QuestionnaireStep questionnaireStep) {
+    this.addStep = addStep;
+    this.taskListStep = taskListStep;
+    this.welcomeMeetingStep = welcomeMeetingStep;
+    this.interimMeeteingStep = interimMeeteingStep;
+    this.interimMeetingResultStep = interimMeetingResultStep;
+    this.finalMeetingStep = finalMeetingStep;
+    this.finalMeetingResultStep = finalMeetingResultStep;
+    this.questionnaireStep = questionnaireStep;
 
     Properties properties = fileSettings.getProperties();
     host = properties.getProperty("jira.host");
-    projectKey = properties.getProperty("jira.project.key");
-    issueType = properties.getProperty("jira.issuetype");
-    assignee = properties.getProperty("jira.assignee");
     jiraAuth(properties.getProperty("jira.username"), properties.getProperty("jira.password"));
   }
 
   public void stepAction(Employee employee, WorkflowStepType workflowStepType) {
     switch (workflowStepType) {
       case ADD:
-        onAdd(employee);
+        addStep.onAdd(employee);
         break;
       case TASK_LIST:
-        onTaskList(employee);
+        taskListStep.onTaskList();
         break;
       case WELCOME_MEETING:
-        onWelcomeMeeting(employee);
+        welcomeMeetingStep.onWelcomeMeeting();
         break;
       case INTERIM_MEETING:
-        onInterimMeeting(employee);
+        interimMeeteingStep.onInterimMeeting();
         break;
       case INTERIM_MEETING_RESULT:
-        onInterimMeetingResult(employee);
+        interimMeetingResultStep.onInterimMeetingResult(employee);
         break;
       case FINAL_MEETING:
-        onFinalMeeting(employee);
+        finalMeetingStep.onFinalMeeting();
         break;
       case FINAL_MEETING_RESULT:
-        onFinalMeetingResult(employee);
+        finalMeetingResultStep.onFinalMeetingResult(employee);
         break;
       case QUESTIONNAIRE:
-        onQuestionnaire(employee);
+        questionnaireStep.onQuestionnaire(employee, cookieManager);
         break;
     }
-  }
-
-  private void onAdd(Employee employee) {
-    long delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
-    scheduledExecutorService.schedule(() -> onAddSheduled(employee), delay, TimeUnit.SECONDS);
-
-    TaskForm taskForm = taskService.createTaskForm(employee);
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
-    mailService.sendMail(employee.getChief().getEmail(), "chief_missions", params);
-  }
-
-  private void onAddSheduled(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName());
-    params.put("{{isMale}}", employee.getGender() == Gender.MALE ? "провел" : "провела");
-    mailService.sendMail(employee.getSelf().getEmail(), "welcome", params);
-    transitionService.setEmployeeNextTransition(employee);
-  }
-
-  private void onTaskList(Employee employee) {
-
-  }
-
-  private void onWelcomeMeeting(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{meetingType}}", "welcome-встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
-  }
-
-  private void onInterimMeeting(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{meetingType}}", "промежуточной встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
-  }
-
-  private void onInterimMeetingResult(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{meetingType}}", "промежуточная");
-    params.put("{{url}}", "http://results.com");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_results", params);
-  }
-
-  private void onFinalMeeting(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{meetingType}}", "итоговой встречи");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_room", params);
-  }
-
-  private void onFinalMeetingResult(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{meetingType}}", "итоговая");
-    params.put("{{url}}", "http://results.com");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "meeting_results", params);
-  }
-
-  private void onQuestionnaire(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{url}}", "http://questionnaire.com");
-    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
-
-    String jiraParams = new JSONObject()
-            .put("fields", new JSONObject()
-                    .put("project", new JSONObject().put("key", projectKey))
-                    .put("summary", "Сделать ДМС")
-                    .put("description", "К нашей компании присоеденился новый сотрудник " + employee.getSelf().getFirstName() + " " +
-                            employee.getSelf().getLastName() + ". Для " + (employee.getGender()==Gender.MALE?"него":"нее") +
-                            " необходимо оформить ДМС.")
-                    .put("issuetype", new JSONObject().put("name", issueType))
-                    .put("assignee", new JSONObject().put("name", assignee))
-            ).toString();
-    createJiraTask(jiraParams);
-
-    transitionService.setEmployeeNextTransition(employee);
   }
 
   private void jiraAuth(String username, String password) {
@@ -195,36 +112,6 @@ public class WorkflowService {
       cookies.forEach(cookie -> cookieManager.getCookieStore().add(null, cookie));
 
       logger.info("Jira authentication successful");
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-    } finally {
-      if (connection != null) {
-        connection.disconnect();
-      }
-    }
-  }
-
-  private void createJiraTask(String params) {
-    HttpURLConnection connection = null;
-
-    try {
-      URL url = new URL(host + "/rest/api/latest/issue");
-      connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("POST");
-      connection.setRequestProperty("Content-Type", "application/json");
-      connection.setRequestProperty("Cookie", StringUtils.join(cookieManager.getCookieStore().getCookies(), ";"));
-      connection.setUseCaches(false);
-      connection.setDoOutput(true);
-
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
-      writer.write(params);
-      writer.flush();
-      writer.close();
-
-      BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-      JSONObject response = new JSONObject(reader.readLine());
-      reader.close();
-      logger.info("Create jira task with key {}", response.get("key"));
     } catch (Exception e) {
       logger.error(e.getMessage());
     } finally {

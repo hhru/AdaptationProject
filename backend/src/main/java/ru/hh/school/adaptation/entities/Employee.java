@@ -66,6 +66,10 @@ public class Employee {
   @OrderBy("step_type")
   private List<Transition> workflow;
 
+  @OneToMany(mappedBy = "employee")
+  @OrderBy("id")
+  private List<Comment> comments;
+
   @OneToOne(mappedBy = "employee")
   private TaskForm taskForm;
 
@@ -151,6 +155,14 @@ public class Employee {
 
   public void setWorkflow(List<Transition> workflow) {
     this.workflow = workflow;
+  }
+
+  public List<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(List<Comment> comments) {
+    this.comments = comments;
   }
 
   public TaskForm getTaskForm() {

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
+import ru.hh.school.adaptation.dao.CommentDao;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
@@ -15,6 +16,7 @@ import ru.hh.school.adaptation.dao.TaskDao;
 import ru.hh.school.adaptation.dao.TaskFormDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
+import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
@@ -28,6 +30,7 @@ import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.DocumentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
+import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.TaskService;
 import ru.hh.school.adaptation.services.TransitionService;
 import ru.hh.school.adaptation.services.UserService;
@@ -37,9 +40,18 @@ import ru.hh.school.adaptation.services.auth.HhApiService;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
 
+import ru.hh.school.adaptation.services.workflow.AddStep;
+import ru.hh.school.adaptation.services.workflow.TaskListStep;
+import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
+import ru.hh.school.adaptation.services.workflow.InterimMeeteingStep;
+import ru.hh.school.adaptation.services.workflow.InterimMeetingResultStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingResultStep;
+import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
 
 @Configuration
 @Import({
+    CommentDao.class,
     MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
@@ -48,6 +60,7 @@ import ru.hh.school.adaptation.resources.PersonalInfoResource;
     TaskFormDao.class,
     EmployeeResource.class,
     EmployeeService.class,
+    CommentService.class,
     TransitionService.class,
     TaskService.class,
     UserService.class,
@@ -64,6 +77,15 @@ import ru.hh.school.adaptation.resources.PersonalInfoResource;
     EmployeeResource.class,
     PersonalInfoResource.class,
     DocumentService.class,
+
+    AddStep.class,
+    TaskListStep.class,
+    WelcomeMeetingStep.class,
+    InterimMeeteingStep.class,
+    InterimMeetingResultStep.class,
+    FinalMeetingStep.class,
+    FinalMeetingResultStep.class,
+    QuestionnaireStep.class
 })
 public class AdaptationCommonConfig {
 
@@ -79,7 +101,8 @@ public class AdaptationCommonConfig {
         PersonalInfo.class,
         Transition.class,
         Task.class,
-        TaskForm.class
+        TaskForm.class,
+        Comment.class
     );
   }
 
