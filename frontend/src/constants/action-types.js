@@ -1,0 +1,2 @@
+export const SET_INITIALIZED = 'SET_INITIALIZED';
+export const SET_LOGGED_IN = 'SET_LOGGED_IN';

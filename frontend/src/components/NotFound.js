@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Alert } from 'reactstrap';
 
 class NotFound extends React.Component {
   constructor(props) {
@@ -7,7 +8,7 @@ class NotFound extends React.Component {
   }
 
   render() {
-    return <p>Not Found :(</p>;
+    return <Alert color="danger">Страница не найдена</Alert>;
   }
 }
 
