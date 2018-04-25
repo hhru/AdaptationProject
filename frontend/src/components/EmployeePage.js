@@ -343,7 +343,8 @@ class EmployeePage extends React.Component {
             <Workflow data={workflow} parent={this} />
             <Row>
               <NextStep parent={this} />
-              <MeetingResult parent={this} />
+              <Button outline color="info" className="mt-5 ml-3" onClick={this.toggleTasksModal}>Задачи на испытательный срок</Button>
+              <EmployeeTasksModal employeeId={this.state.employeeId} isOpen={this.state.tasksModal} parentToggle={this.toggleTasksModal}/>
             </Row>
           </Col>
           <Col sm={{ size: 5 }}>
@@ -373,11 +374,6 @@ class EmployeePage extends React.Component {
               </Form>
             </div>
           </Col>
-        </Row>
-
-        <Row className="mt-3 ml-5">
-          <button onClick={this.toggleTasksModal}>Example Task Modal</button>
-          <EmployeeTasksModal employeeId={this.state.employeeId} isOpen={this.state.tasksModal} parentToggle={this.toggleTasksModal}/>
         </Row>
 
         <Row>
