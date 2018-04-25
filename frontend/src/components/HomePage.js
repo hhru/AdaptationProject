@@ -1,82 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Container, Row, Col } from 'reactstrap';
+
+const mapStateToProps = (state) => {
+  return { loggedIn: state.loggedIn };
+};
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isLoggedIn: false,
-    };
-
-    this.handleLoginLogoutButtonPressed = this.handleLoginLogoutButtonPressed.bind(
-      this
-    );
-  }
-
-  handleLoginLogoutButtonPressed() {
-    const url = '/api/login/';
-    //  axios.get(url)
-    //    .then(function (response) {
-    //      console.log(response);
-    this.setState((prevState) => ({
-      isLoggedIn: !prevState.isLoggedIn,
-    }));
-    //      })
-    //    .catch(function (error) {
-    //  console.log(error);
-    //});
   }
 
   render() {
     return (
-      <div>
-        <p>Welcome to adaptation homepage!</p>
-
-        <button onClick={this.handleLoginLogoutButtonPressed}>
-          {this.state.isLoggedIn ? 'Logout' : 'Login'}
-        </button>
-
-        {this.state.isLoggedIn ? (
-          <HomePageForLogedInUser history={this.props.history} />
-        ) : null}
-      </div>
+      <Row>
+        <Col>
+          <h1>Добро пожаловать!</h1>
+        </Col>
+      </Row>
     );
   }
 }
 
-class HomePageForLogedInUser extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleAddEmployee = this.handleAddEmployee.bind(this);
-    this.handleListEmployees = this.handleListEmployees.bind(this);
-    this.handleShowEmployeePage = this.handleShowEmployeePage.bind(this);
-  }
-
-  handleAddEmployee() {
-    this.props.history.push('/add_employee');
-  }
-
-  handleListEmployees() {
-    this.props.history.push('/list_employees');
-  }
-
-  handleShowEmployeePage() {
-    this.props.history.push('/employee_page');
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.handleAddEmployee}>Add Employee</button>
-
-        <button onClick={this.handleListEmployees}>List Employees</button>
-
-        <button onClick={this.handleShowEmployeePage}>
-          Show Sample Employee Page
-        </button>
-      </div>
-    );
-  }
-}
-
-export default HomePage;
+export default connect(mapStateToProps)(HomePage);
