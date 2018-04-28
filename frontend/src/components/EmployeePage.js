@@ -108,7 +108,7 @@ class EmployeePage extends React.Component {
     axios
       .get(url)
       .then(function(response) {
-        console.log(response.data);
+        //console.log(response.data);
         self.setState({
           data: response.data,
         });
@@ -119,7 +119,7 @@ class EmployeePage extends React.Component {
           message: 'Не удалось установить связь с сервером',
           color: 'danger',
         });
-        console.log(error);
+        //console.log(error);
       });
   }
 
@@ -146,12 +146,12 @@ class EmployeePage extends React.Component {
           message: 'Не удалось установить связь с сервером',
           color: 'danger',
         });
-        console.log(error);
+        //console.log(error);
       });
   }
 
   toggleTasksModal() {
-    console.log('toggle');
+    //console.log('toggle');
     this.setState({
       tasksModal: !this.state.tasksModal,
     });
@@ -220,10 +220,11 @@ class EmployeePage extends React.Component {
       })
       .then(function(response) {
         self.state.data.comments.push({
-          id: response,
+          id: response.data,
           author: author,
           message: message,
         });
+        console.log(self.state.data.comments);
         self.forceUpdate();
         //privet. kak tebe moi kostyl?
         setTimeout(() => {
@@ -236,7 +237,7 @@ class EmployeePage extends React.Component {
           message: 'Не удалось установить связь с сервером',
           color: 'danger',
         });
-        console.log(error);
+        //console.log(error);
       });
   }
 
@@ -258,7 +259,7 @@ class EmployeePage extends React.Component {
           message: 'Не удалось установить связь с сервером',
           color: 'danger',
         });
-        console.log(error);
+        //console.log(error);
       });
   }
 
@@ -388,55 +389,19 @@ class EmployeePage extends React.Component {
   }
 }
 
-class MeetingResult extends React.Component {
+class NextStep extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       modal: false,
-      interimResult: false,
-      finalResult: false,
       commentValue: '',
     };
 
     this.click = this.click.bind(this);
-    this.interimResult = this.interimResult.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
-    this.finalResult = this.finalResult.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.commentSubmit = this.commentSubmit.bind(this);
-  }
-
-  finalResult() {
-    this.toggleModal();
-
-    this.setState({
-      finalResult: true,
-    });
-  }
-
-  interimResult() {
-    this.toggleModal();
-
-    this.setState({
-      interimResult: true,
-    });
-  }
-
-  getCurrentType(parent) {
-    var result = parent.state.data.workflow.filter(
-      (x) => x.status == 'CURRENT'
-    );
-    if (result.length == 0) {
-      return 'NONE';
-    }
-    return result[0].type;
-  }
-
-  toggleModal() {
-    this.setState({
-      modal: !this.state.modal,
-    });
   }
 
   onCommentChange(e) {
@@ -451,24 +416,23 @@ class MeetingResult extends React.Component {
   }
 
   click() {
-    if (this.state.commentValue == '') {
-      this.toggleModal();
-      return;
-    }
+    var parent = this.props.parent;
 
-    if (this.state.finalResult) {
-      this.props.parent.realSubmit('Итоговая встреча', this.state.commentValue);
-    } else {
-      this.props.parent.realSubmit(
-        'Промежуточная встреча',
-        this.state.commentValue
-      );
+    if (this.state.commentValue != '') {
+      if (this.getCurrentType(parent)=='INTERIM_MEETING_RESULT') {
+        this.props.parent.realSubmit('Промежуточная встреча', this.state.commentValue);
+      }
+      if (this.getCurrentType(parent)=='FINAL_MEETING_RESULT') {
+        this.props.parent.realSubmit('Итоговая встреча', this.state.commentValue);
+      }
     }
 
     this.setState({
       commentValue: '',
     });
+
     this.toggleModal();
+    parent.nextStep(parent);
 
     /*
     this.props.parent.toggleAlert({
@@ -477,88 +441,6 @@ class MeetingResult extends React.Component {
       color: 'success',
     });
     */
-  }
-
-  render() {
-    var parent = this.props.parent;
-    var currentWorkflowType = this.getCurrentType(parent);
-
-    return (
-      <div>
-        {this.state.interimResult == false &&
-          currentWorkflowType == 'INTERIM_MEETING_RESULT' && (
-            <Button
-              outline
-              color="info"
-              className="mt-5 ml-3"
-              onClick={this.interimResult}
-            >
-              Заполнить результаты встречи
-            </Button>
-          )}
-        {this.state.finalResult == false &&
-          currentWorkflowType == 'FINAL_MEETING_RESULT' && (
-            <Button
-              outline
-              color="info"
-              className="mt-5 ml-3"
-              onClick={this.finalResult}
-            >
-              Заполнить результаты встречи
-            </Button>
-          )}
-
-        <Modal
-          isOpen={this.state.modal}
-          toggle={this.toggleModal}
-          className={parent.className}
-        >
-          <ModalHeader toggle={this.toggleModal}>
-            Добавить комментарий?
-          </ModalHeader>
-          <ModalBody>
-            <Form onSubmit={(e) => this.commentSubmit(e)}>
-              <FormGroup>
-                <Input
-                  type="text"
-                  name="text"
-                  onChange={this.onCommentChange}
-                  value={this.state.commentValue}
-                />
-              </FormGroup>
-            </Form>
-          </ModalBody>
-          <ModalFooter>
-            <Button outline color="secondary" onClick={this.click}>
-              Отправить
-            </Button>
-            <Button outline color="danger" onClick={this.toggleModal}>
-              Отмена
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </div>
-    );
-  }
-}
-
-class NextStep extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      modal: false,
-    };
-
-    this.click = this.click.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
-  }
-
-  click() {
-    var parent = this.props.parent;
-
-    parent.nextStep(parent);
-    this.toggleModal();
   }
 
   toggleModal() {
@@ -584,6 +466,9 @@ class NextStep extends React.Component {
       currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE'
         ? true
         : false;
+    var isResultStep = currentWorkflowType == 'INTERIM_MEETING_RESULT' || currentWorkflowType == 'FINAL_MEETING_RESULT'
+        ? true
+        : false;
 
     return (
       <div>
@@ -605,6 +490,19 @@ class NextStep extends React.Component {
           <ModalHeader toggle={this.toggleModal}>
             Перевести на следующий этап?
           </ModalHeader>
+          {isResultStep  && (<ModalBody>
+            <Form onSubmit={(e) => this.commentSubmit(e)}>
+              <FormGroup>
+                <Input
+                  type="text"
+                  name="text"
+                  placeholder="Написать комментарий"
+                  onChange={this.onCommentChange}
+                  value={this.state.commentValue}
+                />
+              </FormGroup>
+            </Form>
+          </ModalBody>)}
           <ModalFooter>
             <Button outline color="secondary" onClick={this.click}>
               Перевести
