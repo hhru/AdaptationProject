@@ -70,6 +70,10 @@ public class Employee {
   @OrderBy("id")
   private List<Comment> comments;
 
+  @OneToMany(mappedBy = "employee")
+  @OrderBy("id")
+  private List<Log> logs;
+
   @OneToOne(mappedBy = "employee")
   private TaskForm taskForm;
 
@@ -163,6 +167,14 @@ public class Employee {
 
   public void setComments(List<Comment> comments) {
     this.comments = comments;
+  }
+
+  public List<Log> getLogs() {
+    return logs;
+  }
+
+  public void setLogs(List<Log> logs) {
+    this.logs = logs;
   }
 
   public TaskForm getTaskForm() {

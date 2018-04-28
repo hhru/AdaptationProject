@@ -13,7 +13,9 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Form, FormGroup, Input } from 'reactstrap';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import '!style-loader!css-loader!./app.css';
+import classnames from 'classnames';
 
 class EmployeePage extends React.Component {
   constructor(props) {
@@ -26,7 +28,7 @@ class EmployeePage extends React.Component {
         message: '',
         color: '',
       },
-      commentValue: '',
+      activeTab: '1',
       employeeId: this.props.match.params.id,
       data: {
         id: null,
@@ -82,24 +84,26 @@ class EmployeePage extends React.Component {
             message: '',
           },
         ],
+        logs: [
+          {
+            id: null,
+            employeeId: null,
+            author: '',
+            message: '',
+            eventDate: '',
+          },
+        ],
       },
       tasksModal: false,
     };
 
     this.toggleTasksModal = this.toggleTasksModal.bind(this);
     this.toggleAlert = this.toggleAlert.bind(this);
-    this.onCommentChange = this.onCommentChange.bind(this);
-    this.commentBoxSubmit = this.commentBoxSubmit.bind(this);
     this.commentRemove = this.commentRemove.bind(this);
-    this.realSubmit = this.realSubmit.bind(this);
+    this.commentSubmit = this.commentSubmit.bind(this);
+    this.toggleLogBox = this.toggleLogBox.bind(this);
 
     var nextStep = new NextStep();
-  }
-
-  onCommentChange(e) {
-    this.setState({
-      commentValue: e.target.value,
-    });
   }
 
   componentDidMount() {
@@ -108,7 +112,6 @@ class EmployeePage extends React.Component {
     axios
       .get(url)
       .then(function(response) {
-        //console.log(response.data);
         self.setState({
           data: response.data,
         });
@@ -119,7 +122,6 @@ class EmployeePage extends React.Component {
           message: 'Не удалось установить связь с сервером',
           color: 'danger',
         });
-        //console.log(error);
       });
   }
 
@@ -199,16 +201,15 @@ class EmployeePage extends React.Component {
     }, 2200);
   }
 
-  commentBoxSubmit(e) {
-    e.preventDefault();
-    if (this.state.commentValue == '') return;
-    this.realSubmit('Вы', this.state.commentValue);
-    this.setState({
-      commentValue: '',
-    });
+  toggleLogBox(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
   }
 
-  realSubmit(author, message) {
+  commentSubmit(author, message) {
     const url = '/api/comment/create';
     const self = this;
 
@@ -224,7 +225,7 @@ class EmployeePage extends React.Component {
           author: author,
           message: message,
         });
-        console.log(self.state.data.comments);
+        //console.log(self.state.data.comments);
         self.forceUpdate();
         //privet. kak tebe moi kostyl?
         setTimeout(() => {
@@ -348,32 +349,33 @@ class EmployeePage extends React.Component {
               <EmployeeTasksModal employeeId={this.state.employeeId} isOpen={this.state.tasksModal} parentToggle={this.toggleTasksModal}/>
             </Row>
           </Col>
+
           <Col sm={{ size: 5 }}>
-            <div className="ml-2">
-              <h4>
-                <span className="text-muted">Комментарии</span>
-              </h4>
-            </div>
-            <div>
-              {this.state.data.comments != null && (
-                <Comments
-                  data={this.state.data.comments}
-                  func={this.commentRemove}
-                />
-              )}
-              <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
-                <FormGroup>
-                  <Input
-                    rows="1"
-                    type="text"
-                    name="text"
-                    placeholder="Написать комментарий"
-                    onChange={this.onCommentChange}
-                    value={this.state.commentValue}
-                  />
-                </FormGroup>
-              </Form>
-            </div>
+            <Nav tabs>
+              <NavItem className={classnames({ "cur-default": this.state.activeTab === '1', "cur-pointer": this.state.activeTab !== '1' })}>
+                <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleLogBox('1'); }}>
+                  <h5>
+                    <span className="text-muted">Комментарии</span>
+                  </h5>
+                </NavLink>
+              </NavItem>
+              <NavItem className={classnames({ "cur-default": this.state.activeTab === '2', "cur-pointer": this.state.activeTab !== '2' })}>
+                <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleLogBox('2'); }}>
+                  <h5>
+                    <span className="text-muted">История</span>
+                  </h5>
+                </NavLink>
+              </NavItem>
+            </Nav>
+
+            <TabContent activeTab={this.state.activeTab}>
+              <TabPane tabId="1">
+                <Comments parent={this}/>
+              </TabPane>
+              <TabPane tabId="2">
+                <Logs parent={this}/>
+              </TabPane>
+            </TabContent>
           </Col>
         </Row>
 
@@ -398,10 +400,10 @@ class NextStep extends React.Component {
       commentValue: '',
     };
 
-    this.click = this.click.bind(this);
+    this.nextStep = this.nextStep.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
-    this.commentSubmit = this.commentSubmit.bind(this);
+    this.commentModalSubmit = this.commentModalSubmit.bind(this);
   }
 
   onCommentChange(e) {
@@ -410,20 +412,20 @@ class NextStep extends React.Component {
     });
   }
 
-  commentSubmit(e) {
+  commentModalSubmit(e) {
     e.preventDefault();
-    this.click();
+    this.nextStep();
   }
 
-  click() {
+  nextStep() {
     var parent = this.props.parent;
 
     if (this.state.commentValue != '') {
       if (this.getCurrentType(parent)=='INTERIM_MEETING_RESULT') {
-        this.props.parent.realSubmit('Промежуточная встреча', this.state.commentValue);
+        this.props.parent.commentSubmit('Промежуточная встреча', this.state.commentValue);
       }
       if (this.getCurrentType(parent)=='FINAL_MEETING_RESULT') {
-        this.props.parent.realSubmit('Итоговая встреча', this.state.commentValue);
+        this.props.parent.commentSubmit('Итоговая встреча', this.state.commentValue);
       }
     }
 
@@ -491,7 +493,7 @@ class NextStep extends React.Component {
             Перевести на следующий этап?
           </ModalHeader>
           {isResultStep  && (<ModalBody>
-            <Form onSubmit={(e) => this.commentSubmit(e)}>
+            <Form onSubmit={(e) => this.commentModalSubmit(e)}>
               <FormGroup>
                 <Input
                   type="text"
@@ -504,7 +506,7 @@ class NextStep extends React.Component {
             </Form>
           </ModalBody>)}
           <ModalFooter>
-            <Button outline color="secondary" onClick={this.click}>
+            <Button outline color="secondary" onClick={this.nextStep}>
               Перевести
             </Button>
             <Button outline color="danger" onClick={this.toggleModal}>
@@ -645,26 +647,65 @@ class WorkflowStage extends React.Component {
 class Comments extends React.Component {
   constructor(props) {
     super(props);
+    
+    this.state = {
+      commentValue: '',
+    }
+
+    this.commentBoxSubmit = this.commentBoxSubmit.bind(this);
+    this.onCommentChange = this.onCommentChange.bind(this);
+  }
+
+  commentBoxSubmit(e) {
+    e.preventDefault();
+    if (this.state.commentValue == '') return;
+    this.props.parent.commentSubmit("Вы", this.state.commentValue);
+    this.setState({
+      commentValue: '',
+    });
+  }
+
+  onCommentChange(e) {
+    this.setState({
+      commentValue: e.target.value,
+    });
   }
 
   render() {
+    var parent = this.props.parent;
+
     return (
-      <ListGroup id="commentBox" className="mb-0 anyClass">
-        {this.props.data.map((commentsData) => (
-          <CommentsData
-            message={commentsData.message}
-            author={commentsData.author}
-            key={commentsData.id}
-            id={commentsData.id}
-            func={this.props.func}
-          />
-        ))}
-      </ListGroup>
+      <div>
+        <ListGroup id="commentBox" className="mb-0 info-box">
+          {parent.state.data.comments.map((commentsData) => (
+            <CommentItem
+              message={commentsData.message}
+              author={commentsData.author}
+              key={commentsData.id}
+              id={commentsData.id}
+              parent={this.props.parent}
+            />
+          ))}
+        </ListGroup>
+
+        <Form onSubmit={(e) => this.commentBoxSubmit(e)}>
+          <FormGroup>
+            <Input
+              rows="1"
+              type="text"
+              name="text"
+              placeholder="Написать комментарий"
+              onChange={this.onCommentChange}
+              value={this.state.commentValue}
+            />
+          </FormGroup>
+        </Form>
+      </div>
     );
   }
 }
 
-class CommentsData extends React.Component {
+class CommentItem extends React.Component {
   constructor(props) {
     super(props);
 
@@ -708,11 +749,76 @@ class CommentsData extends React.Component {
             {this.state.isHovering && (
               <small
                 className="text-muted comment-delete"
-                onClick={() => this.props.func(id)}
+                onClick={() => this.props.parent.commentRemove(id)}
               >
                 ✖
               </small>
             )}
+          </Col>
+        </Row>
+        <Row>
+          <span className="ml-2">{message}</span>
+        </Row>
+      </ListGroupItem>
+    );
+  }
+}
+
+class Logs extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    var parent = this.props.parent;
+
+    return (
+      <ListGroup id="logBox" className="mb-0 info-box">
+        {parent.state.data.logs.map((logsData) => (
+          <LogItem
+            message={logsData.message}
+            author={logsData.author}
+            eventDate={logsData.eventDate}
+            key={logsData.id}
+            id={logsData.id}
+          />
+        ))}
+      </ListGroup>
+    );
+  }
+}
+
+class LogItem extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  nameWithDots(name) {
+    return name + ':';
+  }
+
+  dateFormat(date) {
+    if (date == null) {
+      return '';
+    }
+    return (
+      date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0]
+    );
+  }
+
+  render() {
+    const { message, author, eventDate, id } = this.props;
+
+    return (
+      <ListGroupItem className="" onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut}>
+        <Row>
+          <Col sm={{ size: 8, offset: 0 }}>
+            <h6 className="my-0 mb-2">{this.nameWithDots(author)}</h6>
+          </Col>
+          <Col>
+              <span className="text-muted">
+                {this.dateFormat(eventDate)}
+              </span>
           </Col>
         </Row>
         <Row>

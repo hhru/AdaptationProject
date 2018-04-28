@@ -3,7 +3,7 @@
   color: red;
 }
 
-.anyClass {
+.info-box {
   max-height: 450px;
   overflow-y: auto;
 }
@@ -27,4 +27,12 @@ textarea {
 .comment-delete {
   font-size: 10pt;
   float: right;
+}
+
+.cur-pointer {
+  cursor: pointer;
+}
+
+.cur-default {
+  cursor: default;
 }

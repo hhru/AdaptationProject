@@ -1,7 +1,7 @@
 package ru.hh.school.adaptation.services.workflow;
 
 import org.apache.commons.lang3.time.DateUtils;
-import ru.hh.school.adaptation.entities.Comment;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
 import ru.hh.school.adaptation.entities.TaskForm;
@@ -79,11 +79,12 @@ public class AddStep {
     params.put("{{isMale}}", employee.getGender() == Gender.MALE ? "провел" : "провела");
     mailService.sendMail(employee.getSelf().getEmail(), "welcome", params);
 
-    Comment comment = new Comment();
-    comment.setEmployee(employee);
-    comment.setAuthor("Система");
-    comment.setMessage("Сотруднику отправлено welcome-письмо");
-    commentService.createComment(comment);
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor("Система");
+    log.setMessage("Сотруднику отправлено welcome-письмо");
+    log.setEventDate(new Date());
+    commentService.createLog(log);
   }
 
   private void welcomeMeetingNotify(Employee employee) {
