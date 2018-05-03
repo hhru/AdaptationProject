@@ -23,12 +23,15 @@ public class EmployeeService {
   private UserDao userDao;
   private PersonalInfoService personalInfoService;
   private TransitionService transitionService;
+  private CommentService commentService;
 
-  public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService){
+  public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
+                         CommentService commentService) {
     this.employeeDao = employeeDao;
     this.userDao = userDao;
     this.personalInfoService = personalInfoService;
     this.transitionService = transitionService;
+    this.commentService = commentService;
   }
 
   @Transactional(readOnly = true)
@@ -81,6 +84,8 @@ public class EmployeeService {
       throw new RequestValidationException("Id in update request can't be null");
     } else {
       Employee employee = employeeDao.getRecordById(employeeUpdateDto.id);
+      commentService.logEmployeeUpdate(employee, employeeUpdateDto);
+
       employee.setEmploymentDate(employeeUpdateDto.employmentDate);
       employee.setGender(employeeUpdateDto.gender);
       employee.setHr(userDao.getRecordById(employeeUpdateDto.hrId));

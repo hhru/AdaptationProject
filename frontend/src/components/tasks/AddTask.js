@@ -53,7 +53,7 @@ class AddTask extends React.Component {
         );
       })
       .catch(function(error) {
-        console.log(error);
+        //console.log(error);
         alert(error);
       });
   }
@@ -112,7 +112,7 @@ class AddTask extends React.Component {
         );
       })
       .catch(function(error) {
-        console.log(error);
+        //console.log(error);
         alert(error);
       });
   }

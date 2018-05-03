@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.CommentDao;
+import ru.hh.school.adaptation.dao.LogDao;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
@@ -17,6 +18,7 @@ import ru.hh.school.adaptation.dao.TaskFormDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.entities.Comment;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
@@ -52,6 +54,7 @@ import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
 @Configuration
 @Import({
     CommentDao.class,
+    LogDao.class,
     MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
@@ -102,7 +105,8 @@ public class AdaptationCommonConfig {
         Transition.class,
         Task.class,
         TaskForm.class,
-        Comment.class
+        Comment.class,
+        Log.class
     );
   }
 

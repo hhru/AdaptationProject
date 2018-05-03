@@ -31,7 +31,7 @@ class EmployeeTasksModal extends React.Component {
   componentDidMount() {}
 
   onOpened() {
-    console.log('opened');
+    //console.log('opened');
     const url = '/api/employee/tasks/' + this.props.employeeId;
     const self = this;
     axios
@@ -49,7 +49,7 @@ class EmployeeTasksModal extends React.Component {
         });
       })
       .catch(function(error) {
-        console.log(error);
+        //console.log(error);
         alert(error);
       });
   }
@@ -64,7 +64,7 @@ class EmployeeTasksModal extends React.Component {
     let tasksToRender = this.state.tasksList.map((task) => (
       <TaskRow value={task} key={task.key} />
     ));
-    console.log(tasksToRender);
+    //console.log(tasksToRender);
 
     return (
       <Modal

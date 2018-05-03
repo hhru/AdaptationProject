@@ -27,6 +27,8 @@ public class EmployeeDto {
 
   public List<CommentDto> comments;
 
+  public List<LogDto> logs;
+
   public EmployeeDto(Employee employee){
     id = employee.getId();
     this.employee = new PersonalDto(employee.getSelf());
@@ -39,6 +41,9 @@ public class EmployeeDto {
     workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
     if (employee.getComments() != null) {
       comments = employee.getComments().stream().map(CommentDto::new).collect(Collectors.toList());
+    }
+    if (employee.getLogs() != null) {
+      logs = employee.getLogs().stream().map(LogDto::new).collect(Collectors.toList());
     }
   }
 

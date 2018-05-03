@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import ru.hh.nab.core.util.FileSettings;
-import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.MailService;
 import ru.hh.school.adaptation.services.TransitionService;
@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -52,11 +53,12 @@ public class QuestionnaireStep {
     params.put("{{url}}", "http://questionnaire.com");
     mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
 
-    Comment comment = new Comment();
-    comment.setEmployee(employee);
-    comment.setAuthor("Система");
-    comment.setMessage("Сотруднику отправлен опросник новичка");
-    commentService.createComment(comment);
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor("Система");
+    log.setMessage("Сотруднику отправлен опросник новичка");
+    log.setEventDate(new Date());
+    commentService.createLog(log);
 
     String jiraParams = new JSONObject()
           .put("fields", new JSONObject()
