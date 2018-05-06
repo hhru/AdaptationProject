@@ -115,10 +115,13 @@ class ListEmployees extends React.Component {
           getTdProps={(state, rowInfo, column, instance) => {
             return {
               onClick: (e, handleOriginal) => {
-                if (!e.target.classList.contains('rt-expandable')) {
-                  self.props.history.push('/employee/' + rowInfo.row._original.id);
-                } else {
+                if (
+                  e.target.classList.contains('rt-expandable') ||
+                  e.target.classList.contains('rt-expander')
+                ) {
                   handleOriginal();
+                } else {
+                  self.props.history.push('/employee/' + rowInfo.row._original.id);
                 }
               },
             };
@@ -135,7 +138,17 @@ class EmployeePageShort extends React.Component {
   }
 
   render() {
+    const {
+      firstName: employeeFirstName,
+      middleName: employeeMiddleName,
+      lastName: employeeLastName,
+    } = this.props.data;
+    const hrName = this.props.data.hrName;
+    const employmentDate = this.props.data.employmentDate;
+    const workflow = this.props.data.workflow;
+
     console.log(this.props.data);
+    console.log(employeeFirstName, employeeLastName);
     return (
       <div style={{ padding: '20px' }}>
         <em>You can put any component you want here!</em>
