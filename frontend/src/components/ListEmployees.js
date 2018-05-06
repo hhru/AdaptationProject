@@ -79,9 +79,7 @@ class ListEmployees extends React.Component {
         accessor: 'progress',
         Cell: (row) => (
           <div>
-            <div className="text-center">
-              {fullTextToDisplay[row.original.currentWorkflowStep]}
-            </div>
+            <div className="text-center">{fullTextToDisplay[row.original.currentWorkflowStep]}</div>
 
             <Progress multi>
               {row.original.workflow.map((workflowStage) => (
@@ -89,8 +87,7 @@ class ListEmployees extends React.Component {
                   bar
                   color={
                     colorsMap[
-                      workflowStage['status'] +
-                        (workflowStage['overdue'] == true ? '_OVERDUE' : '')
+                      workflowStage['status'] + (workflowStage['overdue'] == true ? '_OVERDUE' : '')
                     ]
                   }
                   value={100.0 / row.original.workflow.length}
@@ -112,10 +109,24 @@ class ListEmployees extends React.Component {
         <ReactTable
           data={this.state.employeeList}
           columns={columns}
-          getTrProps={(state, rowInfo, column, instance) => ({
-            onClick: (e) =>
-              self.props.history.push('/employee/' + rowInfo.row._original.id),
-          })}
+          SubComponent={(row) => {
+            return (
+              <div style={{ padding: '20px' }}>
+                <em>You can put any component you want here!</em>
+              </div>
+            );
+          }}
+          getTdProps={(state, rowInfo, column, instance) => {
+            return {
+              onClick: (e, handleOriginal) => {
+                if (!e.target.classList.contains('rt-expandable')) {
+                  self.props.history.push('/employee/' + rowInfo.row._original.id);
+                } else {
+                  handleOriginal();
+                }
+              },
+            };
+          }}
         />
       </div>
     );
