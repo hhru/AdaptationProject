@@ -110,11 +110,7 @@ class ListEmployees extends React.Component {
           data={this.state.employeeList}
           columns={columns}
           SubComponent={(row) => {
-            return (
-              <div style={{ padding: '20px' }}>
-                <em>You can put any component you want here!</em>
-              </div>
-            );
+            return <EmployeePageShort data={row.original} />;
           }}
           getTdProps={(state, rowInfo, column, instance) => {
             return {
@@ -128,6 +124,21 @@ class ListEmployees extends React.Component {
             };
           }}
         />
+      </div>
+    );
+  }
+}
+
+class EmployeePageShort extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    console.log(this.props.data);
+    return (
+      <div style={{ padding: '20px' }}>
+        <em>You can put any component you want here!</em>
       </div>
     );
   }
