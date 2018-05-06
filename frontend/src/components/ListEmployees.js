@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import FaCircle from 'react-icons/lib/fa/circle';
+import FaAdjust from 'react-icons/lib/fa/adjust';
+import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
+import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import { Progress } from 'reactstrap';
 import ReactTable from 'react-table';
 
@@ -147,11 +151,89 @@ class EmployeePageShort extends React.Component {
     const employmentDate = this.props.data.employmentDate;
     const workflow = this.props.data.workflow;
 
-    console.log(this.props.data);
-    console.log(employeeFirstName, employeeLastName);
     return (
       <div style={{ padding: '20px' }}>
-        <em>You can put any component you want here!</em>
+        <Workflow data={workflow} />
+      </div>
+    );
+  }
+}
+
+class Workflow extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.data.map((workflowStageData) => (
+          <WorkflowStage
+            deadlineDate={workflowStageData.deadlineDate}
+            status={workflowStageData.status}
+            overdue={workflowStageData.overdue}
+            type={workflowStageData.type}
+            key={workflowStageData.id}
+          />
+        ))}
+      </div>
+    );
+  }
+}
+
+class WorkflowStage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.selectIcon = this.selectIcon.bind(this);
+    this.typeTranslate = this.typeTranslate.bind(this);
+  }
+
+  selectIcon(status, overdue) {
+    switch (overdue) {
+      case true:
+        return <FaExclamationCircle size={30} color="#DF6B62" />;
+      default:
+        switch (status) {
+          case 'DONE':
+            return <FaCheckCircle size={30} color="#70BD71" />;
+          case 'CURRENT':
+            return <FaAdjust size={30} color="#BDB370" />;
+          default:
+            return <FaCircle size={30} color="#C2C2C2" />;
+        }
+    }
+  }
+
+  typeTranslate(type) {
+    switch (type) {
+      case 'ADD':
+        return 'Добавлен в систему';
+      case 'TASK_LIST':
+        return 'Согласование задач';
+      case 'WELCOME_MEETING':
+        return 'Welcome-встреча';
+      case 'INTERIM_MEETING':
+        return 'Промежуточная встреча';
+      case 'INTERIM_MEETING_RESULT':
+        return 'Результаты промежуточной встречи';
+      case 'FINAL_MEETING':
+        return 'Итоговая встреча';
+      case 'FINAL_MEETING_RESULT':
+        return 'Результаты итоговой встречи';
+      case 'QUESTIONNAIRE':
+        return 'Опросник новичка';
+    }
+  }
+
+  render() {
+    const { status, overdue, type } = this.props;
+
+    return (
+      <div>
+        {this.selectIcon(status, overdue)}
+        {this.typeTranslate(type)}
+        <br />
       </div>
     );
   }
