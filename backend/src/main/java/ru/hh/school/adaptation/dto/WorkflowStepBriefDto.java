@@ -20,7 +20,7 @@ public class WorkflowStepBriefDto {
     id = transition.getId();
     type = transition.getStepType();
     status = transition.getStepStatus();
-    overdue = transition.getDeadlineTimestamp() != null && transition.getDeadlineTimestamp().after(new Date());
+    overdue = transition.getDeadlineTimestamp() != null && (new Date()).after(transition.getDeadlineTimestamp());
   }
 
 }

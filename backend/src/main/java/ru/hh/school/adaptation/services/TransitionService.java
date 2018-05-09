@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dto.TransitionDto;
@@ -74,6 +75,17 @@ public class TransitionService {
           break;
         default:
           transition.setStepStatus(WorkflowStepStatus.NOT_DONE);
+      }
+      switch (workflowStepType) {
+        case WELCOME_MEETING:
+          transition.setDeadlineTimestamp(employee.getEmploymentDate());
+          break;
+        case INTERIM_MEETING:
+          transition.setDeadlineTimestamp(DateUtils.addMonths(DateUtils.addDays(employee.getEmploymentDate(), 1), 15));
+          break;
+        case FINAL_MEETING:
+          transition.setDeadlineTimestamp(DateUtils.addMonths(employee.getEmploymentDate(), 3));
+          break;
       }
       transitionDao.save(transition);
       transitions.add(transition);
