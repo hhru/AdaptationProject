@@ -556,18 +556,13 @@ class WorkflowStage extends React.Component {
   }
 
   selectIcon(status, overdue) {
-    switch (overdue) {
-      case true:
-        return <FaExclamationCircle size={50} color="#DF6B62" />;
+    switch (status) {
+      case 'DONE':
+        return <FaCheckCircle size={50} color="#70BD71" />;
+      case 'CURRENT':
+        return overdue? <FaExclamationCircle size={50} color="#DF6B62" />: <FaAdjust size={50} color="#BDB370" />;
       default:
-        switch (status) {
-          case 'DONE':
-            return <FaCheckCircle size={50} color="#70BD71" />;
-          case 'CURRENT':
-            return <FaAdjust size={50} color="#BDB370" />;
-          default:
-            return <FaCircle size={50} color="#C2C2C2" />;
-        }
+        return <FaCircle size={50} color="#C2C2C2" />;
     }
   }
 
