@@ -6,6 +6,8 @@ import { Container } from 'reactstrap';
 
 import AddEmployee from './AddEmployee';
 import AddTask from './tasks/AddTask';
+import Questionnaire from './questionnaire/Questionnaire';
+import QuestionnaireResult from './questionnaire/QuestionnaireResult';
 import ListEmployees from './ListEmployees';
 import EmployeePage from './EmployeePage';
 import HomePage from './HomePage';
@@ -31,14 +33,23 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header />
+        <Switch>
+          <Route exact path="/questionnaire/:id" />
+          <Route component={Header} />
+        </Switch>
         <Container>
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route exact path="/add_employee" component={this.handleLoginState(AddEmployee)} />
             <Route exact path="/list_employees" component={this.handleLoginState(ListEmployees)} />
             <Route exact path="/employee/:id" component={this.handleLoginState(EmployeePage)} />
+            <Route
+              exact
+              path="/employee/:id/questionnaire"
+              component={this.handleLoginState(QuestionnaireResult)}
+            />
             <Route exact path="/add_tasks/:id" component={AddTask} />
+            <Route exact path="/questionnaire/:id" component={Questionnaire} />
             <Route component={NotFound} />
           </Switch>
         </Container>

@@ -12,6 +12,7 @@ CREATE TABLE log
   employee_id INT REFERENCES employee(id) NOT NULL,
   author VARCHAR(64) NOT NULL,
   message text NOT NULL,
+  "link" text,
   event_date DATE NOT NULL
 );
 

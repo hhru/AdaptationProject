@@ -36,3 +36,14 @@ textarea {
 .cur-default {
   cursor: default;
 }
+
+.float-right {
+  float: right;
+}
+
+.fixed-alert {
+  position: fixed;
+  top: 30px;
+  width: 57%;
+}
+
