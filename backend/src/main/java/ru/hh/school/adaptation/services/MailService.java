@@ -107,6 +107,7 @@ public class MailService {
         MimeBodyPart messageCalendar = new MimeBodyPart();
         messageCalendar.setHeader("Content-Class", "urn:content-classes:calendarmessage");
         messageCalendar.setHeader("Content-ID", "calendar_message");
+        messageCalendar.setHeader("Content-Type", "text/calendar;charset=utf-8");
         messageCalendar.setDataHandler(new DataHandler(new ByteArrayDataSource(buffer.toString(), "text/calendar")));
 
         Multipart multipart = new MimeMultipart("alternative");
