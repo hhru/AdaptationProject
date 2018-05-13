@@ -169,12 +169,8 @@ class EmployeePage extends React.Component {
     var emplData = new Date(emplYear, emplMonth + 2, emplDay);
     var delta = emplData - new Date();
     var yearLeft = parseInt(delta / 1000 / 60 / 60 / 24 / 30.4 / 12);
-    var monthLeft = parseInt(
-      delta / 1000 / 60 / 60 / 24 / 30.4 - yearLeft * 12
-    );
-    var dayLeft = parseInt(
-      delta / 1000 / 60 / 60 / 24 - monthLeft * 30.4 - yearLeft * 30.4 * 12
-    );
+    var monthLeft = parseInt(delta / 1000 / 60 / 60 / 24 / 30.4 - yearLeft * 12);
+    var dayLeft = parseInt(delta / 1000 / 60 / 60 / 24 - monthLeft * 30.4 - yearLeft * 30.4 * 12);
 
     if (yearLeft > 0) {
       result += yearLeft + ' лет ';
@@ -204,7 +200,7 @@ class EmployeePage extends React.Component {
   toggleLogBox(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
-        activeTab: tab
+        activeTab: tab,
       });
     }
   }
@@ -249,9 +245,7 @@ class EmployeePage extends React.Component {
     axios
       .delete(url)
       .then(function(response) {
-        self.state.data.comments = self.state.data.comments.filter(
-          (x) => x.id != commentId
-        );
+        self.state.data.comments = self.state.data.comments.filter((x) => x.id != commentId);
         self.forceUpdate();
       })
       .catch(function(error) {
@@ -268,9 +262,7 @@ class EmployeePage extends React.Component {
     if (date == null) {
       return '';
     }
-    return (
-      date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0]
-    );
+    return date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
   }
 
   render() {
@@ -285,8 +277,10 @@ class EmployeePage extends React.Component {
       middleName: chiefMiddleName,
       lastName: chiefLastName,
     } = this.state.data.chief;
-    const mentorFirstName = this.state.data.mentor != null ? this.state.data.mentor.firstName : null;
-    const mentorMiddleName = this.state.data.mentor != null ? this.state.data.mentor.middleName : null;
+    const mentorFirstName =
+      this.state.data.mentor != null ? this.state.data.mentor.firstName : null;
+    const mentorMiddleName =
+      this.state.data.mentor != null ? this.state.data.mentor.middleName : null;
     const mentorLastName = this.state.data.mentor != null ? this.state.data.mentor.lastName : null;
     const {
       firstName: hrFirstName,
@@ -316,25 +310,21 @@ class EmployeePage extends React.Component {
                   chiefMiddleName == null ? '' : chiefMiddleName
                 } ${chiefLastName}`}
               </p>
-              {this.state.data.mentor != null &&
-                (<p className="mb-2 text-muted">
+              {this.state.data.mentor != null && (
+                <p className="mb-2 text-muted">
                   {`Ментор: ${mentorFirstName} ${
                     mentorMiddleName == null ? '' : mentorMiddleName
                   } ${mentorLastName}`}
-                </p>)
-              }
+                </p>
+              )}
               <p className="text-muted">
-                {`HR: ${hrFirstName} ${
-                  hrMiddleName == null ? '' : hrMiddleName
-                } ${hrLastName}`}
+                {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName}`}
               </p>
             </div>
           </Col>
           <Col sm={{ size: 5 }} className="mt-0 ml-5">
             <div className="">
-              <p className="mb-2">
-                {`Дата выхода на работу: ${employmentDate}`}
-              </p>
+              <p className="mb-2">{`Дата выхода на работу: ${employmentDate}`}</p>
               <p className=""> {timeLeft} </p>
             </div>
           </Col>
@@ -345,22 +335,48 @@ class EmployeePage extends React.Component {
             <Workflow data={workflow} parent={this} />
             <Row>
               <NextStep parent={this} />
-              <Button outline color="info" className="mt-5 ml-3" onClick={this.toggleTasksModal}>Задачи на испытательный срок</Button>
-              <EmployeeTasksModal employeeId={this.state.employeeId} isOpen={this.state.tasksModal} parentToggle={this.toggleTasksModal}/>
+              <Button outline color="info" className="mt-5 ml-3" onClick={this.toggleTasksModal}>
+                Задачи на испытательный срок
+              </Button>
+              <EmployeeTasksModal
+                employeeId={this.state.employeeId}
+                isOpen={this.state.tasksModal}
+                parentToggle={this.toggleTasksModal}
+              />
             </Row>
           </Col>
 
           <Col sm={{ size: 5 }}>
             <Nav tabs>
-              <NavItem className={classnames({ "cur-default": this.state.activeTab === '1', "cur-pointer": this.state.activeTab !== '1' })}>
-                <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleLogBox('1'); }}>
+              <NavItem
+                className={classnames({
+                  'cur-default': this.state.activeTab === '1',
+                  'cur-pointer': this.state.activeTab !== '1',
+                })}
+              >
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '1' })}
+                  onClick={() => {
+                    this.toggleLogBox('1');
+                  }}
+                >
                   <h5>
                     <span className="text-muted">Комментарии</span>
                   </h5>
                 </NavLink>
               </NavItem>
-              <NavItem className={classnames({ "cur-default": this.state.activeTab === '2', "cur-pointer": this.state.activeTab !== '2' })}>
-                <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleLogBox('2'); }}>
+              <NavItem
+                className={classnames({
+                  'cur-default': this.state.activeTab === '2',
+                  'cur-pointer': this.state.activeTab !== '2',
+                })}
+              >
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '2' })}
+                  onClick={() => {
+                    this.toggleLogBox('2');
+                  }}
+                >
                   <h5>
                     <span className="text-muted">История</span>
                   </h5>
@@ -370,10 +386,10 @@ class EmployeePage extends React.Component {
 
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId="1">
-                <Comments parent={this}/>
+                <Comments parent={this} />
               </TabPane>
               <TabPane tabId="2">
-                <Logs parent={this}/>
+                <Logs parent={this} />
               </TabPane>
             </TabContent>
           </Col>
@@ -421,10 +437,10 @@ class NextStep extends React.Component {
     var parent = this.props.parent;
 
     if (this.state.commentValue != '') {
-      if (this.getCurrentType(parent)=='INTERIM_MEETING_RESULT') {
+      if (this.getCurrentType(parent) == 'INTERIM_MEETING_RESULT') {
         this.props.parent.commentSubmit('Промежуточная встреча', this.state.commentValue);
       }
-      if (this.getCurrentType(parent)=='FINAL_MEETING_RESULT') {
+      if (this.getCurrentType(parent) == 'FINAL_MEETING_RESULT') {
         this.props.parent.commentSubmit('Итоговая встреча', this.state.commentValue);
       }
     }
@@ -452,9 +468,7 @@ class NextStep extends React.Component {
   }
 
   getCurrentType(parent) {
-    var result = parent.state.data.workflow.filter(
-      (x) => x.status == 'CURRENT'
-    );
+    var result = parent.state.data.workflow.filter((x) => x.status == 'CURRENT');
     if (result.length == 0) {
       return 'NONE';
     }
@@ -465,10 +479,10 @@ class NextStep extends React.Component {
     var parent = this.props.parent;
     var currentWorkflowType = this.getCurrentType(parent);
     var isDisabled =
-      currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE'
-        ? true
-        : false;
-    var isResultStep = currentWorkflowType == 'INTERIM_MEETING_RESULT' || currentWorkflowType == 'FINAL_MEETING_RESULT'
+      currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE' ? true : false;
+    var isResultStep =
+      currentWorkflowType == 'INTERIM_MEETING_RESULT' ||
+      currentWorkflowType == 'FINAL_MEETING_RESULT'
         ? true
         : false;
 
@@ -484,27 +498,23 @@ class NextStep extends React.Component {
           Перевести далее
         </Button>
 
-        <Modal
-          isOpen={this.state.modal}
-          toggle={this.toggleModal}
-          className={parent.className}
-        >
-          <ModalHeader toggle={this.toggleModal}>
-            Перевести на следующий этап?
-          </ModalHeader>
-          {isResultStep  && (<ModalBody>
-            <Form onSubmit={(e) => this.commentModalSubmit(e)}>
-              <FormGroup>
-                <Input
-                  type="text"
-                  name="text"
-                  placeholder="Написать комментарий"
-                  onChange={this.onCommentChange}
-                  value={this.state.commentValue}
-                />
-              </FormGroup>
-            </Form>
-          </ModalBody>)}
+        <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={parent.className}>
+          <ModalHeader toggle={this.toggleModal}>Перевести на следующий этап?</ModalHeader>
+          {isResultStep && (
+            <ModalBody>
+              <Form onSubmit={(e) => this.commentModalSubmit(e)}>
+                <FormGroup>
+                  <Input
+                    type="text"
+                    name="text"
+                    placeholder="Написать комментарий"
+                    onChange={this.onCommentChange}
+                    value={this.state.commentValue}
+                  />
+                </FormGroup>
+              </Form>
+            </ModalBody>
+          )}
           <ModalFooter>
             <Button outline color="secondary" onClick={this.nextStep}>
               Перевести
@@ -556,18 +566,17 @@ class WorkflowStage extends React.Component {
   }
 
   selectIcon(status, overdue) {
-    switch (overdue) {
-      case true:
-        return <FaExclamationCircle size={50} color="#DF6B62" />;
+    switch (status) {
+      case 'DONE':
+        return <FaCheckCircle size={50} color="#70BD71" />;
+      case 'CURRENT':
+        return overdue ? (
+          <FaExclamationCircle size={50} color="#DF6B62" />
+        ) : (
+          <FaAdjust size={50} color="#BDB370" />
+        );
       default:
-        switch (status) {
-          case 'DONE':
-            return <FaCheckCircle size={50} color="#70BD71" />;
-          case 'CURRENT':
-            return <FaAdjust size={50} color="#BDB370" />;
-          default:
-            return <FaCircle size={50} color="#C2C2C2" />;
-        }
+        return <FaCircle size={50} color="#C2C2C2" />;
     }
   }
 
@@ -623,11 +632,7 @@ class WorkflowStage extends React.Component {
     const { deadlineDate, status, overdue, type } = this.props;
 
     return (
-      <div
-        id={'Popover-' + this.props.id}
-        className="workflow-leonid"
-        onClick={this.toggle}
-      >
+      <div id={'Popover-' + this.props.id} className="workflow-leonid" onClick={this.toggle}>
         {this.selectIcon(status, overdue)}
         <span className="ml-3">{this.typeTranslate(type)}</span>
         <Popover
@@ -647,10 +652,10 @@ class WorkflowStage extends React.Component {
 class Comments extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       commentValue: '',
-    }
+    };
 
     this.commentBoxSubmit = this.commentBoxSubmit.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
@@ -659,7 +664,7 @@ class Comments extends React.Component {
   commentBoxSubmit(e) {
     e.preventDefault();
     if (this.state.commentValue == '') return;
-    this.props.parent.commentSubmit("Вы", this.state.commentValue);
+    this.props.parent.commentSubmit('Вы', this.state.commentValue);
     this.setState({
       commentValue: '',
     });
@@ -736,11 +741,7 @@ class CommentItem extends React.Component {
     const { message, author, id } = this.props;
 
     return (
-      <ListGroupItem
-        className=""
-        onMouseEnter={this.mouseIn}
-        onMouseLeave={this.mouseOut}
-      >
+      <ListGroupItem className="" onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut}>
         <Row>
           <Col sm={{ size: 8, offset: 0 }}>
             <h6 className="my-0 mb-2">{this.nameWithDots(author)}</h6>
@@ -801,9 +802,7 @@ class LogItem extends React.Component {
     if (date == null) {
       return '';
     }
-    return (
-      date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0]
-    );
+    return date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
   }
 
   render() {
@@ -816,9 +815,7 @@ class LogItem extends React.Component {
             <h6 className="my-0 mb-2">{this.nameWithDots(author)}</h6>
           </Col>
           <Col>
-              <span className="text-muted">
-                {this.dateFormat(eventDate)}
-              </span>
+            <span className="text-muted">{this.dateFormat(eventDate)}</span>
           </Col>
         </Row>
         <Row>
@@ -837,10 +834,7 @@ class CustomAlert extends React.Component {
   render() {
     var parent = this.props.self;
     return (
-      <Alert
-        color={parent.state.alert.color}
-        isOpen={parent.state.alert.status}
-      >
+      <Alert color={parent.state.alert.color} isOpen={parent.state.alert.status}>
         {parent.state.alert.message}
       </Alert>
     );
