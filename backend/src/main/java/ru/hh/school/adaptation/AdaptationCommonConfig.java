@@ -30,7 +30,7 @@ import ru.hh.school.adaptation.entities.QuestionnaireAnswer;
 import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.services.DocumentService;
+import ru.hh.school.adaptation.services.documents.TaskDocumentGenerator;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.CommentService;
@@ -92,6 +92,7 @@ import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
     PersonalInfoResource.class,
     UserResource.class,
     DocumentService.class,
+    TaskDocumentGenerator.class,
 
     AddStep.class,
     TaskListStep.class,
