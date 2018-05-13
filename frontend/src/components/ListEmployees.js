@@ -20,6 +20,12 @@ class ListEmployees extends React.Component {
     this.state = {
       employeeList: [],
     };
+
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+
+  handleButtonClick(e, row) {
+    this.props.history.push('/employee/' + row.id);
   }
 
   componentDidMount() {
@@ -110,9 +116,12 @@ class ListEmployees extends React.Component {
           </div>
         ),
       },
+      {
+        Header: 'Перейти на страницу',
+        id: 'fullPageButton',
+        accessor: (row) => <button onClick={(e) => this.handleButtonClick(e, row)}>Info</button>,
+      },
     ];
-
-    let self = this;
 
     return (
       <div>
@@ -121,20 +130,6 @@ class ListEmployees extends React.Component {
           columns={columns}
           SubComponent={(row) => {
             return <EmployeePageShort data={row.original} />;
-          }}
-          getTdProps={(state, rowInfo, column, instance) => {
-            return {
-              onClick: (e, handleOriginal) => {
-                if (
-                  e.target.classList.contains('rt-expandable') ||
-                  e.target.classList.contains('rt-expander')
-                ) {
-                  handleOriginal();
-                } else {
-                  self.props.history.push('/employee/' + rowInfo.row._original.id);
-                }
-              },
-            };
           }}
         />
       </div>
