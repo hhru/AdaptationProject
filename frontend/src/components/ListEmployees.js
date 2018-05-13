@@ -81,6 +81,10 @@ class ListEmployees extends React.Component {
         accessor: 'employmentDate',
       },
       {
+        Header: 'Имя HR',
+        accessor: 'hrName',
+      },
+      {
         Header: 'Состояние',
         accessor: 'progress',
         Cell: (row) => (
@@ -154,7 +158,8 @@ class EmployeePageShort extends React.Component {
     const workflow = this.props.data.workflow;
 
     return (
-      <div style={{ padding: '20px' }} className="workflow-horizontal">
+      <div className="workflow-horizontal">
+        <p>{`${employeeFirstName} ${employeeLastName}`}</p>
         <Workflow data={workflow} />
       </div>
     );
