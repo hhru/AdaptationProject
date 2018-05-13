@@ -13,7 +13,7 @@ import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.misc.Named;
-import ru.hh.school.adaptation.services.documents.TaskDocumentGenerator;
+import ru.hh.school.adaptation.services.documents.ChiefTaskDocumentGenerator;
 
 import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
@@ -31,14 +31,15 @@ public class TaskService {
   private TaskDao taskDao;
   private EmployeeDao employeeDao;
   private MailService mailService;
-  private TaskDocumentGenerator taskDocumentGenerator;
+  private ChiefTaskDocumentGenerator chiefTaskDocumentGenerator;
 
-  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao, MailService mailService, TaskDocumentGenerator taskDocumentGenerator) {
+  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao,
+                     MailService mailService, ChiefTaskDocumentGenerator chiefTaskDocumentGenerator) {
     this.taskFormDao = taskFormDao;
     this.taskDao = taskDao;
     this.employeeDao = employeeDao;
     this.mailService = mailService;
-    this.taskDocumentGenerator = taskDocumentGenerator;
+    this.chiefTaskDocumentGenerator = chiefTaskDocumentGenerator;
   }
 
   @Transactional
@@ -126,7 +127,7 @@ public class TaskService {
   @Transactional
   public Named<byte[]> generateTaskDoc(Integer employeeId) {
     try {
-      return taskDocumentGenerator.generateDoc(employeeDao.getRecordById(employeeId));
+      return chiefTaskDocumentGenerator.generateDoc(employeeDao.getRecordById(employeeId));
     } catch (InvalidFormatException | IOException | XmlException | NullPointerException e) {
       throw new WebApplicationException("Bad document", e);
     }

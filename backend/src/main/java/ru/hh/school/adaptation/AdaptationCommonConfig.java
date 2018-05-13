@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
 import ru.hh.school.adaptation.dao.CommentDao;
-import ru.hh.school.adaptation.dao.LogDao;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.dao.LogDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dao.TaskDao;
@@ -20,8 +20,8 @@ import ru.hh.school.adaptation.dao.QuestionnaireDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.entities.Comment;
-import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Task;
@@ -31,9 +31,14 @@ import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.services.documents.TaskDocumentGenerator;
+import ru.hh.school.adaptation.resources.AuthResource;
+import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.MainResource;
+import ru.hh.school.adaptation.resources.PersonalInfoResource;
+import ru.hh.school.adaptation.resources.TaskResource;
+import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
-import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.TaskService;
 import ru.hh.school.adaptation.services.QuestionnaireService;
 import ru.hh.school.adaptation.services.TransitionService;
@@ -49,14 +54,16 @@ import ru.hh.school.adaptation.resources.QuestionnaireResource;
 import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.resources.UserResource;
 
+import ru.hh.school.adaptation.services.documents.ChiefTaskDocumentGenerator;
+import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
 import ru.hh.school.adaptation.services.workflow.AddStep;
-import ru.hh.school.adaptation.services.workflow.TaskListStep;
-import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingResultStep;
+import ru.hh.school.adaptation.services.workflow.FinalMeetingStep;
 import ru.hh.school.adaptation.services.workflow.InterimMeeteingStep;
 import ru.hh.school.adaptation.services.workflow.InterimMeetingResultStep;
-import ru.hh.school.adaptation.services.workflow.FinalMeetingStep;
-import ru.hh.school.adaptation.services.workflow.FinalMeetingResultStep;
 import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
+import ru.hh.school.adaptation.services.workflow.TaskListStep;
+import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
 
 @Configuration
 @Import({
@@ -94,6 +101,8 @@ import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
     DocumentService.class,
     TaskDocumentGenerator.class,
 
+    ChiefTaskDocumentGenerator.class,
+    ProbationResultDocumentGenerator.class,
     AddStep.class,
     TaskListStep.class,
     WelcomeMeetingStep.class,

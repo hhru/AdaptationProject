@@ -2,12 +2,17 @@ package ru.hh.school.adaptation.services.documents;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.xwpf.usermodel.PositionInParagraph;
+import org.apache.poi.xwpf.usermodel.TextSegement;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.misc.CommonUtils;
 import ru.hh.school.adaptation.misc.Named;
 
 import java.io.ByteArrayOutputStream;

@@ -1,32 +1,24 @@
 package ru.hh.school.adaptation.services.documents;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.misc.CommonUtils;
-import ru.hh.school.adaptation.misc.Named;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskDocumentGenerator extends DocumentGenerator {
+public abstract class TaskDocumentGenerator extends DocumentGenerator {
 
-  public TaskDocumentGenerator(FileSettings fileSettings) {
-    super(fileSettings, "document.template.task");
+  public TaskDocumentGenerator(FileSettings fileSettings, String propertyName) {
+    super(fileSettings, propertyName);
   }
 
   private void addTasksRows(List<Task> taskList, XWPFTable table, int startFromId) throws IOException, XmlException {
@@ -70,8 +62,4 @@ public class TaskDocumentGenerator extends DocumentGenerator {
     }
   }
 
-  @Override
-  protected String getDocumentName(Employee employee) {
-    return "Задачи на ИС - " + CommonUtils.makeFioFromPersonalInfo(employee.getSelf());
-  }
 }

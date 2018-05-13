@@ -11,6 +11,8 @@ import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
+import ru.hh.school.adaptation.misc.CommonUtils;
+import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
 import ru.hh.school.adaptation.entities.User;
@@ -23,11 +25,14 @@ import ru.hh.school.adaptation.services.auth.AuthService;
 import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/")
@@ -120,6 +125,20 @@ public class EmployeeResource {
   @ResponseBody
   public void removeComment(@PathParam("id") Integer commentId) {
     commentService.removeComment(commentId);
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("/employee/{employeeId}/probation_result")
+  @ResponseBody
+  public Response getEmployeeProbationResultDoc(@PathParam("employeeId") Integer employeeId, @HeaderParam("user-agent") String userAgent) {
+    Named<byte[]> document = employeeService.generateProbationResultDoc(employeeId);
+    return Response.ok(document.get()).header(
+        "Content-Disposition", String.format(
+            "attachment; filename=\"%s.docx\"",
+            CommonUtils.getContentDispositionFilename(userAgent, document.name())
+        )
+    ).build();
   }
 
 }
