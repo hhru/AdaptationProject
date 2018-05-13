@@ -10,6 +10,8 @@ import ReactTable from 'react-table';
 
 import '!style-loader!css-loader!react-table/react-table.css';
 import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
+import '!style-loader!css-loader!./ListEmployees.css';
+import classnames from 'classnames';
 
 class ListEmployees extends React.Component {
   constructor(props) {
@@ -39,7 +41,7 @@ class ListEmployees extends React.Component {
   render() {
     const colorsMap = {
       IN_PROGRESS_OVERDUE: 'danger',
-      COMPLETE_OVERDUE: 'danger',
+      DONE_OVERDUE: 'danger',
       NOT_DONE_OVERDUE: 'danger',
       CURRENT: 'warning',
       DONE: 'success',
@@ -152,7 +154,7 @@ class EmployeePageShort extends React.Component {
     const workflow = this.props.data.workflow;
 
     return (
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '20px' }} className="workflow-horizontal">
         <Workflow data={workflow} />
       </div>
     );
@@ -228,12 +230,17 @@ class WorkflowStage extends React.Component {
 
   render() {
     const { status, overdue, type } = this.props;
+    const currentText = status == 'CURRENT' ? this.typeTranslate(type) : '';
 
     return (
-      <div>
+      <div
+        className={
+          'workflow-stage-horizontal ' +
+          (status == 'CURRENT' ? 'workflow-current-stage-horizontal' : '')
+        }
+      >
         {this.selectIcon(status, overdue)}
-        {this.typeTranslate(type)}
-        <br />
+        {currentText}
       </div>
     );
   }

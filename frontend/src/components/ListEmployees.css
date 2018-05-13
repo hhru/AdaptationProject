@@ -1,0 +1,14 @@
+.workflow-stage-horizontal {
+  display: inline-block;
+}
+
+.workflow-horizontal {
+  /*  text-align:center;*/
+  vertical-align: middle;
+}
+
+.workflow-current-stage-horizontal {
+  border-radius: 15px;
+  padding-right: 10px;
+  background: #eee;
+}
