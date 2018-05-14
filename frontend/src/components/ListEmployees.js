@@ -46,7 +46,7 @@ class ListEmployees extends React.Component {
 
   render() {
     const colorsMap = {
-      IN_PROGRESS_OVERDUE: 'danger',
+      CURRENT_OVERDUE: 'danger',
       DONE_OVERDUE: 'danger',
       NOT_DONE_OVERDUE: 'danger',
       CURRENT: 'warning',
@@ -177,6 +177,12 @@ class EmployeePageShort extends React.Component {
     let employmentDateParsed = new Date(employmentDate);
     let lastProbationDate = new Date(employmentDate);
     lastProbationDate = new Date(lastProbationDate.setMonth(employmentDateParsed.getMonth() + 3));
+    let dateOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'short',
+    };
 
     const workflow = this.props.data.workflow;
 
@@ -216,9 +222,15 @@ class EmployeePageShort extends React.Component {
             <Col sm={{ size: 5 }} className="mt-0 ml-5">
               <div className="">
                 <p className="mb-2">
-                  {`Дата выхода на работу: ${employmentDateParsed.toDateString()}`}
+                  {`Дата выхода на работу: ${employmentDateParsed.toLocaleString(
+                    'ru',
+                    dateOptions
+                  )}`}
                 </p>
-                <p className="mb-2">{`Дата окончания ИС: ${lastProbationDate.toDateString()}`}</p>
+                <p className="mb-2">{`Дата окончания ИС: ${lastProbationDate.toLocaleString(
+                  'ru',
+                  dateOptions
+                )}`}</p>
               </div>
             </Col>
           </Row>
