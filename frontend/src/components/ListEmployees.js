@@ -90,7 +90,7 @@ class ListEmployees extends React.Component {
         accessor: 'employmentDate',
       },
       {
-        Header: 'Имя HR',
+        Header: 'HR',
         id: 'hrName',
         accessor: (row) =>
           `${row.hr.firstName} ${row.hr.middleName == null ? '' : row.hr.middleName} ${
@@ -161,16 +161,19 @@ class EmployeePageShort extends React.Component {
       firstName: chiefFirstName,
       middleName: chiefMiddleName,
       lastName: chiefLastName,
+      inside: chiefInside,
     } = this.props.data.chief;
     const mentorFirstName =
       this.props.data.mentor != null ? this.props.data.mentor.firstName : null;
     const mentorMiddleName =
       this.props.data.mentor != null ? this.props.data.mentor.middleName : null;
     const mentorLastName = this.props.data.mentor != null ? this.props.data.mentor.lastName : null;
+    const mentorInside = this.props.data.mentor != null ? this.props.data.mentor.inside : null;
     const {
       firstName: hrFirstName,
       middleName: hrMiddleName,
       lastName: hrLastName,
+      inside: hrInside,
     } = this.props.data.hr;
 
     const employmentDate = this.props.data.employmentDate;
@@ -194,7 +197,13 @@ class EmployeePageShort extends React.Component {
               <h5 className="mb-0 font-weight-bold">
                 {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
               </h5>
-              <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
+              <div className="mb-1 ml-2 text-info">
+                {' '}
+                {employeeEmail}{' '}
+                <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + employeeInside}>
+                  (inside)
+                </a>{' '}
+              </div>
             </Col>
           </Row>
 
@@ -204,17 +213,24 @@ class EmployeePageShort extends React.Component {
                 <p className="mb-2 text-muted">
                   {`Начальник: ${chiefFirstName} ${
                     chiefMiddleName == null ? '' : chiefMiddleName
-                  } ${chiefLastName}`}
+                  } ${chiefLastName} `}
+                  <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + chiefInside}>
+                    (inside)
+                  </a>
                 </p>
                 {this.props.data.mentor != null && (
                   <p className="mb-2 text-muted">
                     {`Ментор: ${mentorFirstName} ${
                       mentorMiddleName == null ? '' : mentorMiddleName
-                    } ${mentorLastName}`}
+                    } ${mentorLastName} `}
+                    <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + mentorInside}>
+                      (inside)
+                    </a>
                   </p>
                 )}
                 <p className="text-muted">
-                  {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName}`}
+                  {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName} `}
+                  <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + hrInside}>(inside)</a>
                 </p>
               </div>
             </Col>
