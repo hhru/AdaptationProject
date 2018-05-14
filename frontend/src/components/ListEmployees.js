@@ -130,6 +130,8 @@ class ListEmployees extends React.Component {
       },
     ];
 
+    let self = this;
+
     return (
       <div>
         <ReactTable
@@ -137,6 +139,20 @@ class ListEmployees extends React.Component {
           columns={columns}
           SubComponent={(row) => {
             return <EmployeePageShort data={row.original} />;
+          }}
+          getTdProps={(state, rowInfo, column, instance) => {
+            return {
+              onClick: (e, handleOriginal) => {
+                if (
+                  e.target.classList.contains('rt-expandable') ||
+                  e.target.classList.contains('rt-expander')
+                ) {
+                  handleOriginal();
+                } else {
+                  self.props.history.push('/employee/' + rowInfo.row._original.id);
+                }
+              },
+            };
           }}
         />
       </div>
