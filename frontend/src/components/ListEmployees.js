@@ -5,7 +5,7 @@ import FaCircle from 'react-icons/lib/fa/circle';
 import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
-import { Progress } from 'reactstrap';
+import { Progress, Container, Row, Col } from 'reactstrap';
 import ReactTable from 'react-table';
 
 import '!style-loader!css-loader!react-table/react-table.css';
@@ -80,7 +80,10 @@ class ListEmployees extends React.Component {
       {
         Header: 'ФИО',
         id: 'fullName',
-        accessor: (row) => `${row.firstName} ${row.middleName} ${row.lastName}`,
+        accessor: (row) =>
+          `${row.employee.firstName} ${
+            row.employee.middleName == null ? '' : row.employee.middleName
+          } ${row.employee.lastName}`,
       },
       {
         Header: 'Дата выхода',
@@ -88,7 +91,11 @@ class ListEmployees extends React.Component {
       },
       {
         Header: 'Имя HR',
-        accessor: 'hrName',
+        id: 'hrName',
+        accessor: (row) =>
+          `${row.hr.firstName} ${row.hr.middleName == null ? '' : row.hr.middleName} ${
+            row.hr.lastName
+          }`,
       },
       {
         Header: 'Состояние',
@@ -147,15 +154,78 @@ class EmployeePageShort extends React.Component {
       firstName: employeeFirstName,
       middleName: employeeMiddleName,
       lastName: employeeLastName,
-    } = this.props.data;
-    const hrName = this.props.data.hrName;
+      email: employeeEmail,
+      inside: employeeInside,
+    } = this.props.data.employee;
+    const {
+      firstName: chiefFirstName,
+      middleName: chiefMiddleName,
+      lastName: chiefLastName,
+    } = this.props.data.chief;
+    const mentorFirstName =
+      this.props.data.mentor != null ? this.props.data.mentor.firstName : null;
+    const mentorMiddleName =
+      this.props.data.mentor != null ? this.props.data.mentor.middleName : null;
+    const mentorLastName = this.props.data.mentor != null ? this.props.data.mentor.lastName : null;
+    const {
+      firstName: hrFirstName,
+      middleName: hrMiddleName,
+      lastName: hrLastName,
+    } = this.props.data.hr;
+
     const employmentDate = this.props.data.employmentDate;
+    let employmentDateParsed = new Date(employmentDate);
+    let lastProbationDate = new Date(employmentDate);
+    lastProbationDate = new Date(lastProbationDate.setMonth(employmentDateParsed.getMonth() + 3));
+
     const workflow = this.props.data.workflow;
 
     return (
       <div className="workflow-horizontal">
-        <p>{`${employeeFirstName} ${employeeLastName}`}</p>
-        <Workflow data={workflow} />
+        <Container>
+          <Row className="mb-4">
+            <Col sm={{ size: 5 }}>
+              <h5 className="mb-0 font-weight-bold">
+                {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
+              </h5>
+              <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col sm={{ size: 5 }}>
+              <div className="ml-4">
+                <p className="mb-2 text-muted">
+                  {`Начальник: ${chiefFirstName} ${
+                    chiefMiddleName == null ? '' : chiefMiddleName
+                  } ${chiefLastName}`}
+                </p>
+                {this.props.data.mentor != null && (
+                  <p className="mb-2 text-muted">
+                    {`Ментор: ${mentorFirstName} ${
+                      mentorMiddleName == null ? '' : mentorMiddleName
+                    } ${mentorLastName}`}
+                  </p>
+                )}
+                <p className="text-muted">
+                  {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName}`}
+                </p>
+              </div>
+            </Col>
+
+            <Col sm={{ size: 5 }} className="mt-0 ml-5">
+              <div className="">
+                <p className="mb-2">
+                  {`Дата выхода на работу: ${employmentDateParsed.toDateString()}`}
+                </p>
+                <p className="mb-2">{`Дата окончания ИС: ${lastProbationDate.toDateString()}`}</p>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Workflow data={workflow} />
+          </Row>
+        </Container>
       </div>
     );
   }
