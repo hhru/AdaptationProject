@@ -15,6 +15,8 @@ import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dao.TaskDao;
 import ru.hh.school.adaptation.dao.TaskFormDao;
+import ru.hh.school.adaptation.dao.QuestionnaireAnswerDao;
+import ru.hh.school.adaptation.dao.QuestionnaireDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.entities.Comment;
@@ -24,16 +26,16 @@ import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.entities.TaskForm;
+import ru.hh.school.adaptation.entities.QuestionnaireAnswer;
+import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.resources.EmployeeResource;
-import ru.hh.school.adaptation.resources.TaskResource;
-import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.services.DocumentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.TaskService;
+import ru.hh.school.adaptation.services.QuestionnaireService;
 import ru.hh.school.adaptation.services.TransitionService;
 import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.WorkflowService;
@@ -41,6 +43,10 @@ import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
+import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.TaskResource;
+import ru.hh.school.adaptation.resources.QuestionnaireResource;
+import ru.hh.school.adaptation.resources.MainResource;
 
 import ru.hh.school.adaptation.services.workflow.AddStep;
 import ru.hh.school.adaptation.services.workflow.TaskListStep;
@@ -61,17 +67,21 @@ import ru.hh.school.adaptation.services.workflow.QuestionnaireStep;
     TransitionDao.class,
     TaskDao.class,
     TaskFormDao.class,
+    QuestionnaireDao.class,
+    QuestionnaireAnswerDao.class,
     EmployeeResource.class,
     EmployeeService.class,
     CommentService.class,
     TransitionService.class,
     TaskService.class,
+    QuestionnaireService.class,
     UserService.class,
     HhApiService.class,
     AuthService.class,
     AuthResource.class,
     MainResource.class,
     TaskResource.class,
+    QuestionnaireResource.class,
     PersonalInfoDao.class,
     PersonalInfoService.class,
     WorkflowService.class,
@@ -105,6 +115,8 @@ public class AdaptationCommonConfig {
         Transition.class,
         Task.class,
         TaskForm.class,
+        Questionnaire.class,
+        QuestionnaireAnswer.class,
         Comment.class,
         Log.class
     );

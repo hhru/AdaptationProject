@@ -11,6 +11,7 @@ public class LogDto {
   public Integer employeeId;
   public String author;
   public String message;
+  public String link;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date eventDate;
@@ -20,6 +21,7 @@ public class LogDto {
     employeeId = log.getEmployee().getId();
     author = log.getAuthor();
     message = log.getMessage();
+    link = log.getLink();
     eventDate = log.getEventDate();
   }
 

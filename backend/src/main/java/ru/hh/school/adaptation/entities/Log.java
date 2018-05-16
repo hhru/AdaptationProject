@@ -31,6 +31,9 @@ public class Log {
   @Column(name = "message", nullable = false)
   private String message;
 
+  @Column(name = "link")
+  private String link;
+
   @Column(name = "event_date")
   @Temporal(TemporalType.DATE)
   private Date eventDate;
@@ -65,6 +68,14 @@ public class Log {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  public String getLink() {
+    return link;
+  }
+
+  public void setLink(String link) {
+    this.link = link;
   }
 
   public Date getEventDate() {
