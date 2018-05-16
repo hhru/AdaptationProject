@@ -22,8 +22,9 @@ public class Comment {
   @JoinColumn(name = "employee_id")
   private Employee employee;
 
-  @Column(name = "author", nullable = false)
-  private String author;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "author")
+  private User author;
 
   @Column(name = "message", nullable = false)
   private String message;
@@ -44,11 +45,11 @@ public class Comment {
     this.employee = employee;
   }
 
-  public String getAuthor() {
+  public User getAuthor() {
     return author;
   }
 
-  public void setAuthor(String author) {
+  public void setAuthor(User author) {
     this.author = author;
   }
 

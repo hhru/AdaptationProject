@@ -16,6 +16,9 @@ public class LogDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date eventDate;
 
+  public LogDto() {
+  }
+
   public LogDto(Log log){
     id = log.getId();
     employeeId = log.getEmployee().getId();

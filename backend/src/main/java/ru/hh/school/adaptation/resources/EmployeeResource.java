@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.hh.school.adaptation.dto.CommentDto;
 import ru.hh.school.adaptation.dto.CommentCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateDto;
@@ -100,7 +101,7 @@ public class EmployeeResource {
   @Path("/comment/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public Integer createEmployee(@RequestBody CommentCreateDto commentCreateDto){
+  public CommentDto createComment(@RequestBody CommentCreateDto commentCreateDto){
     return commentService.createCommentFromDto(commentCreateDto);
   }
 
