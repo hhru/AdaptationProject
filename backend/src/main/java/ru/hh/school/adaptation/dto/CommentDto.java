@@ -8,10 +8,14 @@ public class CommentDto {
   public String author;
   public String message;
 
-  public CommentDto(Comment comment){
+  public CommentDto() {
+  }
+
+  public CommentDto(Comment comment, Integer currentUserId){
     id = comment.getId();
     employeeId = comment.getEmployee().getId();
-    author = comment.getAuthor();
+    author = currentUserId.equals(comment.getAuthor().getId()) ? "Вы" : comment.getAuthor().getSelf().getFirstName() + " "
+            + comment.getAuthor().getSelf().getLastName();
     message = comment.getMessage();
   }
 

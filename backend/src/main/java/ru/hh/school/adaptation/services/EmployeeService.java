@@ -11,6 +11,7 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
+import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -24,10 +25,12 @@ public class EmployeeService {
   private PersonalInfoService personalInfoService;
   private TransitionService transitionService;
   private CommentService commentService;
+  private AuthService authService;
 
   public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
-                         CommentService commentService) {
+                         CommentService commentService, AuthService authService) {
     this.employeeDao = employeeDao;
+    this.authService = authService;
     this.userDao = userDao;
     this.personalInfoService = personalInfoService;
     this.transitionService = transitionService;
@@ -55,7 +58,8 @@ public class EmployeeService {
 
   @Transactional(readOnly = true)
   public EmployeeDto getEmployeeDto(Integer id) {
-    return new EmployeeDto(getEmployee(id));
+    Employee employee = getEmployee(id);
+    return new EmployeeDto(employee, authService.getCurrentUserId());
   }
 
   @Transactional
@@ -75,7 +79,7 @@ public class EmployeeService {
     employee.setComments(null);
     employee.setWorkflow(transitionService.createTransitionsForNewEmployee(employee));
 
-    return new EmployeeDto(employee);
+    return new EmployeeDto(employee, authService.getCurrentUserId());
   }
 
   @Transactional
@@ -102,7 +106,7 @@ public class EmployeeService {
       personalInfoService.updatePersonalInfo(selfInfo, employeeUpdateDto.self);
 
       employeeDao.update(employee);
-      return new EmployeeDto(employee);
+      return new EmployeeDto(employee, authService.getCurrentUserId());
     }
   }
 

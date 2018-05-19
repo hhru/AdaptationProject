@@ -80,4 +80,9 @@ public class AuthService {
       return Optional.empty();
     }
   }
+
+  public Integer getCurrentUserId() {
+    return getUser().get().getId();
+  }
+
 }
