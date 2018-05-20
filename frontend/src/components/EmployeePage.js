@@ -33,6 +33,7 @@ class EmployeePage extends React.Component {
       data: {
         id: null,
         currentWorkflowStep: '',
+        currentUserIsHr: false,
         employee: {
           id: null,
           firstName: '',
@@ -90,6 +91,7 @@ class EmployeePage extends React.Component {
             employeeId: null,
             author: '',
             message: '',
+            link: '',
             eventDate: '',
           },
         ],
@@ -136,6 +138,7 @@ class EmployeePage extends React.Component {
             self.state.data.workflow[i].overdue = false;
             if (i < self.state.data.workflow.length - 1) {
               self.state.data.workflow[i + 1].status = 'CURRENT';
+              self.state.data.workflow[i + 1].overdue = response.data.overdue;
             }
             break;
           }
@@ -205,23 +208,21 @@ class EmployeePage extends React.Component {
     }
   }
 
-  commentSubmit(author, message) {
+  commentSubmit(message) {
     const url = '/api/comment/create';
     const self = this;
 
     axios
       .post(url, {
-        employeeId: self.state.employeeId,
-        author: author,
+        employeeId: this.state.employeeId,
         message: message,
       })
       .then(function(response) {
         self.state.data.comments.push({
-          id: response.data,
-          author: author,
-          message: message,
+          id: response.data.id,
+          author: response.data.author,
+          message: response.data.message,
         });
-        //console.log(self.state.data.comments);
         self.forceUpdate();
         //privet. kak tebe moi kostyl?
         setTimeout(() => {
@@ -273,6 +274,11 @@ class EmployeePage extends React.Component {
       email: employeeEmail,
     } = this.state.data.employee;
     const {
+      firstName: hrFirstName,
+      middleName: hrMiddleName,
+      lastName: hrLastName,
+    } = this.state.data.hr;
+    const {
       firstName: chiefFirstName,
       middleName: chiefMiddleName,
       lastName: chiefLastName,
@@ -282,11 +288,6 @@ class EmployeePage extends React.Component {
     const mentorMiddleName =
       this.state.data.mentor != null ? this.state.data.mentor.middleName : null;
     const mentorLastName = this.state.data.mentor != null ? this.state.data.mentor.lastName : null;
-    const {
-      firstName: hrFirstName,
-      middleName: hrMiddleName,
-      lastName: hrLastName,
-    } = this.state.data.hr;
     const employmentDate = this.dateFormat(this.state.data.employmentDate);
     const workflow = this.state.data.workflow;
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
@@ -318,7 +319,15 @@ class EmployeePage extends React.Component {
                 </p>
               )}
               <p className="text-muted">
-                {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName}`}
+                {`HR: ${
+                  this.state.data.currentUserIsHr
+                    ? 'Вы'
+                    : hrFirstName +
+                      ' ' +
+                      (hrMiddleName == null ? '' : hrMiddleName) +
+                      ' ' +
+                      hrLastName
+                }`}
               </p>
             </div>
           </Col>
@@ -438,10 +447,10 @@ class NextStep extends React.Component {
 
     if (this.state.commentValue != '') {
       if (this.getCurrentType(parent) == 'INTERIM_MEETING_RESULT') {
-        this.props.parent.commentSubmit('Промежуточная встреча', this.state.commentValue);
+        this.props.parent.commentSubmit(this.state.commentValue);
       }
       if (this.getCurrentType(parent) == 'FINAL_MEETING_RESULT') {
-        this.props.parent.commentSubmit('Итоговая встреча', this.state.commentValue);
+        this.props.parent.commentSubmit(this.state.commentValue);
       }
     }
 
@@ -641,7 +650,12 @@ class WorkflowStage extends React.Component {
           target={'Popover-' + this.props.id}
           toggle={this.toggle}
         >
-          <PopoverHeader>{this.typeTranslate(type)}</PopoverHeader>
+          <PopoverHeader>
+            {this.typeTranslate(type)}
+            <small className="text-muted comment-delete" onClick={this.toggle}>
+              ✖
+            </small>
+          </PopoverHeader>
           <PopoverBody>{this.getDescription(type)}</PopoverBody>
         </Popover>
       </div>
@@ -664,7 +678,7 @@ class Comments extends React.Component {
   commentBoxSubmit(e) {
     e.preventDefault();
     if (this.state.commentValue == '') return;
-    this.props.parent.commentSubmit('Вы', this.state.commentValue);
+    this.props.parent.commentSubmit(this.state.commentValue);
     this.setState({
       commentValue: '',
     });
@@ -780,6 +794,7 @@ class Logs extends React.Component {
             message={logsData.message}
             author={logsData.author}
             eventDate={logsData.eventDate}
+            link={logsData.link}
             key={logsData.id}
             id={logsData.id}
           />
@@ -806,7 +821,7 @@ class LogItem extends React.Component {
   }
 
   render() {
-    const { message, author, eventDate, id } = this.props;
+    const { message, link, author, eventDate, id } = this.props;
 
     return (
       <ListGroupItem className="" onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut}>
@@ -819,7 +834,10 @@ class LogItem extends React.Component {
           </Col>
         </Row>
         <Row>
-          <span className="ml-2">{message}</span>
+          <span className="ml-2">
+            {message}&nbsp;
+            {link != null && <a href={link}>ссылка</a>}
+          </span>
         </Row>
       </ListGroupItem>
     );

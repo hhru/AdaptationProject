@@ -4,12 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.hh.school.adaptation.dto.CommentDto;
 import ru.hh.school.adaptation.dto.CommentCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
+import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
@@ -49,8 +51,8 @@ public class EmployeeResource {
   @Produces("application/json")
   @Path("/employee/{id}/step/next")
   @ResponseBody
-  public void setEmployeeTransition(@PathParam("id") Integer id) {
-    transitionService.setEmployeeNextTransition(employeeService.getEmployee(id));
+  public WorkflowStepDto setEmployeeTransition(@PathParam("id") Integer id) {
+    return transitionService.setEmployeeNextTransition(employeeService.getEmployee(id));
   }
 
   @GET
@@ -99,7 +101,7 @@ public class EmployeeResource {
   @Path("/comment/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public Integer createEmployee(@RequestBody CommentCreateDto commentCreateDto){
+  public CommentDto createComment(@RequestBody CommentCreateDto commentCreateDto){
     return commentService.createCommentFromDto(commentCreateDto);
   }
 

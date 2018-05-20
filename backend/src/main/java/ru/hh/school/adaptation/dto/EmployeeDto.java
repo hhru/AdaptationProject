@@ -29,7 +29,12 @@ public class EmployeeDto {
 
   public List<LogDto> logs;
 
-  public EmployeeDto(Employee employee){
+  public Boolean currentUserIsHr;
+
+  public EmployeeDto(){
+  }
+
+  public EmployeeDto(Employee employee, Integer currentUserId){
     id = employee.getId();
     this.employee = new PersonalDto(employee.getSelf());
     chief = new PersonalDto(employee.getChief());
@@ -40,11 +45,12 @@ public class EmployeeDto {
     employmentDate = employee.getEmploymentDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
     if (employee.getComments() != null) {
-      comments = employee.getComments().stream().map(CommentDto::new).collect(Collectors.toList());
+      comments = employee.getComments().stream().map(c -> new CommentDto(c, currentUserId)).collect(Collectors.toList());
     }
     if (employee.getLogs() != null) {
       logs = employee.getLogs().stream().map(LogDto::new).collect(Collectors.toList());
     }
+    this.currentUserIsHr = currentUserId.equals(employee.getHr().getId());
   }
 
 }

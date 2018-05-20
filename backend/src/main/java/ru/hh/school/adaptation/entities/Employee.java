@@ -77,6 +77,9 @@ public class Employee {
   @OneToOne(mappedBy = "employee")
   private TaskForm taskForm;
 
+  @OneToOne(mappedBy = "employee")
+  private Questionnaire questionnaire;
+
   public Integer getId() {
     return id;
   }
@@ -183,5 +186,13 @@ public class Employee {
 
   public void setTaskForm(TaskForm taskForm) {
     this.taskForm = taskForm;
+  }
+
+  public Questionnaire getQuestionnaire() {
+    return questionnaire;
+  }
+
+  public void setQuestionnaire(Questionnaire questionnaire) {
+    this.questionnaire = questionnaire;
   }
 }

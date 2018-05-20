@@ -4,6 +4,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dto.TransitionDto;
+import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
@@ -34,7 +35,7 @@ public class TransitionService {
   }
 
   @Transactional
-  public void setEmployeeNextTransition(Employee employee) {
+  public WorkflowStepDto setEmployeeNextTransition(Employee employee) {
     Transition transitionCurrent = transitionDao.getCurrentTransitionByEmployeeId(employee.getId());
     transitionCurrent.setStepStatus(WorkflowStepStatus.DONE);
     transitionDao.update(transitionCurrent);
@@ -45,7 +46,11 @@ public class TransitionService {
       transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
       transitionDao.update(transitionNext);
       workflowService.stepAction(employee, transitionNext.getStepType());
+    } else {
+      transitionNext = new Transition();
     }
+
+    return new WorkflowStepDto(transitionNext);
   }
 
   @Transactional(readOnly = true)

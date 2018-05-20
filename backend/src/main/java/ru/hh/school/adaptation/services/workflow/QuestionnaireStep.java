@@ -9,8 +9,10 @@ import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
 import ru.hh.school.adaptation.entities.Log;
+import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.MailService;
+import ru.hh.school.adaptation.services.QuestionnaireService;
 import ru.hh.school.adaptation.services.TransitionService;
 
 import java.io.BufferedReader;
@@ -26,9 +28,12 @@ import java.util.Map;
 import java.util.Properties;
 
 public class QuestionnaireStep {
+  private static final String addTaskLink = "https://adaptation.host/questionnaire/%s";
+
   private CommentService commentService;
   private MailService mailService;
   private TransitionService transitionService;
+  private QuestionnaireService questionnaireService;
   private String projectKey;
   private String issueType;
   private String assignee;
@@ -36,10 +41,11 @@ public class QuestionnaireStep {
   private String host;
 
   public QuestionnaireStep(FileSettings fileSettings, MailService mailService, @Lazy TransitionService transitionService,
-                           CommentService commentService) {
+                           CommentService commentService, QuestionnaireService questionnaireService) {
     this.mailService = mailService;
     this.transitionService = transitionService;
     this.commentService = commentService;
+    this.questionnaireService = questionnaireService;
 
     Properties properties = fileSettings.getProperties();
     projectKey = properties.getProperty("jira.project.key");
@@ -49,14 +55,16 @@ public class QuestionnaireStep {
   }
 
   public void onQuestionnaire(Employee employee, CookieManager cookieManager) {
+    Questionnaire questionnaire = questionnaireService.createQuestionnaire(employee);
     Map<String, String> params = new HashMap<>();
-    params.put("{{url}}", "http://questionnaire.com");
-    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
+    params.put("{{url}}", String.format(addTaskLink, questionnaire.getKey()));
+    mailService.sendMail(employee.getChief().getEmail(), "questionnaire", params);
 
     Log log = new Log();
     log.setEmployee(employee);
     log.setAuthor("Система");
-    log.setMessage("Сотруднику отправлен опросник новичка");
+    log.setMessage("Сотруднику отправлен опросник новичка.");
+    log.setLink(String.format("https://www.adaptation.host/api/employee/%d/questionnaire", employee.getId()));
     log.setEventDate(new Date());
     commentService.createLog(log);
 

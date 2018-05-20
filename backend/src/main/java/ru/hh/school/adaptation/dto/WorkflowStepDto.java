@@ -29,7 +29,9 @@ public class WorkflowStepDto {
     status = transition.getStepStatus();
     deadlineTimestamp = transition.getDeadlineTimestamp();
     comment = transition.getComment();
-    overdue = transition.getDeadlineTimestamp() != null && (new Date()).after(transition.getDeadlineTimestamp());
+    overdue = transition.getDeadlineTimestamp() != null
+            && (new Date()).after(transition.getDeadlineTimestamp())
+            && status == WorkflowStepStatus.CURRENT;
   }
 
 }
