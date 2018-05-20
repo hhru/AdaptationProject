@@ -123,11 +123,6 @@ class ListEmployees extends React.Component {
           </div>
         ),
       },
-      {
-        Header: 'Перейти на страницу',
-        id: 'fullPageButton',
-        accessor: (row) => <button onClick={(e) => this.handleButtonClick(e, row)}>Info</button>,
-      },
     ];
 
     let self = this;
