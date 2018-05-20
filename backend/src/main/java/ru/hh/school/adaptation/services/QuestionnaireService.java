@@ -94,7 +94,7 @@ public class QuestionnaireService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
-    String taskUrl = String.format("https://www.adaptation.host/api/employee/%d/questionnaire", employee.getId());
+    String taskUrl = String.format("https://www.adaptation.host/employee/%d/questionnaire", employee.getId());
     params.put("{{userName}}", fio);
     params.put("{{questionnaireUrl}}", taskUrl);
     mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_questionnaire_notify", params);

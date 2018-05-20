@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.mail.PasswordAuthentication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +34,24 @@ public class MailService {
 
   @Inject
   public MailService(FileSettings fileSettings, MailTemplateDao mailTemplateDao){
-    this.session = Session.getInstance(fileSettings.getProperties());
     this.mailTemplateDao = mailTemplateDao;
+
+    final String username = fileSettings.getProperties().getProperty("mail.smtp.username");
+    final String password = fileSettings.getProperties().getProperty("mail.smtp.password");
+
+    this.session = Session.getInstance(fileSettings.getProperties(),
+      new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(username, password);
+        }
+      });
   }
 
-  public void sendMail(String userEmail, String messageName, Map<String, String> parameterMap){
+  public void sendMail(String toEmail, String messageName, Map<String, String> parameterMap){
     MailTemplate mailTemplate = mailTemplateDao.getRecordByName(messageName);
     String text = applyTemplate(mailTemplate.getHtml(), parameterMap);
     String title = applyTemplate(mailTemplate.getTitle(), parameterMap);
-    sendMail(userEmail, text, title);
+    sendMail(toEmail, text, title);
   }
 
   private void sendMail(String toEmail, String messageHtml, String subject) {
@@ -52,7 +62,7 @@ public class MailService {
     Runnable task = () -> {
       try {
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.name")));
+        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.fullName")));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject(MimeUtility.encodeText(subject, "utf-8", "B"));
         message.setContent(messageHtml, "text/html; charset=utf-8");
@@ -82,7 +92,7 @@ public class MailService {
         message.addHeaderLine("charset=UTF-8");
         message.addHeaderLine("component=VEVENT");
 
-        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.name")));
+        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.fullName")));
         message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject("Outlook Meeting Request");
 
@@ -94,7 +104,7 @@ public class MailService {
                 "DTSTART:" + date + "T100000\n" +
                 "DTEND:" + date + "T110000\n" +
                 "SUMMARY:" + summary + "\n" +
-                "ORGANIZER:MAILTO:" + toEmail + "\n" +
+                "ORGANIZER:MAILTO:" + session.getProperties().getProperty("mail.smtp.from.name") + "\n" +
                 "CLASS:PUBLIC\n" +
                 "PRIORITY:3\n" +
                 "BEGIN:VALARM\n" +
