@@ -81,7 +81,7 @@ public class AddStep {
 
     Log log = new Log();
     log.setEmployee(employee);
-    log.setAuthor("Система");
+    log.setAuthor("Adaptation");
     log.setMessage("Сотруднику отправлено welcome-письмо");
     log.setEventDate(new Date());
     commentService.createLog(log);

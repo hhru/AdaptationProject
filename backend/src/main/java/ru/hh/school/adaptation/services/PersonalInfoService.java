@@ -3,18 +3,26 @@ package ru.hh.school.adaptation.services;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dto.PersonalDto;
+import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 public class PersonalInfoService {
 
+  private AuthService authService;
+  private CommentService commentService;
   private PersonalInfoDao personalInfoDao;
 
   @Inject
-  public PersonalInfoService(PersonalInfoDao personalInfoDao){
+  public PersonalInfoService(PersonalInfoDao personalInfoDao, CommentService commentService, AuthService authService) {
+    this.authService = authService;
+    this.commentService = commentService;
     this.personalInfoDao = personalInfoDao;
   }
 
@@ -67,6 +75,54 @@ public class PersonalInfoService {
     personalInfo.setInside(personalDto.inside);
     personalInfoDao.save(personalInfo);
     return personalInfo;
+  }
+
+  public void logPersonalInfoUpdate(PersonalInfo fromPersonalInfo, PersonalDto toPersonalDto, Employee employee) {
+    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor(user);
+    log.setEventDate(new Date());
+
+    if (!fromPersonalInfo.getInside().equals(toPersonalDto.inside)) {
+      log.setMessage("Inside был изменен с " +
+              fromPersonalInfo.getInside() +
+              " на " +
+              toPersonalDto.inside);
+      commentService.createLog(log);
+    }
+
+    if (!fromPersonalInfo.getEmail().equals(toPersonalDto.email)) {
+      log.setMessage("Email был изменен с " +
+              fromPersonalInfo.getEmail() +
+              " на " +
+              toPersonalDto.email);
+      commentService.createLog(log);
+    }
+
+    if (!fromPersonalInfo.getLastName().equals(toPersonalDto.lastName)) {
+      log.setMessage("Фамилия была изменена с " +
+              fromPersonalInfo.getLastName() +
+              " на " +
+              toPersonalDto.lastName);
+      commentService.createLog(log);
+    }
+
+    if (!fromPersonalInfo.getMiddleName().equals(toPersonalDto.middleName)) {
+      log.setMessage("Отчество было изменено с " +
+              fromPersonalInfo.getMiddleName() +
+              " на " +
+              toPersonalDto.middleName);
+      commentService.createLog(log);
+    }
+
+    if (!fromPersonalInfo.getFirstName().equals(toPersonalDto.firstName)) {
+      log.setMessage("Имя было изменено с " +
+              fromPersonalInfo.getFirstName() +
+              " на " +
+              toPersonalDto.firstName);
+      commentService.createLog(log);
+    }
   }
 
 }

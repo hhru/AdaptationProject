@@ -9,7 +9,6 @@ public class LogCreateDto {
   public Integer employeeId;
   public String author;
   public String message;
-  public String link;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date eventDate;

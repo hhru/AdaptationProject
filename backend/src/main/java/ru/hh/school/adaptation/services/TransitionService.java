@@ -6,23 +6,30 @@ import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.WorkflowStepStatus;
 import ru.hh.school.adaptation.entities.WorkflowStepType;
+import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 @Singleton
 public class TransitionService {
   private TransitionDao transitionDao;
   private WorkflowService workflowService;
+  private AuthService authService;
+  private CommentService commentService;
 
-  public TransitionService(TransitionDao transitionDao, WorkflowService workflowService){
+  public TransitionService(TransitionDao transitionDao, WorkflowService workflowService, AuthService authService, CommentService commentService) {
     this.transitionDao = transitionDao;
     this.workflowService = workflowService;
+    this.authService = authService;
+    this.commentService = commentService;
   }
 
   @Transactional(readOnly = true)
@@ -46,11 +53,46 @@ public class TransitionService {
       transitionNext.setStepStatus(WorkflowStepStatus.CURRENT);
       transitionDao.update(transitionNext);
       workflowService.stepAction(employee, transitionNext.getStepType());
+
+      logNextTransition(employee, transitionNext.getStepType());
     } else {
       transitionNext = new Transition();
     }
 
     return new WorkflowStepDto(transitionNext);
+  }
+
+  private void logNextTransition(Employee employee, WorkflowStepType stepType) {
+    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor(user);
+    log.setEventDate(new Date());
+    log.setMessage("Переведен на этап " + typeTranslate(stepType));
+    commentService.createLog(log);
+  }
+
+  private String typeTranslate(WorkflowStepType stepType) {
+    switch (stepType) {
+      case ADD:
+        return "Добавлен в систему";
+      case TASK_LIST:
+        return "Согласование задач";
+      case WELCOME_MEETING:
+        return "Welcome-встреча";
+      case INTERIM_MEETING:
+        return "Промежуточная встреча";
+      case INTERIM_MEETING_RESULT:
+        return "Результаты промежуточной встречи";
+      case FINAL_MEETING:
+        return "Итоговая встреча";
+      case FINAL_MEETING_RESULT:
+        return "Результаты итоговой встречи";
+      case QUESTIONNAIRE:
+        return "Опросник новичка";
+      default:
+        return "";
+    }
   }
 
   @Transactional(readOnly = true)

@@ -62,9 +62,8 @@ public class QuestionnaireStep {
 
     Log log = new Log();
     log.setEmployee(employee);
-    log.setAuthor("Система");
+    log.setAuthor("Adaptation");
     log.setMessage("Сотруднику отправлен опросник новичка.");
-    log.setLink(String.format("https://www.adaptation.host/api/employee/%d/questionnaire", employee.getId()));
     log.setEventDate(new Date());
     commentService.createLog(log);
 
