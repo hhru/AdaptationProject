@@ -8,12 +8,15 @@ import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
 import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,25 +91,79 @@ public class EmployeeService {
       throw new RequestValidationException("Id in update request can't be null");
     } else {
       Employee employee = employeeDao.getRecordById(employeeUpdateDto.id);
-      commentService.logEmployeeUpdate(employee, employeeUpdateDto);
+      User hr = userDao.getRecordById(employeeUpdateDto.hrId);
+      PersonalInfo mentor = null;
+      if (employeeUpdateDto.mentor != null){
+        mentor = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.mentor);
+      }
+      PersonalInfo chief = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.chief);
 
       employee.setEmploymentDate(employeeUpdateDto.employmentDate);
       employee.setGender(employeeUpdateDto.gender);
-      employee.setHr(userDao.getRecordById(employeeUpdateDto.hrId));
+      employee.setHr(hr);
       employee.setPosition(employeeUpdateDto.position);
-
-      if (employeeUpdateDto.mentor != null){
-        employee.setMentor(personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.mentor));
-      } else {
-        employee.setMentor(null);
-      }
-      employee.setChief(personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.chief));
+      employee.setMentor(mentor);
+      employee.setChief(chief);
 
       PersonalInfo selfInfo = employee.getSelf();
       personalInfoService.updatePersonalInfo(selfInfo, employeeUpdateDto.self);
-
       employeeDao.update(employee);
+
+      logEmployeeUpdate(employee, employeeUpdateDto, hr, mentor, chief);
+      personalInfoService.logPersonalInfoUpdate(selfInfo, employeeUpdateDto.self, employee);
+
       return new EmployeeDto(employee, authService.getCurrentUserId());
+    }
+  }
+
+  private void logEmployeeUpdate(Employee fromEmployee, EmployeeUpdateDto toEmployeeUpdateDto, User hr, PersonalInfo mentor, PersonalInfo chief) {
+    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    Log log = new Log();
+    log.setEmployee(fromEmployee);
+    log.setAuthor(user);
+    log.setEventDate(new Date());
+
+    if (fromEmployee.getEmploymentDate() != toEmployeeUpdateDto.employmentDate) {
+      log.setMessage("Дата выхода на работу была изменена с " +
+              fromEmployee.getEmploymentDate() +
+              " на " +
+              toEmployeeUpdateDto.employmentDate);
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getGender() != toEmployeeUpdateDto.gender) {
+      log.setMessage("Пол был изменен с " +
+              fromEmployee.getGender() +
+              " на " +
+              toEmployeeUpdateDto.gender);
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getHr() != hr) {
+      log.setMessage("Сопровождающий hr был изменен с " +
+              fromEmployee.getHr().getSelf().getFirstName() + " " + fromEmployee.getHr().getSelf().getLastName() +
+              " на " +
+              hr.getSelf().getFirstName() + " " + hr.getSelf().getLastName());
+      commentService.createLog(log);
+    }
+    if (!fromEmployee.getPosition().equals(toEmployeeUpdateDto.position)) {
+      log.setMessage("Позиция была изменена с " +
+              fromEmployee.getPosition() +
+              " на " +
+              toEmployeeUpdateDto.position);
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getMentor() != mentor) {
+      log.setMessage("Ментор был изменен с " +
+              fromEmployee.getMentor().getFirstName() + " " + fromEmployee.getMentor().getLastName() +
+              " на " +
+              mentor.getFirstName() + " " + mentor.getLastName());
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getChief() != chief) {
+      log.setMessage("Руководитель был изменен с " +
+              fromEmployee.getChief().getFirstName() + " " + fromEmployee.getChief().getLastName() +
+              " на " +
+              chief.getFirstName() + " " + chief.getLastName());
+      commentService.createLog(log);
     }
   }
 

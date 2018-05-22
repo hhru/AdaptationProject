@@ -4,7 +4,7 @@
 }
 
 .info-box {
-  max-height: 450px;
+  max-height: 400px;
   overflow-y: auto;
 }
 
@@ -45,4 +45,8 @@ textarea {
   position: fixed;
   top: 30px;
   width: 57%;
+}
+
+.empty-for-next-step {
+  height: 30px;
 }

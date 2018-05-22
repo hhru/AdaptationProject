@@ -5,6 +5,7 @@ import FaCircle from 'react-icons/lib/fa/circle';
 import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
+import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
 import EmployeeTasksModal from './tasks/EmployeeTasksModal';
 
 import { Jumbotron, Alert } from 'reactstrap';
@@ -91,7 +92,6 @@ class EmployeePage extends React.Component {
             employeeId: null,
             author: '',
             message: '',
-            link: '',
             eventDate: '',
           },
         ],
@@ -293,13 +293,21 @@ class EmployeePage extends React.Component {
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
 
     return (
-      <Container>
+      <div>
         <Row className="mb-4">
           <Col sm={{ size: 5, offset: 1 }}>
             <h3 className="mb-0 font-weight-bold">
               {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
             </h3>
             <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
+          </Col>
+
+          <Col sm={{ size: 5 }} className="">
+            <div className="float-right mr-3">
+              <a href={'/edit_employee/' + this.state.employeeId}>
+                <FaPencilSquare size={20} color="#c6c6c6" />
+              </a>
+            </div>
           </Col>
         </Row>
 
@@ -331,31 +339,26 @@ class EmployeePage extends React.Component {
               </p>
             </div>
           </Col>
-          <Col sm={{ size: 5 }} className="mt-0 ml-5">
-            <div className="">
-              <p className="mb-2">{`Дата выхода на работу: ${employmentDate}`}</p>
-              <p className=""> {timeLeft} </p>
-            </div>
+          <Col sm={{ size: 5 }}>
+            <Nav vertical>
+              <NavItem>
+                <NavLink className="float-right">{`Дата выхода на работу: ${employmentDate}`}</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className="float-right">{timeLeft}</NavLink>
+              </NavItem>
+            </Nav>
           </Col>
         </Row>
 
-        <Row>
+        <Row className="mb-4">
           <Col sm={{ size: 5, offset: 1 }} className="mt-4">
             <Workflow data={workflow} parent={this} />
-            <Row>
-              <NextStep parent={this} />
-              <Button outline color="info" className="mt-5 ml-3" onClick={this.toggleTasksModal}>
-                Задачи на испытательный срок
-              </Button>
-              <EmployeeTasksModal
-                employeeId={this.state.employeeId}
-                isOpen={this.state.tasksModal}
-                parentToggle={this.toggleTasksModal}
-              />
-            </Row>
+            <div className="empty-for-next-step" />
+            <NextStep parent={this} />
           </Col>
 
-          <Col sm={{ size: 5 }}>
+          <Col sm={{ size: 5, offset: 0 }} className="mb-4">
             <Nav tabs>
               <NavItem
                 className={classnames({
@@ -369,11 +372,14 @@ class EmployeePage extends React.Component {
                     this.toggleLogBox('1');
                   }}
                 >
-                  <h5>
-                    <span className="text-muted">Комментарии</span>
-                  </h5>
+                  <h6>
+                    <span className="text-muted">
+                      Комментарии ({this.state.data.comments.length})
+                    </span>
+                  </h6>
                 </NavLink>
               </NavItem>
+
               <NavItem
                 className={classnames({
                   'cur-default': this.state.activeTab === '2',
@@ -386,9 +392,27 @@ class EmployeePage extends React.Component {
                     this.toggleLogBox('2');
                   }}
                 >
-                  <h5>
-                    <span className="text-muted">История</span>
-                  </h5>
+                  <h6>
+                    <span className="text-muted">История ({this.state.data.logs.length})</span>
+                  </h6>
+                </NavLink>
+              </NavItem>
+
+              <NavItem
+                className={classnames({
+                  'cur-default': this.state.activeTab === '3',
+                  'cur-pointer': this.state.activeTab !== '3',
+                })}
+              >
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '3' })}
+                  onClick={() => {
+                    this.toggleLogBox('3');
+                  }}
+                >
+                  <h6>
+                    <span className="text-muted">Приложения (3)</span>
+                  </h6>
                 </NavLink>
               </NavItem>
             </Nav>
@@ -400,18 +424,21 @@ class EmployeePage extends React.Component {
               <TabPane tabId="2">
                 <Logs parent={this} />
               </TabPane>
+              <TabPane tabId="3">
+                <Attach parent={this} />
+              </TabPane>
             </TabContent>
           </Col>
         </Row>
 
         <Row>
-          <Col sm={{ size: 12, offset: 0 }} className="mt-0">
-            <div>
+          <Col>
+            <div className="fixed-alert">
               <CustomAlert self={this} />
             </div>
           </Col>
         </Row>
-      </Container>
+      </div>
     );
   }
 }
@@ -501,8 +528,8 @@ class NextStep extends React.Component {
           outline
           disabled={isDisabled}
           color="secondary"
-          className="mt-5"
           onClick={this.toggleModal}
+          className=""
         >
           Перевести далее
         </Button>
@@ -582,10 +609,10 @@ class WorkflowStage extends React.Component {
         return overdue ? (
           <FaExclamationCircle size={50} color="#DF6B62" />
         ) : (
-          <FaAdjust size={50} color="#BDB370" />
+          <FaAdjust size={50} color="#dfdf20" />
         );
       default:
-        return <FaCircle size={50} color="#C2C2C2" />;
+        return <FaCircle size={50} color="#e2e3e5" />;
     }
   }
 
@@ -794,7 +821,6 @@ class Logs extends React.Component {
             message={logsData.message}
             author={logsData.author}
             eventDate={logsData.eventDate}
-            link={logsData.link}
             key={logsData.id}
             id={logsData.id}
           />
@@ -821,25 +847,56 @@ class LogItem extends React.Component {
   }
 
   render() {
-    const { message, link, author, eventDate, id } = this.props;
+    const { message, author, eventDate, id } = this.props;
 
     return (
-      <ListGroupItem className="" onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut}>
+      <ListGroupItem>
         <Row>
           <Col sm={{ size: 8, offset: 0 }}>
             <h6 className="my-0 mb-2">{this.nameWithDots(author)}</h6>
           </Col>
           <Col>
-            <span className="text-muted">{this.dateFormat(eventDate)}</span>
+            <span className="text-muted float-right">{this.dateFormat(eventDate)}</span>
           </Col>
         </Row>
         <Row>
-          <span className="ml-2">
-            {message}&nbsp;
-            {link != null && <a href={link}>ссылка</a>}
-          </span>
+          <span className="ml-2">{message}</span>
         </Row>
       </ListGroupItem>
+    );
+  }
+}
+
+class Attach extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    var parent = this.props.parent;
+    const id = parent.state.employeeId;
+    const questionnaireUrl = id + '/questionnaire';
+
+    return (
+      <div>
+        <ListGroup>
+          <ListGroupItem href="#" tag="a" className="" onClick={parent.toggleTasksModal}>
+            Задачи на испытательный срок
+          </ListGroupItem>
+          <ListGroupItem href={questionnaireUrl} tag="a" className="">
+            Опросник новичка
+          </ListGroupItem>
+          <ListGroupItem href="#" tag="a" className="">
+            Отчет о прохождении испытательного срока
+          </ListGroupItem>
+        </ListGroup>
+
+        <EmployeeTasksModal
+          employeeId={parent.state.employeeId}
+          isOpen={parent.state.tasksModal}
+          parentToggle={parent.toggleTasksModal}
+        />
+      </div>
     );
   }
 }
