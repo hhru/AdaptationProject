@@ -70,8 +70,64 @@ class EmployeePage extends React.Component {
         employmentDate: null,
         workflow: [
           {
-            id: null,
-            type: '',
+            id: 1,
+            type: 'ADD',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 2,
+            type: 'TASK_LIST',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 3,
+            type: 'WELCOME_MEETING',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 4,
+            type: 'INTERIM_MEETING',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 5,
+            type: 'INTERIM_MEETING_RESULT',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 6,
+            type: 'FINAL_MEETING',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 7,
+            type: 'FINAL_MEETING_RESULT',
+            status: '',
+            deadlineDate: null,
+            comment: null,
+            overdue: false,
+          },
+          {
+            id: 8,
+            type: 'QUESTIONNAIRE',
             status: '',
             deadlineDate: null,
             comment: null,
@@ -272,22 +328,26 @@ class EmployeePage extends React.Component {
       middleName: employeeMiddleName,
       lastName: employeeLastName,
       email: employeeEmail,
+      inside: employeeInside,
     } = this.state.data.employee;
     const {
       firstName: hrFirstName,
       middleName: hrMiddleName,
       lastName: hrLastName,
+      inside: hrInside,
     } = this.state.data.hr;
     const {
       firstName: chiefFirstName,
       middleName: chiefMiddleName,
       lastName: chiefLastName,
+      inside: chiefInside,
     } = this.state.data.chief;
     const mentorFirstName =
       this.state.data.mentor != null ? this.state.data.mentor.firstName : null;
     const mentorMiddleName =
       this.state.data.mentor != null ? this.state.data.mentor.middleName : null;
     const mentorLastName = this.state.data.mentor != null ? this.state.data.mentor.lastName : null;
+    const mentorInside = this.state.data.mentor != null ? this.state.data.mentor.inside : null;
     const employmentDate = this.dateFormat(this.state.data.employmentDate);
     const workflow = this.state.data.workflow;
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
@@ -299,7 +359,12 @@ class EmployeePage extends React.Component {
             <h3 className="mb-0 font-weight-bold">
               {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
             </h3>
-            <div className="mb-1 ml-2 text-info"> {employeeEmail} </div>
+            <div className="mb-1 ml-2 text-info">
+              {employeeEmail}{' '}
+              <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + employeeInside}>
+                (inside)
+              </a>{' '}
+            </div>
           </Col>
 
           <Col sm={{ size: 5 }} className="">
@@ -317,13 +382,17 @@ class EmployeePage extends React.Component {
               <p className="mb-2 text-muted">
                 {`Начальник: ${chiefFirstName} ${
                   chiefMiddleName == null ? '' : chiefMiddleName
-                } ${chiefLastName}`}
+                } ${chiefLastName}`}{' '}
+                <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + chiefInside}>(inside)</a>
               </p>
               {this.state.data.mentor != null && (
                 <p className="mb-2 text-muted">
                   {`Ментор: ${mentorFirstName} ${
                     mentorMiddleName == null ? '' : mentorMiddleName
-                  } ${mentorLastName}`}
+                  } ${mentorLastName}`}{' '}
+                  <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + mentorInside}>
+                    (inside)
+                  </a>
                 </p>
               )}
               <p className="text-muted">
@@ -335,7 +404,8 @@ class EmployeePage extends React.Component {
                       (hrMiddleName == null ? '' : hrMiddleName) +
                       ' ' +
                       hrLastName
-                }`}
+                }`}{' '}
+                <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + hrInside}>(inside)</a>
               </p>
             </div>
           </Col>
@@ -609,7 +679,7 @@ class WorkflowStage extends React.Component {
         return overdue ? (
           <FaExclamationCircle size={50} color="#DF6B62" />
         ) : (
-          <FaAdjust size={50} color="#dfdf20" />
+          <FaAdjust size={50} color="#ffc107" />
         );
       default:
         return <FaCircle size={50} color="#e2e3e5" />;

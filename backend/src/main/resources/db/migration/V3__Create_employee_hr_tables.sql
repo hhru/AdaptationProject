@@ -33,7 +33,7 @@ CREATE TABLE employee
 
 -- Some data for simplify testing of user cases
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Гусев', 'Леонид', 'Викторович', 'l.gusev@hh.ru', 'gusev');
+VALUES ('Леонид', 'Гусев', 'Викторович', 'l.gusev@hh.ru', 'gusev');
 INSERT INTO personal_info (first_name, last_name, email, inside)
 VALUES ('Билл', 'Гейтс', 'gates@microsoft.com', 'gates');
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)

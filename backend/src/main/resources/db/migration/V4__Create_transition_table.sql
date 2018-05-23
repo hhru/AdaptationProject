@@ -19,5 +19,5 @@ insert into transition (next_id, employee_id, step_type, step_status) VALUES (2,
 insert into transition (next_id, employee_id, step_type, step_status) VALUES (3, 1, 'INTERIM_MEETING_RESULT', 'NOT_DONE');
 insert into transition (next_id, employee_id, step_type, step_status) VALUES (4, 1, 'INTERIM_MEETING', 'NOT_DONE');
 insert into transition (next_id, employee_id, step_type, step_status) VALUES (5, 1, 'WELCOME_MEETING', 'NOT_DONE');
-insert into transition (next_id, employee_id, step_type, step_status) VALUES (6, 1, 'TASK_LIST', 'NOT_DONE');
-insert into transition (next_id, employee_id, step_type, step_status) VALUES (7, 1, 'ADD', 'CURRENT');
+insert into transition (next_id, employee_id, step_type, step_status) VALUES (6, 1, 'TASK_LIST', 'CURRENT');
+insert into transition (next_id, employee_id, step_type, step_status) VALUES (7, 1, 'ADD', 'DONE');
