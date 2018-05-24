@@ -15,3 +15,37 @@
   padding-right: 10px;
   background: #fdf5e6;
 }
+
+.ReactTable .rt-thead.-header {
+  box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.rt-noData {
+  visibility: hidden;
+}
+
+.clickable:hover {
+  cursor: pointer;
+  background-color: #e9ebf0;
+}
+
+.cur-pointer {
+  cursor: pointer;
+}
+
+.progress-bar {
+  width: 100px;
+  float: right;
+}
+
+.progress {
+  border-radius: 0;
+}
+
+.bg-success {
+  background-color: #70bd71 !important;
+}
+
+.bg-danger {
+  background-color: #df6b62 !important;
+}

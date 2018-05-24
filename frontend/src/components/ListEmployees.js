@@ -5,7 +5,8 @@ import FaCircle from 'react-icons/lib/fa/circle';
 import FaAdjust from 'react-icons/lib/fa/adjust';
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
-import { Progress, Container, Row, Col } from 'reactstrap';
+import FaFilter from 'react-icons/lib/fa/filter';
+import { Progress, Container, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import ReactTable from 'react-table';
 
 import '!style-loader!css-loader!react-table/react-table.css';
@@ -18,338 +19,259 @@ class ListEmployees extends React.Component {
     super(props);
 
     this.state = {
+      isLoading: true,
+      filterable: false,
+      filterColor: '#c6c6c6',
+      showDismissed: false,
+      showCompleted: false,
       employeeList: [],
     };
 
     this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.onFiltered = this.onFiltered.bind(this);
+    this.onShowCompleted = this.onShowCompleted.bind(this);
+    this.onShowDismissed = this.onShowDismissed.bind(this);
+    this.filteredData = this.filteredData.bind(this);
+    this.customFilter = this.customFilter.bind(this);
+    this.getTrProps = this.getTrProps.bind(this);
   }
 
   handleButtonClick(e, row) {
     this.props.history.push('/employee/' + row.id);
   }
 
+  onFiltered() {
+    this.setState({
+      filterable: !this.state.filterable,
+      filterColor: this.state.filterable ? '#c6c6c6' : '#a0a0a0',
+    });
+  }
+
   componentDidMount() {
-    const url = '/api/employee/all';
-    const self = this;
     axios
-      .get(url)
-      .then(function(response) {
-        console.log(response.data);
-        self.setState({
+      .get('/api/employee/all')
+      .then((response) => {
+        this.setState({
+          isLoading: false,
           employeeList: response.data,
         });
       })
-      .catch(function(error) {
+      .catch((error) => {
+        this.setState({
+          isLoading: false,
+        });
         console.log(error);
       });
   }
 
-  render() {
-    const colorsMap = {
-      CURRENT_OVERDUE: 'danger',
-      DONE_OVERDUE: 'danger',
-      NOT_DONE_OVERDUE: 'danger',
-      CURRENT: 'warning',
-      DONE: 'success',
-      NOT_DONE: 'light',
-    };
+  onShowCompleted(e) {
+    this.setState({
+      showCompleted: !this.state.showCompleted,
+    });
+  }
 
-    const shortTextToDisplay = {
-      ADD: 1,
-      TASK_LIST: 2,
-      WELCOME_MEETING: 3,
-      INTERIM_MEETING: 4,
-      INTERIM_MEETING_RESULT: 5,
-      FINAL_MEETING: 6,
-      FINAL_MEETING_RESULT: 7,
-      QUESTIONNAIRE: 8,
-    };
+  onShowDismissed(e) {
+    this.setState({
+      showDismissed: !this.state.showDismissed,
+    });
+  }
+
+  filteredData() {
+    let result = this.state.employeeList;
+
+    if (!this.state.showCompleted) {
+      result = result.filter((e) => {
+        const curStep = e.workflow.filter((w) => w.status == 'CURRENT');
+        return curStep.length == 0 ? false : true;
+      });
+    }
+
+    if (!this.state.showDismissed) {
+      result = result.filter((e) => !e.dismissed);
+    }
+    return result;
+  }
+
+  customFilter(filter, row, column) {
+    const id = filter.pivotId || filter.id;
+    if (row[id] === undefined) {
+      return true;
+    }
+    let str;
+    if (id === 'progress') {
+      str = row.progress.props.children[1];
+    } else if (id === 'date') {
+      str = row.date.props.children;
+    } else {
+      str = String(row[id]);
+    }
+    const filt = filter.value.toUpperCase();
+    return str.toUpperCase().search(filt) != -1;
+  }
+
+  getTrProps(state, rowInfo) {
+    return rowInfo == undefined
+      ? {}
+      : {
+          className: 'clickable',
+          onClick: (e, handleOriginal) => {
+            this.props.history.push('/employee/' + rowInfo.row._original.id);
+          },
+        };
+  }
+
+  render() {
+    let rowIndex = 0;
 
     const fullTextToDisplay = {
-      ADD: 'Добавлен в систему',
-      TASK_LIST: 'Задачи поставлены',
+      ADD: 'Добавление в систему',
+      TASK_LIST: 'Постановка задач',
       WELCOME_MEETING: 'Welcome встреча',
       INTERIM_MEETING: 'Промежуточная встреча',
-      INTERIM_MEETING_RESULT: 'Результаты промежуточной встречи',
+      INTERIM_MEETING_RESULT: 'Итоги промежуточной встречи',
       FINAL_MEETING: 'Финальная встреча',
-      FINAL_MEETING_RESULT: 'Результаты финальной встречи',
-      QUESTIONNAIRE: 'Опрос',
+      FINAL_MEETING_RESULT: 'Итоги финальной встречи',
+      QUESTIONNAIRE: 'Подведение итогов ИС',
+      NONE: 'ИС завершен',
+    };
+
+    const progressPercent = {
+      ADD: 5,
+      TASK_LIST: 10,
+      WELCOME_MEETING: 20,
+      INTERIM_MEETING: 40,
+      INTERIM_MEETING_RESULT: 50,
+      FINAL_MEETING: 70,
+      FINAL_MEETING_RESULT: 80,
+      QUESTIONNAIRE: 90,
+      NONE: 100,
     };
 
     let columns = [
       {
+        Header: () => {
+          return (
+            <FaFilter
+              size={16}
+              color={this.state.filterColor}
+              className="cur-pointer"
+              onClick={this.onFiltered}
+            />
+          );
+        },
+        id: 'number',
+        sortable: false,
+        filterable: false,
+        width: 30,
+        resizable: false,
+        Cell: (row) => {
+          const num = ++rowIndex;
+          if (rowIndex == this.state.employeeList.length) {
+            rowIndex = 0;
+          }
+          return <span className="text-muted ml-1">{num}</span>;
+        },
+      },
+      {
         Header: 'ФИО',
         id: 'fullName',
+        minWidth: 150,
         accessor: (row) =>
           `${row.employee.firstName} ${
             row.employee.middleName == null ? '' : row.employee.middleName
           } ${row.employee.lastName}`,
       },
       {
-        Header: 'Дата выхода',
-        accessor: 'employmentDate',
-      },
-      {
         Header: 'HR',
         id: 'hrName',
+        width: 280,
         accessor: (row) =>
           `${row.hr.firstName} ${row.hr.middleName == null ? '' : row.hr.middleName} ${
             row.hr.lastName
           }`,
       },
       {
-        Header: 'Состояние',
-        accessor: 'progress',
-        Cell: (row) => (
-          <div>
-            <div className="text-center">{fullTextToDisplay[row.original.currentWorkflowStep]}</div>
+        Header: 'Этап',
+        id: 'progress',
+        width: 350,
+        accessor: (row) => {
+          const cut = row.workflow.filter((x) => x.status == 'CURRENT');
+          const curStep = cut.length == 0 ? 'NONE' : cut[0].type;
+          const color = cut.length == 0 ? 'success' : cut[0].overdue ? 'danger' : 'success';
+          return (
+            <div>
+              <div className="progress-bar mt-1">
+                <Progress color={color} value={progressPercent[curStep]} />
+              </div>
 
-            <Progress multi>
-              {row.original.workflow.map((workflowStage) => (
-                <Progress
-                  bar
-                  color={
-                    colorsMap[
-                      workflowStage['status'] + (workflowStage['overdue'] == true ? '_OVERDUE' : '')
-                    ]
-                  }
-                  value={100.0 / row.original.workflow.length}
-                  key={workflowStage.id}
-                >
-                  {shortTextToDisplay[workflowStage['type']]}
-                </Progress>
-              ))}
-            </Progress>
-          </div>
-        ),
+              {fullTextToDisplay[curStep]}
+            </div>
+          );
+        },
+      },
+      {
+        Header: 'Окончание',
+        id: 'date',
+        width: 140,
+        accessor: (row) => {
+          let dateOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          };
+          let endTime = new Date(row.employmentDate);
+          endTime = new Date(endTime.setMonth(endTime.getMonth() + 3));
+          return <div className="text-center">{endTime.toLocaleString('ru', dateOptions)}</div>;
+        },
       },
     ];
 
-    let self = this;
+    const data = this.filteredData();
 
     return (
       <div>
+        {this.state.filterable && (
+          <Row className="mb-1">
+            <Col sm={{ size: 2, offset: 8 }}>
+              <Form>
+                <FormGroup check className="text-muted">
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      checked={this.state.showCompleted}
+                      onChange={this.onShowCompleted}
+                    />{' '}
+                    <span>Прошедшие</span>
+                  </Label>
+                </FormGroup>
+              </Form>
+            </Col>
+
+            <Col sm={{ size: 2 }}>
+              <Form>
+                <FormGroup check className="text-muted">
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      checked={this.state.showDismissed}
+                      onChange={this.onShowDismissed}
+                    />{' '}
+                    <span>Уволенные</span>
+                  </Label>
+                </FormGroup>
+              </Form>
+            </Col>
+          </Row>
+        )}
+
         <ReactTable
-          data={this.state.employeeList}
+          filterable={this.state.filterable}
+          loading={this.state.isLoading}
+          data={data}
           columns={columns}
-          SubComponent={(row) => {
-            return <EmployeePageShort data={row.original} />;
-          }}
-          getTdProps={(state, rowInfo, column, instance) => {
-            return {
-              onClick: (e, handleOriginal) => {
-                if (
-                  e.target.classList.contains('rt-expandable') ||
-                  e.target.classList.contains('rt-expander')
-                ) {
-                  handleOriginal();
-                } else {
-                  self.props.history.push('/employee/' + rowInfo.row._original.id);
-                }
-              },
-            };
-          }}
+          getTrProps={this.getTrProps}
+          defaultFilterMethod={this.customFilter}
         />
-      </div>
-    );
-  }
-}
-
-class EmployeePageShort extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const {
-      firstName: employeeFirstName,
-      middleName: employeeMiddleName,
-      lastName: employeeLastName,
-      email: employeeEmail,
-      inside: employeeInside,
-    } = this.props.data.employee;
-    const {
-      firstName: chiefFirstName,
-      middleName: chiefMiddleName,
-      lastName: chiefLastName,
-      inside: chiefInside,
-    } = this.props.data.chief;
-    const mentorFirstName =
-      this.props.data.mentor != null ? this.props.data.mentor.firstName : null;
-    const mentorMiddleName =
-      this.props.data.mentor != null ? this.props.data.mentor.middleName : null;
-    const mentorLastName = this.props.data.mentor != null ? this.props.data.mentor.lastName : null;
-    const mentorInside = this.props.data.mentor != null ? this.props.data.mentor.inside : null;
-    const {
-      firstName: hrFirstName,
-      middleName: hrMiddleName,
-      lastName: hrLastName,
-      inside: hrInside,
-    } = this.props.data.hr;
-
-    const employmentDate = this.props.data.employmentDate;
-    let employmentDateParsed = new Date(employmentDate);
-    let lastProbationDate = new Date(employmentDate);
-    lastProbationDate = new Date(lastProbationDate.setMonth(employmentDateParsed.getMonth() + 3));
-    let dateOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'short',
-    };
-
-    const workflow = this.props.data.workflow;
-
-    return (
-      <div className="workflow-horizontal">
-        <Container>
-          <Row className="mb-4">
-            <Col sm={{ size: 5 }}>
-              <h5 className="mb-0 font-weight-bold">
-                {`${employeeFirstName} ${employeeMiddleName} ${employeeLastName}`}
-              </h5>
-              <div className="mb-1 ml-2 text-info">
-                {' '}
-                {employeeEmail}{' '}
-                <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + employeeInside}>
-                  (inside)
-                </a>{' '}
-              </div>
-            </Col>
-          </Row>
-
-          <Row className="mb-2">
-            <Col sm={{ size: 5 }}>
-              <div className="ml-4">
-                <p className="mb-2 text-muted">
-                  {`Начальник: ${chiefFirstName} ${
-                    chiefMiddleName == null ? '' : chiefMiddleName
-                  } ${chiefLastName} `}
-                  <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + chiefInside}>
-                    (inside)
-                  </a>
-                </p>
-                {this.props.data.mentor != null && (
-                  <p className="mb-2 text-muted">
-                    {`Ментор: ${mentorFirstName} ${
-                      mentorMiddleName == null ? '' : mentorMiddleName
-                    } ${mentorLastName} `}
-                    <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + mentorInside}>
-                      (inside)
-                    </a>
-                  </p>
-                )}
-                <p className="text-muted">
-                  {`HR: ${hrFirstName} ${hrMiddleName == null ? '' : hrMiddleName} ${hrLastName} `}
-                  <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + hrInside}>(inside)</a>
-                </p>
-              </div>
-            </Col>
-
-            <Col sm={{ size: 5 }} className="mt-0 ml-5">
-              <div className="">
-                <p className="mb-2">
-                  {`Дата выхода на работу: ${employmentDateParsed.toLocaleString(
-                    'ru',
-                    dateOptions
-                  )}`}
-                </p>
-                <p className="mb-2">{`Дата окончания ИС: ${lastProbationDate.toLocaleString(
-                  'ru',
-                  dateOptions
-                )}`}</p>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Workflow data={workflow} />
-          </Row>
-        </Container>
-      </div>
-    );
-  }
-}
-
-class Workflow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.data.map((workflowStageData) => (
-          <WorkflowStage
-            deadlineDate={workflowStageData.deadlineDate}
-            status={workflowStageData.status}
-            overdue={workflowStageData.overdue}
-            type={workflowStageData.type}
-            key={workflowStageData.id}
-          />
-        ))}
-      </div>
-    );
-  }
-}
-
-class WorkflowStage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.selectIcon = this.selectIcon.bind(this);
-    this.typeTranslate = this.typeTranslate.bind(this);
-  }
-
-  selectIcon(status, overdue) {
-    switch (overdue) {
-      case true:
-        return <FaExclamationCircle size={30} color="#dc3545" />;
-      default:
-        switch (status) {
-          case 'DONE':
-            return <FaCheckCircle size={30} color="#28a745" />;
-          case 'CURRENT':
-            return <FaAdjust size={30} color="#ffc107" />;
-          default:
-            return <FaCircle size={30} color="#e2e3e5" />;
-        }
-    }
-  }
-
-  typeTranslate(type) {
-    switch (type) {
-      case 'ADD':
-        return 'Добавлен в систему';
-      case 'TASK_LIST':
-        return 'Согласование задач';
-      case 'WELCOME_MEETING':
-        return 'Welcome-встреча';
-      case 'INTERIM_MEETING':
-        return 'Промежуточная встреча';
-      case 'INTERIM_MEETING_RESULT':
-        return 'Результаты промежуточной встречи';
-      case 'FINAL_MEETING':
-        return 'Итоговая встреча';
-      case 'FINAL_MEETING_RESULT':
-        return 'Результаты итоговой встречи';
-      case 'QUESTIONNAIRE':
-        return 'Опросник новичка';
-    }
-  }
-
-  render() {
-    const { status, overdue, type } = this.props;
-    const currentText = status == 'CURRENT' ? this.typeTranslate(type) : '';
-
-    return (
-      <div
-        className={
-          'workflow-stage-horizontal ' +
-          (status == 'CURRENT' ? 'workflow-current-stage-horizontal' : '')
-        }
-      >
-        {this.selectIcon(status, overdue)}
-        {currentText}
       </div>
     );
   }
