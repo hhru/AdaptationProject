@@ -3,6 +3,7 @@ package ru.hh.school.adaptation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.hh.school.adaptation.AdaptationCommonConfig;
 import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.entities.Gender;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,10 @@ public class EmployeeDto {
   public PersonalDto mentor;
 
   public PersonalDto hr;
+
+  public String position;
+
+  public Gender gender;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentDate;
@@ -42,6 +47,8 @@ public class EmployeeDto {
       mentor = new PersonalDto(employee.getMentor());
     }
     hr = new PersonalDto(employee.getHr());
+    position = employee.getPosition();
+    gender = employee.getGender();
     employmentDate = employee.getEmploymentDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
     if (employee.getComments() != null) {

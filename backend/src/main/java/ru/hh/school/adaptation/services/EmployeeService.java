@@ -4,7 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
-import ru.hh.school.adaptation.dto.EmployeeCreateDto;
+import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.entities.Employee;
@@ -66,17 +66,17 @@ public class EmployeeService {
   }
 
   @Transactional
-  public EmployeeDto createEmployee(EmployeeCreateDto employeeCreateDto){
+  public EmployeeDto createEmployee(EmployeeCreateInternalDto employeeCreateInternalDto){
     Employee employee = new Employee();
-    employee.setSelf(personalInfoService.createPersonalInfo(employeeCreateDto.self));
-    employee.setChief(personalInfoService.getOrCreatePersonalInfo(employeeCreateDto.chief));
-    if (employeeCreateDto.mentor != null){
-      employee.setMentor(personalInfoService.getOrCreatePersonalInfo(employeeCreateDto.mentor));
+    employee.setSelf(personalInfoService.createPersonalInfo(employeeCreateInternalDto.self));
+    employee.setChief(personalInfoService.getOrCreatePersonalInfo(employeeCreateInternalDto.chief));
+    if (employeeCreateInternalDto.mentor != null){
+      employee.setMentor(personalInfoService.getOrCreatePersonalInfo(employeeCreateInternalDto.mentor));
     }
-    employee.setHr(userDao.getRecordById(employeeCreateDto.hrId));
-    employee.setPosition(employeeCreateDto.position);
-    employee.setGender(employeeCreateDto.gender);
-    employee.setEmploymentDate(employeeCreateDto.employmentDate);
+    employee.setHr(userDao.getRecordById(employeeCreateInternalDto.hrId));
+    employee.setPosition(employeeCreateInternalDto.position);
+    employee.setGender(employeeCreateInternalDto.gender);
+    employee.setEmploymentDate(employeeCreateInternalDto.employmentDate);
     employeeDao.save(employee);
 
     employee.setComments(null);

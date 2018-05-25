@@ -45,13 +45,14 @@ public class PersonalInfoService {
   }
 
   public PersonalInfo getPersonalInfo(PersonalDto personalDto){
-    if (personalDto.id != null){
+    if (personalDto != null && personalDto.id != null){
       return personalInfoDao.getRecordById(personalDto.id);
     } else {
       return null;
     }
   }
 
+  @Transactional
   public PersonalInfo createPersonalInfo(PersonalDto personalDto){
     return dtoToEntity(personalDto);
   }

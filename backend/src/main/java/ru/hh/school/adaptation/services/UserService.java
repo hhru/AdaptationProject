@@ -9,7 +9,9 @@ import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 
 import javax.inject.Singleton;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class UserService {
@@ -34,6 +36,16 @@ public class UserService {
   @Transactional(readOnly = true)
   public Optional<User> getUserByHhid(Integer hhid) {
     return Optional.ofNullable(userDao.getRecordByHhid(hhid));
+  }
+
+  @Transactional(readOnly = true)
+  public List<User> getAllUsers() {
+    return userDao.getAllRecords();
+  }
+
+  @Transactional(readOnly = true)
+  public List<UserDto> getAllUsersDto() {
+    return getAllUsers().stream().map(UserDto::new).collect(Collectors.toList());
   }
 
   @Transactional
