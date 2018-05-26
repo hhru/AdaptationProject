@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
@@ -16,6 +17,8 @@ import ru.hh.school.adaptation.exceptions.RequestValidationException;
 import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,15 +32,17 @@ public class EmployeeService {
   private TransitionService transitionService;
   private CommentService commentService;
   private AuthService authService;
+  private MailService mailService;
 
   public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
-                         CommentService commentService, AuthService authService) {
+                         CommentService commentService, AuthService authService, MailService mailService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
     this.userDao = userDao;
     this.personalInfoService = personalInfoService;
     this.transitionService = transitionService;
     this.commentService = commentService;
+    this.mailService = mailService;
   }
 
   @Transactional(readOnly = true)
@@ -97,20 +102,23 @@ public class EmployeeService {
         mentor = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.mentor);
       }
       PersonalInfo chief = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.chief);
+      PersonalInfo selfInfo = employee.getSelf();
 
-      employee.setEmploymentDate(employeeUpdateDto.employmentDate);
+      logEmployeeUpdate(employee, employeeUpdateDto, hr, mentor, chief);
+      personalInfoService.logPersonalInfoUpdate(selfInfo, employeeUpdateDto.self, employee);
+
       employee.setGender(employeeUpdateDto.gender);
+      employee.setEmploymentDate(employeeUpdateDto.employmentDate);
+      if (employee.getHr() != hr) {
+        notifyNewHr(hr, employee.getEmploymentDate());
+      }
       employee.setHr(hr);
       employee.setPosition(employeeUpdateDto.position);
       employee.setMentor(mentor);
       employee.setChief(chief);
 
-      PersonalInfo selfInfo = employee.getSelf();
       personalInfoService.updatePersonalInfo(selfInfo, employeeUpdateDto.self);
       employeeDao.update(employee);
-
-      logEmployeeUpdate(employee, employeeUpdateDto, hr, mentor, chief);
-      personalInfoService.logPersonalInfoUpdate(selfInfo, employeeUpdateDto.self, employee);
 
       return new EmployeeDto(employee, authService.getCurrentUserId());
     }
@@ -167,4 +175,22 @@ public class EmployeeService {
     }
   }
 
+  private void notifyNewHr(User hr, Date employmentDate) {
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+    String hrEmail = hr.getSelf().getEmail();
+
+    Date now = new Date();
+    Date interimDate = DateUtils.addDays(DateUtils.addMonths(employmentDate, 1), 15);
+    Date finalDate = DateUtils.addMonths(employmentDate, 3);
+
+    if (employmentDate.after(now)) {
+      mailService.sendCalendar(hrEmail, "Welcome-встреча", dateFormat.format(employmentDate));
+    }
+    if (interimDate.after(now)) {
+      mailService.sendCalendar(hrEmail, "Промежуточная встреча", dateFormat.format(interimDate));
+    }
+    if (finalDate.after(now)) {
+      mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(finalDate));
+    }
+  }
 }
