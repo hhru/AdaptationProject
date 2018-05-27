@@ -135,7 +135,7 @@ class EditEmployee extends React.Component {
     const employeeId = this.props.match.params.id;
     axios
       .delete('/api/employee/' + employeeId + '/dismiss')
-      .then((response) => this.props.history.push('/employee/' + employeeId))
+      .then((response) => this.props.history.push('/list_employees'))
       .catch((error) => {
         console.log(error);
         alert(error);
