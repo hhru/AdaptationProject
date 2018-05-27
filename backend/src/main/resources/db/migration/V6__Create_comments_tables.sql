@@ -15,5 +15,32 @@ CREATE TABLE log
   event_date DATE NOT NULL
 );
 
-insert into comment (employee_id, author, message) VALUES (1, 1, 'My first comment');
-insert into log (employee_id, author, message, event_date) VALUES (1, 'Uuser', 'My first log', now());
+insert into comment (employee_id, author, message) VALUES (1, 2, 'Заказать униформу новичка');
+insert into comment (employee_id, author, message) VALUES (1, 2, 'Нужно провести дополнительную Welcome - встречу');
+insert into comment (employee_id, author, message) VALUES (1, 1, 'Необходимо организовать командировку в Питер');
+insert into comment (employee_id, author, message) VALUES (1, 1, 'Не пришел на результаты промежуточной встречи, сказал, что болит живот');
+insert into comment (employee_id, author, message) VALUES (1, 1, 'Оставляем на второй испытательный срок');
+
+insert into comment (employee_id, author, message) VALUES (2, 2, 'Заказать униформу новичка');
+insert into comment (employee_id, author, message) VALUES (2, 2, 'Нужно провести дополнительную Welcome - встречу');
+insert into comment (employee_id, author, message) VALUES (2, 1, 'Необходимо организовать командировку в Питер');
+insert into comment (employee_id, author, message) VALUES (2, 1, 'Не пришел на результаты промежуточной встречи, сказал, что болит живот');
+insert into comment (employee_id, author, message) VALUES (2, 1, 'Оставляем на второй испытательный срок');
+
+insert into comment (employee_id, author, message) VALUES (3, 2, 'Заказать униформу новичка');
+insert into comment (employee_id, author, message) VALUES (3, 2, 'Нужно провести дополнительную Welcome - встречу');
+insert into comment (employee_id, author, message) VALUES (3, 1, 'Необходимо организовать командировку в Питер');
+insert into comment (employee_id, author, message) VALUES (3, 1, 'Не пришел на результаты промежуточной встречи, сказал, что болит живот');
+insert into comment (employee_id, author, message) VALUES (3, 1, 'Оставляем на второй испытательный срок');
+
+insert into comment (employee_id, author, message) VALUES (4, 2, 'Заказать униформу новичка');
+insert into comment (employee_id, author, message) VALUES (4, 2, 'Нужно провести дополнительную Welcome - встречу');
+insert into comment (employee_id, author, message) VALUES (4, 1, 'Необходимо организовать командировку в Питер');
+insert into comment (employee_id, author, message) VALUES (4, 1, 'Не пришел на результаты промежуточной встречи, сказал, что болит живот');
+insert into comment (employee_id, author, message) VALUES (4, 1, 'Оставляем на второй испытательный срок');
+
+insert into comment (employee_id, author, message) VALUES (5, 2, 'Заказать униформу новичка');
+insert into comment (employee_id, author, message) VALUES (5, 2, 'Нужно провести дополнительную Welcome - встречу');
+insert into comment (employee_id, author, message) VALUES (5, 1, 'Необходимо организовать командировку в Питер');
+insert into comment (employee_id, author, message) VALUES (5, 1, 'Не пришел на результаты промежуточной встречи, сказал, что болит живот');
+insert into comment (employee_id, author, message) VALUES (5, 1, 'Оставляем на второй испытательный срок');
