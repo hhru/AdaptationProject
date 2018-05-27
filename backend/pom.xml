@@ -124,6 +124,10 @@
                 <oauth.url>${env.OAUTH_URL}</oauth.url>
                 <oauth.client.id>${env.OAUTH_CLIENT_ID}</oauth.client.id>
                 <oauth.client.secret>${env.OAUTH_CLIENT_SECRET}</oauth.client.secret>
+
+                <jira.username>${env.JIRA_USERNAME}</jira.username>
+                <jira.password>${env.JIRA_PASSWORD}</jira.password>
+                <jira.key>${env.JIRA_KEY}</jira.key>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>

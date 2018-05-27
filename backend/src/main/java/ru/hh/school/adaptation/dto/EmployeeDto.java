@@ -36,6 +36,8 @@ public class EmployeeDto {
 
   public Boolean currentUserIsHr;
 
+  public Boolean dismissed;
+
   public EmployeeDto(){
   }
 
@@ -57,6 +59,7 @@ public class EmployeeDto {
     if (employee.getLogs() != null) {
       logs = employee.getLogs().stream().map(LogDto::new).collect(Collectors.toList());
     }
+    dismissed = employee.getDismissed();
     this.currentUserIsHr = currentUserId.equals(employee.getHr().getId());
   }
 

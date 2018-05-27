@@ -202,6 +202,7 @@ public class EmployeeService {
       mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(finalDate));
     }
   }
+
   @Transactional
   public Named<byte[]> generateProbationResultDoc(Integer employeeId) {
     try {
@@ -211,4 +212,10 @@ public class EmployeeService {
     }
   }
 
+  @Transactional
+  public void dismissEmployee(Integer id) {
+    Employee employee = employeeDao.getRecordById(id);
+    employee.setDismissed(true);
+    employeeDao.update(employee);
+  }
 }
