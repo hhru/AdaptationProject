@@ -27,7 +27,7 @@ import axios from 'axios';
 class EditEmployee extends React.Component {
   state = {
     firstName: '',
-    lastName: '' ,
+    lastName: '',
     middleName: '',
     email: '',
     inside: '',
@@ -40,37 +40,37 @@ class EditEmployee extends React.Component {
     persons: [],
     users: [],
     chiefModal: false,
-    mentorModal: false
+    mentorModal: false,
   };
 
-  toggleChiefCreator = event => {
+  toggleChiefCreator = (event) => {
     if (event) {
       event.preventDefault();
     }
 
     this.setState({
-      chiefModal: !this.state.chiefModal
+      chiefModal: !this.state.chiefModal,
     });
   };
 
-  toggleMentorCreator = event => {
+  toggleMentorCreator = (event) => {
     if (event) {
       event.preventDefault();
     }
 
     this.setState({
-      mentorModal: !this.state.mentorModal
+      mentorModal: !this.state.mentorModal,
     });
   };
 
-  handleChiefCreate = person => {
+  handleChiefCreate = (person) => {
     this.toggleChiefCreator();
 
-    const updateChief = newPerson => {
+    const updateChief = (newPerson) => {
       console.log(newPerson);
-      this.setState({chiefId: newPerson.id})
+      this.setState({ chiefId: newPerson.id });
     };
-    const failed = error => {
+    const failed = (error) => {
       console.log(error);
       alert(error);
     };
@@ -78,14 +78,14 @@ class EditEmployee extends React.Component {
     this.personCreate(person, updateChief, failed);
   };
 
-  handleMentorCreate = person => {
+  handleMentorCreate = (person) => {
     this.toggleChiefCreator();
 
-    const updateMentor = newPerson => {
+    const updateMentor = (newPerson) => {
       console.log(newPerson);
-      this.setState({mentorId: newPerson.id})
+      this.setState({ mentorId: newPerson.id });
     };
-    const failed = error => {
+    const failed = (error) => {
       console.log(error);
       alert(error);
     };
@@ -93,7 +93,7 @@ class EditEmployee extends React.Component {
     this.personCreate(person, updateMentor, failed);
   };
 
-  handleEmployeeChange = employee => {
+  handleEmployeeChange = (employee) => {
     const {
       firstName,
       lastName,
@@ -102,7 +102,7 @@ class EditEmployee extends React.Component {
       inside,
       gender,
       employmentDate,
-      position
+      position,
     } = employee;
 
     this.setState({
@@ -113,23 +113,36 @@ class EditEmployee extends React.Component {
       inside: inside,
       gender: gender,
       employmentDate: employmentDate,
-      position: position
+      position: position,
     });
   };
 
-  handleChiefChange = chiefId => {
-    this.setState({chiefId: chiefId});
+  handleChiefChange = (chiefId) => {
+    this.setState({ chiefId: chiefId });
   };
 
-  handleMentorChange = mentorId => {
-    this.setState({mentorId: mentorId ? mentorId : null});
+  handleMentorChange = (mentorId) => {
+    this.setState({ mentorId: mentorId ? mentorId : null });
   };
 
-  handleHrChange = hrId => {
-    this.setState({hrId: hrId});
+  handleHrChange = (hrId) => {
+    this.setState({ hrId: hrId });
   };
 
-  handleUpdateEmployee = event => {
+  handleDismissEmployee = (event) => {
+    event.preventDefault();
+
+    const employeeId = this.props.match.params.id;
+    axios
+      .delete('/api/employee/' + employeeId + '/dismiss')
+      .then((response) => this.props.history.push('/employee/' + employeeId))
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  };
+
+  handleUpdateEmployee = (event) => {
     event.preventDefault();
 
     const employeeId = this.props.match.params.id;
@@ -145,7 +158,7 @@ class EditEmployee extends React.Component {
       employmentDate,
       chiefId,
       mentorId,
-      hrId
+      hrId,
     } = this.state;
 
     const employeeUpdateDto = {
@@ -155,26 +168,26 @@ class EditEmployee extends React.Component {
         lastName: lastName,
         middleName: middleName,
         email: email,
-        inside: inside
+        inside: inside,
       },
-      chief: {id: chiefId},
-      mentor: mentorId ? {id: mentorId} : null,
+      chief: { id: chiefId },
+      mentor: mentorId ? { id: mentorId } : null,
       hrId: hrId,
       gender: gender,
       position: position,
-      employmentDate: employmentDate
+      employmentDate: employmentDate,
     };
-    
+
     this.employeeUpdate(employeeUpdateDto);
   };
 
   componentDidMount() {
-    const failed = error => {
+    const failed = (error) => {
       console.log(error);
       alert(error);
     };
 
-    const updateEmployee = employeeDto => {
+    const updateEmployee = (employeeDto) => {
       console.log(employeeDto);
       this.setState({
         firstName: employeeDto.employee.firstName,
@@ -187,16 +200,16 @@ class EditEmployee extends React.Component {
         employmentDate: employeeDto.employmentDate,
         chiefId: employeeDto.chief.id,
         mentorId: employeeDto.mentor ? employeeDto.mentor.id : undefined,
-        hrId: employeeDto.hr.id
+        hrId: employeeDto.hr.id,
       });
     };
 
-    const updatePersons = persons => {
-      this.setState({persons: persons});
+    const updatePersons = (persons) => {
+      this.setState({ persons: persons });
     };
 
-    const updateUsers = users => {
-      this.setState({users: users});
+    const updateUsers = (users) => {
+      this.setState({ users: users });
     };
 
     const employeeId = this.props.match.params.id;
@@ -209,41 +222,41 @@ class EditEmployee extends React.Component {
   getEmployee(employeeId, completed, failed) {
     axios
       .get('/api/employee/' + employeeId)
-      .then(response => completed(response.data))
-      .catch(error => failed(error));
+      .then((response) => completed(response.data))
+      .catch((error) => failed(error));
   }
 
   listUsers(completed, failed) {
     axios
       .get('/api/users/all')
-      .then(response => completed(response.data))
-      .catch(error => failed(error));
+      .then((response) => completed(response.data))
+      .catch((error) => failed(error));
   }
 
   listPersons(completed, failed) {
     axios
       .get('/api/personal/all')
-      .then(response => completed(response.data))
-      .catch(error => failed(error));
+      .then((response) => completed(response.data))
+      .catch((error) => failed(error));
   }
 
   personCreate(person, completed, failed) {
-    const updatePersons = persons => this.setState({persons: persons});
+    const updatePersons = (persons) => this.setState({ persons: persons });
 
     axios
       .post('/api/personal/create', person)
-      .then(response => {
+      .then((response) => {
         this.listPersons(updatePersons, failed);
         completed(response.data);
       })
-      .catch(error => failed(error));
+      .catch((error) => failed(error));
   }
 
   employeeUpdate(employeeUpdateDto) {
     axios
       .put('/api/employee/update', employeeUpdateDto)
-      .then(response => this.props.history.push('/employee/' + response.data.id))
-      .catch(error => {
+      .then((response) => this.props.history.push('/employee/' + response.data.id))
+      .catch((error) => {
         console.log(error);
         alert(error);
       });
@@ -306,11 +319,14 @@ class EditEmployee extends React.Component {
           />
 
           <FormGroup row>
-            <Col sm={{size: 6, order: 2, offset: 2}}>
-              <Button
-                onClick={this.handleUpdateEmployee}
-                color="primary">
+            <Col sm={{ size: 1, order: 2, offset: 2 }}>
+              <Button onClick={this.handleUpdateEmployee} color="primary">
                 {'Применить'}
+              </Button>
+            </Col>
+            <Col sm={{ size: 2, order: 3, offset: 7 }}>
+              <Button block onClick={this.handleDismissEmployee} color="danger">
+                {'Уволить'}
               </Button>
             </Col>
           </FormGroup>
