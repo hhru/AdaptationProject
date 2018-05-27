@@ -30,7 +30,6 @@ import ru.hh.school.adaptation.entities.QuestionnaireAnswer;
 import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.services.documents.TaskDocumentGenerator;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.EmployeeResource;
 import ru.hh.school.adaptation.resources.MainResource;
@@ -91,8 +90,6 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     EmployeeResource.class,
     PersonalInfoResource.class,
     UserResource.class,
-    TaskDocumentGenerator.class,
-
     ChiefTaskDocumentGenerator.class,
     ProbationResultDocumentGenerator.class,
     AddStep.class,
