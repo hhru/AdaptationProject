@@ -15,4 +15,4 @@ CREATE TABLE questionnaire_answer
   answer_text VARCHAR(512)
 );
 
---INSERT INTO questionnaire (employee_id, key, is_complete) VALUES (1, '0685aca2dca7467eadbd0e6efa442352', 0);
+INSERT INTO questionnaire (employee_id, key, is_complete) VALUES (1, '0685aca2dca7467eadbd0e6efa442352', false);

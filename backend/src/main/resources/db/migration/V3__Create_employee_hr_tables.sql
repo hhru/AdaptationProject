@@ -31,13 +31,43 @@ CREATE TABLE employee
   chief_id        INT REFERENCES personal_info (id)   NOT NULL
 );
 
--- Some data for simplify testing of user cases
+-- employees
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Леонид', 'Гусев', 'Викторович', 'l.gusev@hh.ru', 'gusev');
-INSERT INTO personal_info (first_name, last_name, email, inside)
-VALUES ('Билл', 'Гейтс', 'gates@microsoft.com', 'gates');
+VALUES ('Марфа', 'Ябурова', 'Германовна', 'm.yaburova@hh.ru', 'yaburova');
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Джон', 'МакКлейн', 'МакКлейн', 'die@hard.com', 'john');
-INSERT INTO "user" (hhid, self_id) VALUES (1, 2);
+VALUES ('Лавр', 'Рыков', 'Еремеевич', 'l.rukov@hh.ru', 'rykov');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Федор', 'Савинков', 'Олегович', 'f.savinkov@hh.ru', 'savinkov');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Берта', 'Андрюхина', 'Давидовна', 'b.andryhina@hh.ru', 'andryhina');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Григорий', 'Харьков', 'Ираклиевич', 'g.harkov@hh.ru', 'harkov');
+
+-- mentors
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Вероника', 'Есаулова', 'Семеновна', 'v.esaulova@hh.ru', 'esaulova');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Мартын', 'Пузанов', 'Зиновиевич', 'm.puzanov@hh.ru', 'puzanov');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Яков', 'Гнусарев', 'Маркович', 'ya.gnusarev@hh.ru', 'gnusarev');
+
+-- hr
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Ника', 'Панфилова', 'Феликсовна', 'super.hr.manager@gmail.com', 'panfilova');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
+VALUES ('Роза', 'Яловкина', 'Василиевна', 'adaptation.hh@gmail.com', 'yalovkina');
+
+
+INSERT INTO "user" (hhid, self_id) VALUES (1, 9);
+INSERT INTO "user" (hhid, self_id) VALUES (2, 10);
+
 INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
-VALUES (3, 'Разработчик', 'MALE', now(), 1, 1, 1);
+VALUES (1, 'Разработчик', 'FEMALE', '2018-04-28', 1, 6, 7);
+INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
+VALUES (2, 'Менеджер', 'MALE', '2018-05-05', 1, 8, 6);
+INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
+VALUES (3, 'Менеджер', 'MALE', '2018-05-04', 1, 8, 6);
+INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
+VALUES (4, 'Охранник', 'FEMALE', '2018-05-07', 2, 7, 8);
+INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
+VALUES (5, 'Разработчик', 'MALE', '2018-05-10', 2, 6, 7);
