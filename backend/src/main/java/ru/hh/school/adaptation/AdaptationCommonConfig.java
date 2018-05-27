@@ -46,12 +46,7 @@ import ru.hh.school.adaptation.services.UserService;
 import ru.hh.school.adaptation.services.WorkflowService;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.services.auth.HhApiService;
-import ru.hh.school.adaptation.resources.AuthResource;
-import ru.hh.school.adaptation.resources.PersonalInfoResource;
-import ru.hh.school.adaptation.resources.EmployeeResource;
-import ru.hh.school.adaptation.resources.TaskResource;
 import ru.hh.school.adaptation.resources.QuestionnaireResource;
-import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.resources.UserResource;
 
 import ru.hh.school.adaptation.services.documents.ChiefTaskDocumentGenerator;
@@ -77,7 +72,6 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     TaskFormDao.class,
     QuestionnaireDao.class,
     QuestionnaireAnswerDao.class,
-    EmployeeResource.class,
     EmployeeService.class,
     CommentService.class,
     TransitionService.class,
@@ -86,7 +80,6 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     UserService.class,
     HhApiService.class,
     AuthService.class,
-    AuthResource.class,
     MainResource.class,
     TaskResource.class,
     QuestionnaireResource.class,
@@ -98,7 +91,6 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     EmployeeResource.class,
     PersonalInfoResource.class,
     UserResource.class,
-    DocumentService.class,
     TaskDocumentGenerator.class,
 
     ChiefTaskDocumentGenerator.class,

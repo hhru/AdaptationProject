@@ -42,7 +42,7 @@ public class EmployeeService {
   private MailService mailService;
 
   public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
-                         CommentService commentService, ProbationResultDocumentGenerator probationResultDocumentGenerator) {
+                         ProbationResultDocumentGenerator probationResultDocumentGenerator,
                          CommentService commentService, AuthService authService, MailService mailService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
