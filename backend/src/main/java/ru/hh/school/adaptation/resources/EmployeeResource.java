@@ -91,6 +91,14 @@ public class EmployeeResource {
     return employeeService.getEmployeeDto(id);
   }
 
+  @DELETE
+  @Produces("application/json")
+  @Path("/employee/{id}/dismiss")
+  @ResponseBody
+  public void dismissEmployee(@PathParam("id") Integer id) {
+    employeeService.dismissEmployee(id);
+  }
+
   @POST
   @Produces("application/json")
   @Path("/employee/create")

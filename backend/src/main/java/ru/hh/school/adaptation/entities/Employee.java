@@ -80,6 +80,9 @@ public class Employee {
   @OneToOne(mappedBy = "employee")
   private Questionnaire questionnaire;
 
+  @Column(name = "dismissed")
+  private Boolean dismissed;
+
   public Integer getId() {
     return id;
   }
@@ -194,5 +197,13 @@ public class Employee {
 
   public void setQuestionnaire(Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
+  }
+
+  public Boolean getDismissed() {
+    return dismissed;
+  }
+
+  public void setDismissed(Boolean dismissed) {
+    this.dismissed = dismissed;
   }
 }

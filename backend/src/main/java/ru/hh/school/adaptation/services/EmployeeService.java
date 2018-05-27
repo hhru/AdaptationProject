@@ -211,4 +211,11 @@ public class EmployeeService {
     }
   }
 
+
+  @Transactional
+  public void dismissEmployee(Integer id) {
+    Employee employee = employeeDao.getRecordById(id);
+    employee.setDismissed(true);
+    employeeDao.update(employee);
+  }
 }

@@ -25,6 +25,8 @@ public class EmployeeBriefDto {
 
   public List<WorkflowStepBriefDto> workflow;
 
+  public Boolean dismissed;
+
   public EmployeeBriefDto(Employee employee) {
     id = employee.getId();
     this.employee = new PersonalDto(employee.getSelf());
@@ -35,5 +37,6 @@ public class EmployeeBriefDto {
     hr = new PersonalDto(employee.getHr());
     employmentDate = employee.getEmploymentDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepBriefDto::new).collect(Collectors.toList());
+    dismissed = employee.getDismissed();
   }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE employee
+  ADD dismissed BOOLEAN DEFAULT FALSE;
