@@ -1,5 +1,7 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.xmlbeans.XmlException;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
@@ -15,11 +17,15 @@ import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
 import ru.hh.school.adaptation.services.auth.AuthService;
+import ru.hh.school.adaptation.misc.Named;
+import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
 
 import javax.inject.Singleton;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.ws.rs.WebApplicationException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +37,12 @@ public class EmployeeService {
   private PersonalInfoService personalInfoService;
   private TransitionService transitionService;
   private CommentService commentService;
+  private ProbationResultDocumentGenerator probationResultDocumentGenerator;
   private AuthService authService;
   private MailService mailService;
 
   public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
+                         ProbationResultDocumentGenerator probationResultDocumentGenerator,
                          CommentService commentService, AuthService authService, MailService mailService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
@@ -42,6 +50,7 @@ public class EmployeeService {
     this.personalInfoService = personalInfoService;
     this.transitionService = transitionService;
     this.commentService = commentService;
+    this.probationResultDocumentGenerator = probationResultDocumentGenerator;
     this.mailService = mailService;
   }
 
@@ -193,4 +202,13 @@ public class EmployeeService {
       mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(finalDate));
     }
   }
+  @Transactional
+  public Named<byte[]> generateProbationResultDoc(Integer employeeId) {
+    try {
+      return probationResultDocumentGenerator.generateDoc(employeeDao.getRecordById(employeeId));
+    } catch (InvalidFormatException | IOException | XmlException | NullPointerException e) {
+      throw new WebApplicationException("Bad document", e);
+    }
+  }
+
 }

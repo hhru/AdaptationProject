@@ -940,6 +940,12 @@ class LogItem extends React.Component {
 class Attach extends React.Component {
   constructor(props) {
     super(props);
+    this.downloadProbationResult = this.downloadProbationResult.bind(this);
+  }
+
+  downloadProbationResult() {
+    const url = '/api/employee/' + this.props.parent.state.employeeId + '/probation_result';
+    window.open(url);
   }
 
   render() {
@@ -956,7 +962,7 @@ class Attach extends React.Component {
           <ListGroupItem href={questionnaireUrl} tag="a" className="">
             Опросник новичка
           </ListGroupItem>
-          <ListGroupItem href="#" tag="a" className="">
+          <ListGroupItem href="#" tag="a" className="" onClick={this.downloadProbationResult}>
             Отчет о прохождении испытательного срока
           </ListGroupItem>
         </ListGroup>
