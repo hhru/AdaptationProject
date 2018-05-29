@@ -28,7 +28,8 @@ CREATE TABLE employee
   employment_date DATE                                NOT NULL,
   hr_id           INT REFERENCES "user" (id)          NOT NULL,
   mentor_id       INT REFERENCES personal_info (id),
-  chief_id        INT REFERENCES personal_info (id)   NOT NULL
+  chief_id        INT REFERENCES personal_info (id)   NOT NULL,
+  dismissed       BOOLEAN DEFAULT FALSE
 );
 
 -- employees
