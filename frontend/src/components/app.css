@@ -50,3 +50,8 @@ textarea {
 .empty-for-next-step {
   height: 30px;
 }
+
+.edit-profile:hover {
+  text-decoration: underline;
+  text-decoration-color: #c6c6c6 !important;
+}

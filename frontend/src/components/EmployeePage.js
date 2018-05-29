@@ -35,6 +35,7 @@ class EmployeePage extends React.Component {
         id: null,
         currentWorkflowStep: '',
         currentUserIsHr: false,
+        dismissed: true,
         employee: {
           id: null,
           firstName: '',
@@ -370,7 +371,10 @@ class EmployeePage extends React.Component {
           <Col sm={{ size: 5 }} className="">
             <div className="float-right mr-3">
               <a href={'/edit_employee/' + this.state.employeeId}>
-                <FaPencilSquare size={20} color="#c6c6c6" />
+                <span className="text-muted edit-profile">
+                  Редактировать&nbsp;
+                  <FaPencilSquare size={20} color="#c6c6c6" />
+                </span>
               </a>
             </div>
           </Col>
@@ -584,8 +588,11 @@ class NextStep extends React.Component {
   render() {
     var parent = this.props.parent;
     var currentWorkflowType = this.getCurrentType(parent);
-    var isDisabled =
-      currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE' ? true : false;
+    var isDisabled = parent.state.data.dismissed;
+    if (!isDisabled) {
+      isDisabled =
+        currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE' ? true : false;
+    }
     var isResultStep =
       currentWorkflowType == 'INTERIM_MEETING_RESULT' ||
       currentWorkflowType == 'FINAL_MEETING_RESULT'

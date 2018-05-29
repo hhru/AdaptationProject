@@ -21,6 +21,10 @@ import {
   InputGroupAddon,
   FormText,
   Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 import axios from 'axios';
 
@@ -41,6 +45,8 @@ class EditEmployee extends React.Component {
     users: [],
     chiefModal: false,
     mentorModal: false,
+    dismissModal: false,
+    dismissCommentValue: '',
   };
 
   toggleChiefCreator = (event) => {
@@ -60,6 +66,18 @@ class EditEmployee extends React.Component {
 
     this.setState({
       mentorModal: !this.state.mentorModal,
+    });
+  };
+
+  toggleDismissModal = () => {
+    this.setState({
+      dismissModal: !this.state.dismissModal,
+    });
+  };
+
+  onDismissCommentChange = (event) => {
+    this.setState({
+      dismissCommentValue: event.target.value,
     });
   };
 
@@ -130,11 +148,12 @@ class EditEmployee extends React.Component {
   };
 
   handleDismissEmployee = (event) => {
-    event.preventDefault();
-
+    this.toggleDismissModal();
     const employeeId = this.props.match.params.id;
+    const dismissComment = this.state.dismissCommentValue;
+
     axios
-      .delete('/api/employee/' + employeeId + '/dismiss')
+      .post('/api/employee/' + employeeId + '/dismiss', dismissComment)
       .then((response) => this.props.history.push('/list_employees'))
       .catch((error) => {
         console.log(error);
@@ -325,9 +344,36 @@ class EditEmployee extends React.Component {
               </Button>
             </Col>
             <Col sm={{ size: 2, order: 3, offset: 7 }}>
-              <Button block onClick={this.handleDismissEmployee} color="danger">
+              <Button block onClick={this.toggleDismissModal} color="danger">
                 {'Уволить'}
               </Button>
+
+              <Modal isOpen={this.state.dismissModal} toggle={this.toggleDismissModal}>
+                <ModalHeader toggle={this.toggleDismissModal}>Уволить сотрудника?</ModalHeader>
+
+                <ModalBody>
+                  <Form>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="text"
+                        placeholder="Написать комментарий"
+                        onChange={this.onDismissCommentChange}
+                        value={this.state.dismissCommentValue}
+                      />
+                    </FormGroup>
+                  </Form>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button outline color="secondary" onClick={this.handleDismissEmployee}>
+                    Уволить
+                  </Button>
+                  <Button outline color="danger" onClick={this.toggleDismissModal}>
+                    Отмена
+                  </Button>
+                </ModalFooter>
+              </Modal>
             </Col>
           </FormGroup>
         </Form>

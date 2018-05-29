@@ -10,6 +10,7 @@ import ru.hh.school.adaptation.dto.EmployeeBriefDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
+import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
@@ -213,9 +214,15 @@ public class EmployeeService {
   }
 
   @Transactional
-  public void dismissEmployee(Integer id) {
+  public void dismissEmployee(Integer id, String dismissComment) {
     Employee employee = employeeDao.getRecordById(id);
     employee.setDismissed(true);
     employeeDao.update(employee);
+
+    Comment comment = new Comment();
+    comment.setEmployee(employee);
+    comment.setAuthor(authService.getUser().get());
+    comment.setMessage(dismissComment);
+    commentService.createComment(comment);
   }
 }

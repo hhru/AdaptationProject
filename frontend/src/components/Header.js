@@ -19,6 +19,7 @@ import {
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import '!style-loader!css-loader!./Header.css';
 
 import { setInitialized, setLoggedIn } from '../actions/index';
 
@@ -90,12 +91,17 @@ class NavButtons extends React.Component {
       return (
         <Nav className="mr-auto" navbar>
           <NavItem className="ml-3">
-            <Button className="text-white" tag={Link} to="/list_employees">
+            <Button
+              className="text-white borderless-button"
+              outline
+              tag={Link}
+              to="/list_employees"
+            >
               Список сотрудников
             </Button>
           </NavItem>
           <NavItem className="ml-3">
-            <Button className="text-white" tag={Link} to="/add_employee">
+            <Button className="text-white borderless-button" outline tag={Link} to="/add_employee">
               Добавить сотрудника
             </Button>
           </NavItem>
