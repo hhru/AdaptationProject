@@ -101,6 +101,14 @@ public class EmployeeResource {
 
   @POST
   @Produces("application/json")
+  @Path("/employee/{id}/undismiss")
+  @ResponseBody
+  public void undismissEmployee(@PathParam("id") Integer id, @RequestBody String dismissComment) {
+    employeeService.undismissEmployee(id, dismissComment);
+  }
+
+  @POST
+  @Produces("application/json")
   @Path("/employee/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody

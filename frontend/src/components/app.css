@@ -55,3 +55,15 @@ textarea {
   text-decoration: underline;
   text-decoration-color: #c6c6c6 !important;
 }
+
+.empty-for-main-page-left {
+  height: 20px;
+}
+
+.empty-for-main-page-right {
+  height: 30px;
+}
+
+.empty-for-main-page-between-buttons {
+  height: 20px;
+}

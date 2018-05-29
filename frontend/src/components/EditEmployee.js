@@ -44,6 +44,7 @@ class EditEmployee extends React.Component {
     persons: [],
     users: [],
     chiefModal: false,
+    dismissed: false,
     mentorModal: false,
     dismissModal: false,
     dismissCommentValue: '',
@@ -121,6 +122,7 @@ class EditEmployee extends React.Component {
       gender,
       employmentDate,
       position,
+      dismissed,
     } = employee;
 
     this.setState({
@@ -132,6 +134,7 @@ class EditEmployee extends React.Component {
       gender: gender,
       employmentDate: employmentDate,
       position: position,
+      dismissed: dismissed,
     });
   };
 
@@ -151,9 +154,10 @@ class EditEmployee extends React.Component {
     this.toggleDismissModal();
     const employeeId = this.props.match.params.id;
     const dismissComment = this.state.dismissCommentValue;
+    const url = '/api/employee/' + employeeId + (this.state.dismissed ? '/undismiss' : '/dismiss');
 
     axios
-      .post('/api/employee/' + employeeId + '/dismiss', dismissComment)
+      .post(url, dismissComment)
       .then((response) => this.props.history.push('/list_employees'))
       .catch((error) => {
         console.log(error);
@@ -167,6 +171,7 @@ class EditEmployee extends React.Component {
     const employeeId = this.props.match.params.id;
 
     const {
+      dismissed,
       firstName,
       lastName,
       middleName,
@@ -182,6 +187,7 @@ class EditEmployee extends React.Component {
 
     const employeeUpdateDto = {
       id: employeeId,
+      dismissed: dismissed,
       self: {
         firstName: firstName,
         lastName: lastName,
@@ -209,6 +215,7 @@ class EditEmployee extends React.Component {
     const updateEmployee = (employeeDto) => {
       console.log(employeeDto);
       this.setState({
+        dismissed: employeeDto.dismissed,
         firstName: employeeDto.employee.firstName,
         lastName: employeeDto.employee.lastName,
         middleName: employeeDto.employee.middleName,
@@ -282,6 +289,8 @@ class EditEmployee extends React.Component {
   }
 
   render() {
+    const dismissed = this.state.dismissed;
+
     return (
       <Container>
         <PersonCreator
@@ -344,12 +353,15 @@ class EditEmployee extends React.Component {
               </Button>
             </Col>
             <Col sm={{ size: 2, order: 3, offset: 7 }}>
-              <Button block onClick={this.toggleDismissModal} color="danger">
-                {'Уволить'}
+              <Button block onClick={this.toggleDismissModal} color={dismissed ? 'info' : 'danger'}>
+                {dismissed ? 'Восстановить' : 'Уволить'}
               </Button>
 
               <Modal isOpen={this.state.dismissModal} toggle={this.toggleDismissModal}>
-                <ModalHeader toggle={this.toggleDismissModal}>Уволить сотрудника?</ModalHeader>
+                <ModalHeader toggle={this.toggleDismissModal}>
+                  {dismissed ? 'Восстановить' : 'Уволить'}
+                  {' сотрудника?'}
+                </ModalHeader>
 
                 <ModalBody>
                   <Form>
@@ -366,11 +378,15 @@ class EditEmployee extends React.Component {
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button outline color="secondary" onClick={this.handleDismissEmployee}>
-                    Уволить
+                  <Button
+                    outline
+                    color={dismissed ? 'info' : 'danger'}
+                    onClick={this.handleDismissEmployee}
+                  >
+                    {dismissed ? 'Восстановить' : 'Уволить'}
                   </Button>
-                  <Button outline color="danger" onClick={this.toggleDismissModal}>
-                    Отмена
+                  <Button outline color="secondary" onClick={this.toggleDismissModal}>
+                    Отменить
                   </Button>
                 </ModalFooter>
               </Modal>
