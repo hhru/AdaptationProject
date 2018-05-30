@@ -71,14 +71,17 @@ const ConnectedUserInfo = connect(mapStateToProps, mapDispatchToProps)(UserInfo)
 
 class LoginLogoutButton extends React.Component {
   render() {
+    const hidden = this.props.path === '/' || this.props.path === '/donate';
     return (
-      <NavItem className="mr-3">
-        <Form action={this.props.loggedIn ? '/api/logout' : '/api/login'} method="POST">
-          <Button className="text-white" type="submit">
-            {this.props.loggedIn ? 'Выйти' : 'Войти'}
-          </Button>
-        </Form>
-      </NavItem>
+      !hidden && (
+        <NavItem className="mr-3">
+          <Form action={this.props.loggedIn ? '/api/logout' : '/api/login'} method="POST">
+            <Button className="text-white" type="submit">
+              {this.props.loggedIn ? 'Выйти' : 'Войти'}
+            </Button>
+          </Form>
+        </NavItem>
+      )
     );
   }
 }
@@ -124,7 +127,7 @@ class Header extends React.Component {
           <ConnectedNavButtons />
           <Nav className="ml-auto" navbar>
             <ConnectedUserInfo />
-            <ConnectedLoginLogoutButton />
+            <ConnectedLoginLogoutButton path={this.props.location.pathname} />
           </Nav>
         </Container>
       </Navbar>

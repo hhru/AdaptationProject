@@ -215,14 +215,48 @@ public class EmployeeService {
 
   @Transactional
   public void dismissEmployee(Integer id, String dismissComment) {
+    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
     Employee employee = employeeDao.getRecordById(id);
     employee.setDismissed(true);
     employeeDao.update(employee);
 
-    Comment comment = new Comment();
-    comment.setEmployee(employee);
-    comment.setAuthor(authService.getUser().get());
-    comment.setMessage(dismissComment);
-    commentService.createComment(comment);
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor(user);
+    log.setEventDate(new Date());
+    log.setMessage("Сотрудник был уволен");
+    commentService.createLog(log);
+
+    if (dismissComment != null && !dismissComment.equals("")) {
+      Comment comment = new Comment();
+      comment.setEmployee(employee);
+      comment.setAuthor(authService.getUser().get());
+      comment.setMessage(dismissComment);
+      commentService.createComment(comment);
+    }
   }
+
+  @Transactional
+  public void undismissEmployee(Integer id, String dismissComment) {
+    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    Employee employee = employeeDao.getRecordById(id);
+    employee.setDismissed(false);
+    employeeDao.update(employee);
+
+    Log log = new Log();
+    log.setEmployee(employee);
+    log.setAuthor(user);
+    log.setEventDate(new Date());
+    log.setMessage("Сотрудник был восстановлен");
+    commentService.createLog(log);
+
+    if (dismissComment != null && !dismissComment.equals("")) {
+      Comment comment = new Comment();
+      comment.setEmployee(employee);
+      comment.setAuthor(authService.getUser().get());
+      comment.setMessage(dismissComment);
+      commentService.createComment(comment);
+    }
+  }
+
 }
