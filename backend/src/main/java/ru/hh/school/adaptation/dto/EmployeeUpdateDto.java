@@ -21,6 +21,8 @@ public class EmployeeUpdateDto {
   public String position;
 
   public Gender gender;
+  
+  public Boolean dismissed;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentDate;
