@@ -37,11 +37,13 @@ class HomePage extends React.Component {
         <Row>
           <Col sm={{ size: 2, offset: 6 }}>
             <div className="empty-for-main-page-right" />
-            <Form action="/api/login" method="POST">
-              <Button color="primary" type="submit">
-                Попробовать бесплатно
-              </Button>
-            </Form>
+            {!this.props.loggedIn && (
+              <Form action="/api/login" method="POST">
+                <Button color="primary" type="submit">
+                  Попробовать бесплатно
+                </Button>
+              </Form>
+            )}
           </Col>
           <Col sm={{ size: 3 }} className="ml-5">
             <div className="empty-for-main-page-right" />

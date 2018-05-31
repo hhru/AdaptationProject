@@ -71,7 +71,9 @@ const ConnectedUserInfo = connect(mapStateToProps, mapDispatchToProps)(UserInfo)
 
 class LoginLogoutButton extends React.Component {
   render() {
-    const hidden = this.props.path === '/' || this.props.path === '/donate';
+    const hidden = this.props.loggedIn
+      ? false
+      : this.props.path === '/' || this.props.path === '/donate';
     return (
       !hidden && (
         <NavItem className="mr-3">
