@@ -58,7 +58,7 @@ public class QuestionnaireStep {
     Questionnaire questionnaire = questionnaireService.createQuestionnaire(employee);
     Map<String, String> params = new HashMap<>();
     params.put("{{url}}", String.format(addTaskLink, questionnaire.getKey()));
-    mailService.sendMail(employee.getChief().getEmail(), "questionnaire", params);
+    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
 
     Log log = new Log();
     log.setEmployee(employee);

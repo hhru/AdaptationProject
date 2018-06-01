@@ -54,7 +54,7 @@ public class MailService {
     sendMail(toEmail, text, title);
   }
 
-  private void sendMail(String toEmail, String messageHtml, String subject) {
+  public void sendMail(String toEmail, String messageHtml, String subject) {
     if (messageHtml == null) {
       throw new IllegalArgumentException("message is null");
     }

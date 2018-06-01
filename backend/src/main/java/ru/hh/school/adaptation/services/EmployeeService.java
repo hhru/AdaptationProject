@@ -120,7 +120,7 @@ public class EmployeeService {
       employee.setGender(employeeUpdateDto.gender);
       employee.setEmploymentDate(employeeUpdateDto.employmentDate);
       if (employee.getHr() != hr) {
-        notifyNewHr(hr, employee.getEmploymentDate());
+        notifyNewHr(hr, employee);
       }
       employee.setHr(hr);
       employee.setPosition(employeeUpdateDto.position);
@@ -185,17 +185,22 @@ public class EmployeeService {
     }
   }
 
-  private void notifyNewHr(User hr, Date employmentDate) {
+  private void notifyNewHr(User hr, Employee employee) {
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     String hrEmail = hr.getSelf().getEmail();
 
     Date now = new Date();
-    Date interimDate = DateUtils.addDays(DateUtils.addMonths(employmentDate, 1), 15);
-    Date finalDate = DateUtils.addMonths(employmentDate, 3);
+    Date interimDate = DateUtils.addDays(DateUtils.addMonths(employee.getEmploymentDate(), 1), 15);
+    Date finalDate = DateUtils.addMonths(employee.getEmploymentDate(), 3);
 
-    if (employmentDate.after(now)) {
-      mailService.sendCalendar(hrEmail, "Welcome-встреча", dateFormat.format(employmentDate));
-    }
+    String subject="Сопровождение нового сотрудника";
+    String messageBody="Привет. Ты был назначен на сопровождение нового сотрудника. " +
+            employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName() +
+            " рассчитывает на твою поддержку в прохождении испытательного срока. " +
+            "Более подробную информацию ты можешь получить по ссылке " +
+            "https://www.adaptation.host/employee/" + employee.getId();
+    mailService.sendMail(hrEmail, messageBody, subject);
+
     if (interimDate.after(now)) {
       mailService.sendCalendar(hrEmail, "Промежуточная встреча", dateFormat.format(interimDate));
     }
