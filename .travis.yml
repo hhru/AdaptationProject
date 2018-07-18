@@ -6,37 +6,43 @@ addons:
 matrix:
   include:
     - language: java
-      if: branch IN (master, TASK-3)
-      sudo: false
+      if: branch IN (master)
+      sudo: required
+      services:
+        - docker
       before_install:
         - cd backend
       install:
         - mvn clean install
-        - mvn flyway:migrate
+        - docker build -t backend .
+        - docker save backend > backend.tar
       after_success:
         - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST pkill -f adaptation-project
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf app/*
-        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/hibernate.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/service.properties $DEPLOY_USER@$DEPLOY_HOST:~/app
-        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/task_template.docx $DEPLOY_USER@$DEPLOY_HOST:~/app
-        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/classes/probation_result.docx $DEPLOY_USER@$DEPLOY_HOST:~/app
-        - sshpass -e scp -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/target/adaptation-project-*-jar-with-dependencies.jar
-          $DEPLOY_USER@$DEPLOY_HOST:~/app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST screen -d -m java -DsettingsDir=app/
-          -jar app/adaptation-project-$TRAVIS_BUILD_NUMBER.jar
+        - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/backend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/backend.tar
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/backend.tar'
 
     - language: node_js
-      if: branch IN (master, TASK-10)
-      sudo: false
+      if: branch IN (master)
+      sudo: required
       node_js:
         - "lts/*"
       cache: yarn
+      services:
+        - docker
       before_install:
         - cd frontend
       script:
         - yarn build
+        - docker build -t frontend .
+        - docker save frontend > frontend.tar
       after_success:
         - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST rm -rf /var/www/adaptation
-        - sshpass -e scp -o StrictHostKeyChecking=no -r $TRAVIS_BUILD_DIR/frontend/dist $DEPLOY_USER@$DEPLOY_HOST:/var/www/adaptation
+        - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/frontend/frontend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/frontend.tar
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/frontend.tar'
+
+    - language: docker-compose
+      sudo: false
+      script:
+        - export SSHPASS=$DEPLOY_PASS
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'cd ~/app && docker-compose down'
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'cd ~/app && docker-compose up -d'
