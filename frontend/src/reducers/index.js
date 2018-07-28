@@ -3,6 +3,7 @@ import { SET_INITIALIZED, SET_LOGGED_IN } from '../constants/action-types';
 const initialState = {
   initialized: false,
   loggedIn: false,
+  isAdmin: true,
 };
 
 const rootReducer = (state = initialState, action) => {

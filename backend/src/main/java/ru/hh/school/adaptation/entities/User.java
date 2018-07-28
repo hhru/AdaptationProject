@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -24,8 +25,9 @@ public class User {
   @Column(name = "id", nullable = false)
   private Integer id;
 
-  @Column(name = "hhid", nullable = false)
-  private Integer hhid;
+  @OneToOne
+  @JoinColumn(name = "access_rule_id", nullable = false)
+  private AccessRule accessRule;
 
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "self_id")
@@ -39,12 +41,12 @@ public class User {
     return id;
   }
 
-  public Integer getHhid() {
-    return hhid;
+  public AccessRule getAccessRule() {
+    return accessRule;
   }
 
-  public void setHhid(Integer hhid) {
-    this.hhid = hhid;
+  public void setAccessRule(AccessRule accessRule) {
+    this.accessRule = accessRule;
   }
 
   public PersonalInfo getSelf() {

@@ -30,7 +30,7 @@ public class UserDto {
 
   public UserDto(User user) {
     id = user.getId();
-    hhid = user.getHhid();
+    hhid = user.getAccessRule().getHhId();
     firstName = user.getSelf().getFirstName();
     lastName = user.getSelf().getLastName();
     middleName = user.getSelf().getMiddleName();

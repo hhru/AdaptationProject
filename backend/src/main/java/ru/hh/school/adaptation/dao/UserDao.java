@@ -19,10 +19,10 @@ public class UserDao {
     return sessionFactory.getCurrentSession().get(User.class, id);
   }
 
-  public User getRecordByHhid(Integer hhid) {
+  public User getRecordByAccessRuleId(Integer accessRuleId) {
     return sessionFactory.getCurrentSession()
-            .createQuery("from User where hhid=:hhid", User.class)
-            .setParameter("hhid", hhid)
+            .createQuery("from User where access_rule_id=:accessRuleId", User.class)
+            .setParameter("accessRuleId", accessRuleId)
             .uniqueResult();
   }
 

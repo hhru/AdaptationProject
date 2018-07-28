@@ -24,7 +24,10 @@ import '!style-loader!css-loader!./Header.css';
 import { setInitialized, setLoggedIn } from '../actions/index';
 
 const mapStateToProps = (state) => {
-  return { loggedIn: state.loggedIn };
+  return {
+    loggedIn: state.loggedIn,
+    isAdmin: state.isAdmin,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -110,6 +113,13 @@ class NavButtons extends React.Component {
               Добавить сотрудника
             </Button>
           </NavItem>
+          {this.props.isAdmin && (
+            <NavItem className="ml-3">
+              <Button className="text-white borderless-button" outline tag={Link} to="/admin_page">
+                Админка
+              </Button>
+            </NavItem>
+          )}
         </Nav>
       );
     else return null;

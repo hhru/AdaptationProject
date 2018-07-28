@@ -5,8 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import ru.hh.school.adaptation.dto.HhUserInfoDto;
 import ru.hh.school.adaptation.dto.UserDto;
+import ru.hh.school.adaptation.entities.AccessRule;
+import ru.hh.school.adaptation.entities.AccessType;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.misc.UserSession;
+import ru.hh.school.adaptation.services.AdminService;
 import ru.hh.school.adaptation.services.UserService;
 
 import javax.inject.Inject;
@@ -14,9 +18,12 @@ import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Optional;
 
+import static ru.hh.school.adaptation.entities.AccessType.OTHER;
+
 public class AuthService {
   private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
+  private AdminService adminService;
   private HhApiService apiService;
   private UserService userService;
 
@@ -28,7 +35,8 @@ public class AuthService {
   }
 
   @Inject
-  public AuthService(HhApiService apiService, UserService userService) {
+  public AuthService(HhApiService apiService, UserService userService, AdminService adminService) {
+    this.adminService = adminService;
     this.apiService = apiService;
     this.userService = userService;
   }
@@ -47,10 +55,18 @@ public class AuthService {
 
       HhUserInfoDto userInfoDto = userInfoDtoOptional.get();
 
-      User user = userService.getUserByHhid(userInfoDto.id).orElseGet(() -> {
+      AccessRule accessRule = adminService.getAccessRuleByHhId(userInfoDto.id).orElseGet(() -> {
+        AccessRule newRule = new AccessRule();
+        newRule.setAccessType(OTHER);
+        newRule.setHhId(userInfoDto.id);
+        adminService.saveAccessRule(newRule);
+        return adminService.getAccessRuleByHhId(userInfoDto.id).get();
+      });
+
+      User user = userService.getUserByAccessRuleId(accessRule.getId()).orElseGet(() -> {
         UserDto userDto = new UserDto(userInfoDto);
-        userService.saveUser(userDto);
-        return userService.getUserByHhid(userInfoDto.id).get();
+        userService.newUser(userDto, accessRule);
+        return userService.getUserByAccessRuleId(accessRule.getId()).get();
       });
       sessionThreadLocal.get().setId(user.getId());
 
@@ -78,6 +94,19 @@ public class AuthService {
       return userService.getUser(userId);
     } catch(Exception e) {
       return Optional.empty();
+    }
+  }
+
+  public void checkPermission(AccessType accessType) {
+    //TODO allow >= accessType
+    Optional<User> user = getUser();
+    if (!user.isPresent()) {
+      logger.warn("Alarm anonymous detected");
+      throw new AccessDeniedException("Alarm anonymous detected");
+    }
+    if (user.get().getAccessRule().getAccessType() != accessType) {
+      logger.warn("User with id {} don't have rights", user.get().getId());
+      throw new AccessDeniedException("Access denied");
     }
   }
 

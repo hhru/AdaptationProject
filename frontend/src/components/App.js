@@ -4,6 +4,7 @@ import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 
+import AdminPage from './AdminPage';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 import AddTask from './tasks/AddTask';
@@ -18,7 +19,10 @@ import Header from './Header';
 import Donate from './Donate';
 
 const mapStateToProps = (state) => {
-  return { loggedIn: state.loggedIn };
+  return {
+    loggedIn: state.loggedIn,
+    isAdmin: state.isAdmin,
+  };
 };
 
 class App extends React.Component {
@@ -32,6 +36,10 @@ class App extends React.Component {
     return this.props.loggedIn ? component : NotAuthorized;
   }
 
+  handleAdminState(component) {
+    return this.props.loggedIn && this.props.isAdmin ? component : NotAuthorized;
+  }
+
   render() {
     return (
       <div>
@@ -43,6 +51,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route exact path="/add_employee" component={this.handleLoginState(AddEmployee)} />
+            <Route exact path="/admin_page" component={this.handleAdminState(AdminPage)} />
             <Route
               exact
               path="/edit_employee/:id"

@@ -2,8 +2,10 @@ package ru.hh.school.adaptation.services;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
+import ru.hh.school.adaptation.dao.AccessRuleDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.UserDto;
+import ru.hh.school.adaptation.entities.AccessRule;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
@@ -13,12 +15,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Singleton
 public class UserService {
+
+  private final AccessRuleDao accessRuleDao;
   private final UserDao userDao;
   private final PersonalInfoDao personalInfoDao;
 
-  public UserService(UserDao userDao, PersonalInfoDao personalInfoDao) {
+  public UserService(AccessRuleDao accessRuleDao, UserDao userDao, PersonalInfoDao personalInfoDao) {
+    this.accessRuleDao = accessRuleDao;
     this.userDao = userDao;
     this.personalInfoDao = personalInfoDao;
   }
@@ -34,8 +40,8 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<User> getUserByHhid(Integer hhid) {
-    return Optional.ofNullable(userDao.getRecordByHhid(hhid));
+  public Optional<User> getUserByAccessRuleId(Integer accessRuleId) {
+    return Optional.ofNullable(userDao.getRecordByAccessRuleId(accessRuleId));
   }
 
   @Transactional(readOnly = true)
@@ -49,7 +55,7 @@ public class UserService {
   }
 
   @Transactional
-  public void saveUser(UserDto userDto) {
+  public void newUser(UserDto userDto, AccessRule accessRule) {
     User user = new User();
     PersonalInfo personalInfo = new PersonalInfo();
     personalInfo.setFirstName(userDto.firstName);
@@ -57,7 +63,7 @@ public class UserService {
     personalInfo.setMiddleName(userDto.middleName);
     personalInfo.setEmail(userDto.email);
     personalInfoDao.save(personalInfo);
-    user.setHhid(userDto.hhid);
+    user.setAccessRule(accessRule);
     user.setSelf(personalInfo);
     userDao.save(user);
   }
@@ -65,7 +71,7 @@ public class UserService {
   @Transactional
   public void updateUser(UserDto userDto) {
     User user = getUser(userDto.id).orElseThrow(() -> new EntityNotFoundException(String.format("User with id = %d does not exist", userDto.id)));
-    user.setHhid(userDto.hhid);
+    user.setAccessRule(accessRuleDao.getByHhId(userDto.hhid));
     PersonalInfo personalInfo = user.getSelf();
     personalInfo.setFirstName(userDto.firstName);
     personalInfo.setLastName(userDto.lastName);

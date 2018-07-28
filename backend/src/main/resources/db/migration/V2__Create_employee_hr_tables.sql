@@ -1,4 +1,5 @@
 CREATE TYPE GENDER AS ENUM ('MALE', 'FEMALE');
+CREATE TYPE ACCESS_TYPE AS ENUM ('ADMIN', 'WHITELIST', 'OTHER');
 
 CREATE TABLE personal_info
 (
@@ -10,10 +11,17 @@ CREATE TABLE personal_info
   inside      VARCHAR(64)
 );
 
-CREATE TABLE "user"
+CREATE TABLE access_rule
 (
   id      SERIAL PRIMARY KEY,
   hhid    INT                               NOT NULL UNIQUE,
+  access_type ACCESS_TYPE NOT NULL DEFAULT 'OTHER'
+);
+
+CREATE TABLE "user"
+(
+  id      SERIAL PRIMARY KEY,
+  access_rule_id    INT REFERENCES access_rule(id)  NOT NULL UNIQUE,
   self_id INT REFERENCES personal_info (id) NOT NULL
 );
 
@@ -58,9 +66,11 @@ VALUES ('Ника', 'Панфилова', 'Феликсовна', 'super.hr.mana
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
 VALUES ('Роза', 'Яловкина', 'Василиевна', 'adaptation.hh@gmail.com', 'yalovkina');
 
+INSERT INTO access_rule (hhid) VALUES (1);
+INSERT INTO access_rule (hhid) VALUES (2);
 
-INSERT INTO "user" (hhid, self_id) VALUES (1, 9);
-INSERT INTO "user" (hhid, self_id) VALUES (2, 10);
+INSERT INTO "user" (access_rule_id, self_id) VALUES (1, 9);
+INSERT INTO "user" (access_rule_id, self_id) VALUES (2, 10);
 
 INSERT INTO employee (self_id, position, gender, employment_date, hr_id, mentor_id, chief_id)
 VALUES (1, 'Разработчик', 'FEMALE', '2018-04-28', 1, 6, 7);

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.MappingConfig;
+import ru.hh.school.adaptation.dao.AccessRuleDao;
 import ru.hh.school.adaptation.dao.CommentDao;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.LogDao;
@@ -19,6 +20,7 @@ import ru.hh.school.adaptation.dao.QuestionnaireAnswerDao;
 import ru.hh.school.adaptation.dao.QuestionnaireDao;
 import ru.hh.school.adaptation.dao.TransitionDao;
 import ru.hh.school.adaptation.dao.UserDao;
+import ru.hh.school.adaptation.entities.AccessRule;
 import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
@@ -30,11 +32,13 @@ import ru.hh.school.adaptation.entities.QuestionnaireAnswer;
 import ru.hh.school.adaptation.entities.Questionnaire;
 import ru.hh.school.adaptation.entities.Transition;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.resources.AdminResource;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.EmployeeResource;
 import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
 import ru.hh.school.adaptation.resources.TaskResource;
+import ru.hh.school.adaptation.services.AdminService;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
@@ -61,6 +65,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
 
 @Configuration
 @Import({
+    AccessRuleDao.class,
     CommentDao.class,
     LogDao.class,
     MailTemplateDao.class,
@@ -71,6 +76,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     TaskFormDao.class,
     QuestionnaireDao.class,
     QuestionnaireAnswerDao.class,
+    AdminService.class,
     EmployeeService.class,
     CommentService.class,
     TransitionService.class,
@@ -85,6 +91,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     PersonalInfoDao.class,
     PersonalInfoService.class,
     WorkflowService.class,
+    AdminResource.class,
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
@@ -109,6 +116,7 @@ public class AdaptationCommonConfig {
   @Bean
   MappingConfig mappingConfig() {
     return new MappingConfig(
+        AccessRule.class,
         MailTemplate.class,
         Employee.class,
         User.class,
