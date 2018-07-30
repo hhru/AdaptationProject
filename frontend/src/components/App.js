@@ -1,9 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
+import axios from 'axios';
 
+import { setInitialized, setUser } from '../actions';
 import AdminPage from './AdminPage';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
@@ -20,27 +21,60 @@ import Donate from './Donate';
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.loggedIn,
-    isAdmin: state.isAdmin,
+    user: state.user,
+    initialized: state.initialized,
   };
 };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setInitialized: () => dispatch(setInitialized()),
+    setUser: (user) => dispatch(setUser(user)),
+  };
+};
+
+class LoginForm extends React.Component {
+  componentDidMount() {
+    this.refs.form.submit();
+  }
+
+  render() {
+    return <form ref="form" method="POST" action="/api/login" />;
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleLoginState = this.handleLoginState.bind(this);
+    this.handleAdminState = this.handleAdminState.bind(this);
   }
 
-  handleLoginState(component) {
-    return this.props.loggedIn ? component : NotAuthorized;
+  componentDidMount() {
+    axios
+      .get('/api/user')
+      .then((response) => {
+        this.props.setUser(response.data);
+        this.props.setInitialized();
+      })
+      .catch(() => {
+        this.props.setInitialized();
+      });
   }
 
   handleAdminState(component) {
-    return this.props.loggedIn && this.props.isAdmin ? component : NotAuthorized;
+    return this.props.user.isAdmin ? component : NotAuthorized;
   }
 
   render() {
+    if (!this.props.initialized) {
+      return null;
+    }
+
+    if (!this.props.user) {
+      return <LoginForm />;
+    }
+
     return (
       <div>
         <Switch>
@@ -50,20 +84,12 @@ class App extends React.Component {
         <Container>
           <Switch>
             <Route exact path="/" component={HomePage} />
-            <Route exact path="/add_employee" component={this.handleLoginState(AddEmployee)} />
+            <Route exact path="/add_employee" component={AddEmployee} />
             <Route exact path="/admin_page" component={this.handleAdminState(AdminPage)} />
-            <Route
-              exact
-              path="/edit_employee/:id"
-              component={this.handleLoginState(EditEmployee)}
-            />
-            <Route exact path="/list_employees" component={this.handleLoginState(ListEmployees)} />
-            <Route exact path="/employee/:id" component={this.handleLoginState(EmployeePage)} />
-            <Route
-              exact
-              path="/employee/:id/questionnaire"
-              component={this.handleLoginState(QuestionnaireResult)}
-            />
+            <Route exact path="/edit_employee/:id" component={EditEmployee} />
+            <Route exact path="/list_employees" component={ListEmployees} />
+            <Route exact path="/employee/:id" component={EmployeePage} />
+            <Route exact path="/employee/:id/questionnaire" component={QuestionnaireResult} />
             <Route exact path="/add_tasks/:id" component={AddTask} />
             <Route exact path="/questionnaire/:id" component={Questionnaire} />
             <Route exact path="/donate" component={Donate} />
@@ -75,4 +101,4 @@ class App extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

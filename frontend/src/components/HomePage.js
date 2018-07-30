@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { Container, Row, Col, Button, Form } from 'reactstrap';
+import { Row, Col, Button, Form } from 'reactstrap';
 
 const mapStateToProps = (state) => {
-  return { loggedIn: state.loggedIn };
+  return { user: state.user };
 };
 
 class HomePage extends React.Component {
@@ -37,7 +36,7 @@ class HomePage extends React.Component {
         <Row>
           <Col sm={{ size: 2, offset: 6 }}>
             <div className="empty-for-main-page-right" />
-            {!this.props.loggedIn && (
+            {!this.props.user && (
               <Form action="/api/login" method="POST">
                 <Button color="primary" type="submit">
                   Попробовать бесплатно

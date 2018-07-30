@@ -1,11 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { Container, Row, Col, Button, Form } from 'reactstrap';
-
-const mapStateToProps = (state) => {
-  return { loggedIn: state.loggedIn };
-};
+import { Row, Col } from 'reactstrap';
 
 class Donate extends React.Component {
   constructor(props) {

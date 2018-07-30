@@ -1,68 +1,26 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {
-  Button,
-  Collapse,
-  Container,
-  Form,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from 'reactstrap';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Button, Container, Form, Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import '!style-loader!css-loader!./Header.css';
-
-import { setInitialized, setLoggedIn } from '../actions/index';
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.loggedIn,
-    isAdmin: state.isAdmin,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setInitialized: () => dispatch(setInitialized()),
-    setLoggedIn: () => dispatch(setLoggedIn()),
+    user: state.user,
   };
 };
 
 class UserInfo extends React.Component {
   constructor(props) {
     super(props);
-
-    let self = this;
-
-    axios
-      .get('/api/user')
-      .then(function(response) {
-        self.setState({
-          userName: response.data.firstName,
-        });
-        self.props.setLoggedIn();
-        self.props.setInitialized();
-      })
-      .catch(function(error) {
-        self.props.setInitialized();
-      });
   }
 
   render() {
-    if (this.props.loggedIn)
+    if (this.props.user)
       return (
         <NavItem className="mr-3">
           <NavLink className="text-white" tag={Link} to="#">
-            Привет, {this.state.userName}!
+            Привет, {this.props.user.firstName}!
           </NavLink>
         </NavItem>
       );
@@ -70,19 +28,19 @@ class UserInfo extends React.Component {
   }
 }
 
-const ConnectedUserInfo = connect(mapStateToProps, mapDispatchToProps)(UserInfo);
+const ConnectedUserInfo = connect(mapStateToProps)(UserInfo);
 
 class LoginLogoutButton extends React.Component {
   render() {
-    const hidden = this.props.loggedIn
+    const hidden = this.props.user
       ? false
       : this.props.path === '/' || this.props.path === '/donate';
     return (
       !hidden && (
         <NavItem className="mr-3">
-          <Form action={this.props.loggedIn ? '/api/logout' : '/api/login'} method="POST">
+          <Form action={this.props.user ? '/api/logout' : '/api/login'} method="POST">
             <Button className="text-white" type="submit">
-              {this.props.loggedIn ? 'Выйти' : 'Войти'}
+              {this.props.user ? 'Выйти' : 'Войти'}
             </Button>
           </Form>
         </NavItem>
@@ -95,7 +53,7 @@ const ConnectedLoginLogoutButton = connect(mapStateToProps)(LoginLogoutButton);
 
 class NavButtons extends React.Component {
   render() {
-    if (this.props.loggedIn)
+    if (this.props.user)
       return (
         <Nav className="mr-auto" navbar>
           <NavItem className="ml-3">
@@ -113,7 +71,7 @@ class NavButtons extends React.Component {
               Добавить сотрудника
             </Button>
           </NavItem>
-          {this.props.isAdmin && (
+          {this.props.user.isAdmin && (
             <NavItem className="ml-3">
               <Button className="text-white borderless-button" outline tag={Link} to="/admin_page">
                 Админка
