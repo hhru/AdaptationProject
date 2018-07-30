@@ -46,14 +46,6 @@ public class AddStep {
     long delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
     boolean demo = true;
     scheduledExecutorService.schedule(() -> welcomeMail(employee), demo ? 3 : delay, TimeUnit.SECONDS);
-
-    scheduledExecutorService.schedule(() -> welcomeMeetingNotify(employee), 5, TimeUnit.SECONDS);
-
-    delay += (1.5 * 30 - 2 * 7) * 24 * 60 * 60;
-    scheduledExecutorService.schedule(() -> interimMeetingNotify(employee), delay, TimeUnit.SECONDS);
-
-    delay += 1.5 * 30 * 24 * 60 * 60;
-    scheduledExecutorService.schedule(() -> finalMeetingNotify(employee), delay, TimeUnit.SECONDS);
   }
 
   private void sendCalendar(Employee employee) {

@@ -125,7 +125,7 @@ public class TransitionService {
       }
       switch (workflowStepType) {
         case WELCOME_MEETING:
-          transition.setDeadlineTimestamp(employee.getEmploymentDate());
+          transition.setDeadlineTimestamp(DateUtils.addDays(employee.getEmploymentDate(), 1));
           break;
         case INTERIM_MEETING:
           transition.setDeadlineTimestamp(DateUtils.addMonths(DateUtils.addDays(employee.getEmploymentDate(), 1), 15));
