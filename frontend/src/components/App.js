@@ -75,6 +75,10 @@ class App extends React.Component {
       return <LoginForm />;
     }
 
+    if (this.props.user.isStranger) {
+      return null;
+    }
+
     return (
       <div>
         <Switch>

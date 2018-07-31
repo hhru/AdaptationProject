@@ -3,6 +3,7 @@ package ru.hh.school.adaptation.dto;
 import ru.hh.school.adaptation.entities.User;
 
 import static ru.hh.school.adaptation.entities.AccessType.ADMIN;
+import static ru.hh.school.adaptation.entities.AccessType.OTHER;
 
 public class UserInfoDto {
   public String firstName;
@@ -17,6 +18,8 @@ public class UserInfoDto {
 
   public boolean isAdmin;
 
+  public boolean isStranger;
+
   public UserInfoDto(User user) {
     firstName = user.getSelf().getFirstName();
     lastName = user.getSelf().getLastName();
@@ -24,5 +27,6 @@ public class UserInfoDto {
     email = user.getSelf().getEmail();
     inside = user.getSelf().getInside();
     isAdmin = user.getAccessRule().getAccessType().equals(ADMIN);
+    isStranger = user.getAccessRule().getAccessType().equals(OTHER);
   }
 }
