@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class QuestionnaireStep {
       connection.setUseCaches(false);
       connection.setDoOutput(true);
 
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
       writer.write(params);
       writer.flush();
       writer.close();

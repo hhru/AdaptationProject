@@ -3,6 +3,8 @@ package ru.hh.school.adaptation.services;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
@@ -17,6 +19,7 @@ import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
+import ru.hh.school.adaptation.misc.CommonUtils;
 import ru.hh.school.adaptation.services.auth.AuthService;
 import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
@@ -25,13 +28,15 @@ import javax.inject.Singleton;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton
 public class EmployeeService {
+
+  private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
   private EmployeeDao employeeDao;
   private UserDao userDao;
@@ -210,11 +215,18 @@ public class EmployeeService {
   }
 
   @Transactional
-  public Named<byte[]> generateProbationResultDoc(Integer employeeId) {
+  public Response generateProbationResultDoc(Integer employeeId, String userAgent) {
     try {
-      return probationResultDocumentGenerator.generateDoc(employeeDao.getRecordById(employeeId));
+      Named<byte[]> doc = probationResultDocumentGenerator.generateDoc(employeeDao.getRecordById(employeeId));
+
+      return Response.ok(doc.get()).header(
+          "Content-Disposition", String.format("attachment; filename=\"%s.docx\"",
+            CommonUtils.getContentDispositionFilename(userAgent, doc.name())
+          )
+        ).build();
     } catch (InvalidFormatException | IOException | XmlException | NullPointerException e) {
-      throw new WebApplicationException("Bad document", e);
+      logger.error("Bad document for employer id {} ", employeeId);
+      return Response.status(Response.Status.NOT_FOUND).build();
     }
   }
 

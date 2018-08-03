@@ -8,6 +8,7 @@ import org.apache.xmlbeans.XmlException;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Task;
+import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.misc.CommonUtils;
 
 import java.io.IOException;
@@ -21,7 +22,12 @@ public abstract class TaskDocumentGenerator extends DocumentGenerator {
     super(fileSettings, propertyName);
   }
 
-  private void addTasksRows(List<Task> taskList, XWPFTable table, int startFromId) throws IOException, XmlException {
+  private void addTasksRows(TaskForm taskForm, XWPFTable table, int startFromId) throws IOException, XmlException {
+    if (taskForm == null) {
+      return;
+    }
+
+    List<Task> taskList = taskForm.getTasks();
     String[][] recs = new String[taskList.size()][4];
     for (int i = 0; i < taskList.size(); i++) {
       recs[i][0] = Integer.toString(i + 1);
@@ -54,7 +60,7 @@ public abstract class TaskDocumentGenerator extends DocumentGenerator {
       for (int i = 0; i < table.getRows().size(); i++) {
         for (XWPFTableCell cell : table.getRow(i).getTableCells()) {
           if (cell.getText().contains("{{functional.tasks}}")) {
-            addTasksRows(employee.getTaskForm().getTasks(), table, i + 1);
+            addTasksRows(employee.getTaskForm(), table, i + 1);
           }
           replaceInParagraphs(constructReplacements(employee), cell.getParagraphs());
         }
