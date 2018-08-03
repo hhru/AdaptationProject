@@ -3,6 +3,7 @@ package ru.hh.school.adaptation.services;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.TaskDao;
 import ru.hh.school.adaptation.dao.TaskFormDao;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Singleton
 public class TaskService {
+  private String adaptationHost;
 
   private TaskFormDao taskFormDao;
   private TaskDao taskDao;
@@ -33,13 +35,15 @@ public class TaskService {
   private MailService mailService;
   private ChiefTaskDocumentGenerator chiefTaskDocumentGenerator;
 
-  public TaskService(TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao,
+  public TaskService(FileSettings fileSettings, TaskFormDao taskFormDao, TaskDao taskDao, EmployeeDao employeeDao,
                      MailService mailService, ChiefTaskDocumentGenerator chiefTaskDocumentGenerator) {
     this.taskFormDao = taskFormDao;
     this.taskDao = taskDao;
     this.employeeDao = employeeDao;
     this.mailService = mailService;
     this.chiefTaskDocumentGenerator = chiefTaskDocumentGenerator;
+
+    adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
   }
 
   @Transactional
@@ -82,7 +86,7 @@ public class TaskService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
-    String taskUrl = String.format("https://www.adaptation.host/api/employee/tasks/%d/doc", employee.getId());
+    String taskUrl = String.format("https://" + adaptationHost + "/api/employee/tasks/%d/doc", employee.getId());
     params.put("{{userName}}", fio);
     params.put("{{taskUrl}}", taskUrl);
     mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify", params);

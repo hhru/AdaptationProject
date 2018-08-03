@@ -2,6 +2,7 @@ package ru.hh.school.adaptation.services.workflow;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.annotation.Lazy;
+import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
@@ -23,7 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class AddStep {
-  private static final String addTaskLink = "https://adaptation.host/add_tasks/%s";
+
+  private String addTaskLink;
 
   private MailService mailService;
   private TaskService taskService;
@@ -31,11 +33,14 @@ public class AddStep {
   private CommentService commentService;
   private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
-  public AddStep(MailService mailService, TaskService taskService, CommentService commentService, @Lazy EmployeeService employeeService) {
+  public AddStep(FileSettings fileSettings, MailService mailService, TaskService taskService,
+                 CommentService commentService, @Lazy EmployeeService employeeService) {
     this.mailService = mailService;
     this.taskService = taskService;
     this.commentService = commentService;
     this.employeeService = employeeService;
+
+    addTaskLink = "https://" + fileSettings.getProperties().getProperty("adaptation.host") + "/add_tasks/%s";
   }
 
   public void onAdd(Employee employee) {

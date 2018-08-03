@@ -6,6 +6,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class EmployeeService {
 
+  private String adaptationHost;
+
   private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
   private EmployeeDao employeeDao;
@@ -47,8 +50,8 @@ public class EmployeeService {
   private AuthService authService;
   private MailService mailService;
 
-  public EmployeeService(EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService, TransitionService transitionService,
-                         ProbationResultDocumentGenerator probationResultDocumentGenerator,
+  public EmployeeService(FileSettings fileSettings, EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService,
+                         TransitionService transitionService, ProbationResultDocumentGenerator probationResultDocumentGenerator,
                          CommentService commentService, AuthService authService, MailService mailService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
@@ -58,6 +61,8 @@ public class EmployeeService {
     this.commentService = commentService;
     this.probationResultDocumentGenerator = probationResultDocumentGenerator;
     this.mailService = mailService;
+
+    adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
   }
 
   @Transactional(readOnly = true)
@@ -203,7 +208,7 @@ public class EmployeeService {
             employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName() +
             " рассчитывает на твою поддержку в прохождении испытательного срока. " +
             "Более подробную информацию ты можешь получить по ссылке " +
-            "https://www.adaptation.host/employee/" + employee.getId();
+            "https://" + adaptationHost + "/employee/" + employee.getId();
     mailService.sendMail(hrEmail, messageBody, subject);
 
     if (interimDate.after(now)) {

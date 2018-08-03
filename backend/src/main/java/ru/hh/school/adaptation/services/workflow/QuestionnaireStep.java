@@ -29,7 +29,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class QuestionnaireStep {
-  private static final String addTaskLink = "https://adaptation.host/questionnaire/%s";
+
+  private String addTaskLink;
 
   private CommentService commentService;
   private MailService mailService;
@@ -53,6 +54,8 @@ public class QuestionnaireStep {
     issueType = properties.getProperty("jira.issuetype");
     assignee = properties.getProperty("jira.assignee");
     host = properties.getProperty("jira.host");
+
+    addTaskLink = "https://" + properties.getProperty("adaptation.host") + "/questionnaire/%s";
   }
 
   public void onQuestionnaire(Employee employee, CookieManager cookieManager) {
