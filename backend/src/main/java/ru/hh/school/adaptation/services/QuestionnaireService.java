@@ -1,6 +1,7 @@
 package ru.hh.school.adaptation.services;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.QuestionnaireAnswerDao;
 import ru.hh.school.adaptation.dao.QuestionnaireDao;
@@ -21,17 +22,21 @@ import java.util.UUID;
 @Singleton
 public class QuestionnaireService {
 
+  private String adaptationHost;
+
   private QuestionnaireDao questionnaireDao;
   private QuestionnaireAnswerDao questionnaireAnswerDao;
   private EmployeeDao employeeDao;
   private MailService mailService;
 
-  public QuestionnaireService(QuestionnaireDao questionnaireDao, QuestionnaireAnswerDao questionnaireAnswerDao,
+  public QuestionnaireService(FileSettings fileSettings, QuestionnaireDao questionnaireDao, QuestionnaireAnswerDao questionnaireAnswerDao,
                               EmployeeDao employeeDao, MailService mailService) {
     this.questionnaireDao = questionnaireDao;
     this.questionnaireAnswerDao = questionnaireAnswerDao;
     this.employeeDao = employeeDao;
     this.mailService = mailService;
+
+    adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
   }
 
   @Transactional
@@ -94,7 +99,7 @@ public class QuestionnaireService {
         employee.getSelf().getLastName(),
         employee.getSelf().getFirstName(),
         employee.getSelf().getMiddleName());
-    String taskUrl = String.format("https://www.adaptation.host/employee/%d/questionnaire", employee.getId());
+    String taskUrl = String.format("https://" + adaptationHost + "/employee/%d/questionnaire", employee.getId());
     params.put("{{userName}}", fio);
     params.put("{{questionnaireUrl}}", taskUrl);
     mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_questionnaire_notify", params);
