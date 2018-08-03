@@ -11,8 +11,6 @@ import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
-import ru.hh.school.adaptation.misc.CommonUtils;
-import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
 import ru.hh.school.adaptation.entities.User;
@@ -148,13 +146,7 @@ public class EmployeeResource {
   @Path("/employee/{employeeId}/probation_result")
   @ResponseBody
   public Response getEmployeeProbationResultDoc(@PathParam("employeeId") Integer employeeId, @HeaderParam("user-agent") String userAgent) {
-    Named<byte[]> document = employeeService.generateProbationResultDoc(employeeId);
-    return Response.ok(document.get()).header(
-        "Content-Disposition", String.format(
-            "attachment; filename=\"%s.docx\"",
-            CommonUtils.getContentDispositionFilename(userAgent, document.name())
-        )
-    ).build();
+    return employeeService.generateProbationResultDoc(employeeId, userAgent);
   }
 
 }

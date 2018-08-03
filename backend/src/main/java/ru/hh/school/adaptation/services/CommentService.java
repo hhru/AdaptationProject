@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.CommentDao;
 import ru.hh.school.adaptation.dao.LogDao;
-import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.CommentDto;
 import ru.hh.school.adaptation.dto.CommentCreateDto;
 import ru.hh.school.adaptation.entities.Comment;
@@ -19,14 +18,12 @@ public class CommentService {
   private LogDao logDao;
   private EmployeeService employeeService;
   private AuthService authService;
-  private UserDao userDao;
 
-  public CommentService(CommentDao commentDao, LogDao logDao, @Lazy EmployeeService employeeService, AuthService authService, UserDao userDao) {
+  public CommentService(CommentDao commentDao, LogDao logDao, @Lazy EmployeeService employeeService, AuthService authService) {
     this.commentDao = commentDao;
     this.logDao = logDao;
     this.employeeService = employeeService;
     this.authService = authService;
-    this.userDao = userDao;
   }
 
   @Transactional
