@@ -8,7 +8,8 @@ CREATE TABLE personal_info
   last_name   VARCHAR(256) NOT NULL,
   middle_name VARCHAR(256),
   email       VARCHAR(128) NOT NULL,
-  inside      VARCHAR(64)
+  inside      VARCHAR(64),
+  subdivision VARCHAR(128)
 );
 
 CREATE TABLE access_rule
@@ -41,16 +42,16 @@ CREATE TABLE employee
 );
 
 -- employees
-INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Марфа', 'Ябурова', 'Германовна', 'm.yaburova@hh.ru', 'yaburova');
-INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Лавр', 'Рыков', 'Еремеевич', 'l.rukov@hh.ru', 'rykov');
-INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Федор', 'Савинков', 'Олегович', 'f.savinkov@hh.ru', 'savinkov');
-INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Берта', 'Андрюхина', 'Давидовна', 'b.andryhina@hh.ru', 'andryhina');
-INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)
-VALUES ('Григорий', 'Харьков', 'Ираклиевич', 'g.harkov@hh.ru', 'harkov');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside, subdivision)
+VALUES ('Марфа', 'Ябурова', 'Германовна', 'm.yaburova@hh.ru', 'yaburova', 'техдеп');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside, subdivision)
+VALUES ('Лавр', 'Рыков', 'Еремеевич', 'l.rukov@hh.ru', 'rykov', 'эйчары');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside, subdivision)
+VALUES ('Федор', 'Савинков', 'Олегович', 'f.savinkov@hh.ru', 'savinkov', 'qa');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside, subdivision)
+VALUES ('Берта', 'Андрюхина', 'Давидовна', 'b.andryhina@hh.ru', 'andryhina', 'эйчары');
+INSERT INTO personal_info (first_name, last_name, middle_name, email, inside, subdivision)
+VALUES ('Григорий', 'Харьков', 'Ираклиевич', 'g.harkov@hh.ru', 'harkov', 'техдеп');
 
 -- mentors
 INSERT INTO personal_info (first_name, last_name, middle_name, email, inside)

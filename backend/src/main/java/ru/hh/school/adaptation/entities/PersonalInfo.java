@@ -31,6 +31,9 @@ public class PersonalInfo {
   @Column(name = "inside")
   private String inside;
 
+  @Column(name = "subdivision")
+  private String subdivision;
+
   public Integer getId() {
     return id;
   }
@@ -77,5 +80,13 @@ public class PersonalInfo {
 
   public void setInside(String inside) {
     this.inside = inside;
+  }
+
+  public String getSubdivision() {
+    return subdivision;
+  }
+
+  public void setSubdivision(String subdivision) {
+    this.subdivision = subdivision;
   }
 }

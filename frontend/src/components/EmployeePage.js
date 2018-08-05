@@ -43,6 +43,7 @@ class EmployeePage extends React.Component {
           middleName: '',
           email: '',
           inside: '',
+          subdivision: '',
         },
         chief: {
           id: null,
@@ -51,6 +52,7 @@ class EmployeePage extends React.Component {
           middleName: '',
           email: '',
           inside: '',
+          subdivision: '',
         },
         mentor: {
           id: null,
@@ -59,6 +61,7 @@ class EmployeePage extends React.Component {
           middleName: '',
           email: '',
           inside: '',
+          subdivision: '',
         },
         hr: {
           id: null,
@@ -67,6 +70,7 @@ class EmployeePage extends React.Component {
           middleName: '',
           email: '',
           inside: '',
+          subdivision: '',
         },
         employmentDate: null,
         workflow: [
@@ -330,18 +334,21 @@ class EmployeePage extends React.Component {
       lastName: employeeLastName,
       email: employeeEmail,
       inside: employeeInside,
+      subdivision: employeeSubdivision,
     } = this.state.data.employee;
     const {
       firstName: hrFirstName,
       middleName: hrMiddleName,
       lastName: hrLastName,
       inside: hrInside,
+      subdivision: hrSubdivision,
     } = this.state.data.hr;
     const {
       firstName: chiefFirstName,
       middleName: chiefMiddleName,
       lastName: chiefLastName,
       inside: chiefInside,
+      subdivision: chiefSubdivision,
     } = this.state.data.chief;
     const mentorFirstName =
       this.state.data.mentor != null ? this.state.data.mentor.firstName : null;
@@ -349,6 +356,8 @@ class EmployeePage extends React.Component {
       this.state.data.mentor != null ? this.state.data.mentor.middleName : null;
     const mentorLastName = this.state.data.mentor != null ? this.state.data.mentor.lastName : null;
     const mentorInside = this.state.data.mentor != null ? this.state.data.mentor.inside : null;
+    const mentorSubdivision =
+      this.state.data.mentor != null ? this.state.data.mentor.subdivision : null;
     const employmentDate = this.dateFormat(this.state.data.employmentDate);
     const workflow = this.state.data.workflow;
     const timeLeft = this.timeLeft(this.state.data.employmentDate);
@@ -366,6 +375,7 @@ class EmployeePage extends React.Component {
                 (inside)
               </a>{' '}
             </div>
+            <div className="mb-1 ml-2 text-muted">{employeeSubdivision}</div>
           </Col>
 
           <Col sm={{ size: 5 }} className="">

@@ -8,14 +8,15 @@ class PersonCreator extends React.Component {
     lastName: '',
     middleName: '',
     email: '',
-    inside: ''
+    inside: '',
+    subdivision: '',
   };
 
-  handlePersonChange = person => {
+  handlePersonChange = (person) => {
     this.setState(person);
   };
 
-  handlePersonCreate = event => {
+  handlePersonCreate = (event) => {
     event.preventDefault();
 
     if (this.props.onCreate instanceof Function) {
@@ -24,7 +25,8 @@ class PersonCreator extends React.Component {
         lastName: this.state.lastName,
         middleName: this.state.middleName,
         email: this.state.email,
-        inside: this.state.inside
+        inside: this.state.inside,
+        subdivision: this.state.subdivision,
       });
     }
 
@@ -34,16 +36,15 @@ class PersonCreator extends React.Component {
       lastName: '',
       middleName: '',
       email: '',
-      inside: ''
+      inside: '',
+      subdivision: '',
     });
   };
 
   render() {
     return (
       <Modal isOpen={this.props.modal} toggle={this.props.toggle}>
-        <ModalHeader toggle={this.props.toggle}>
-          {this.props.title}
-        </ModalHeader>
+        <ModalHeader toggle={this.props.toggle}>{this.props.title}</ModalHeader>
         <ModalBody>
           <Form>
             <PersonEdit
@@ -52,14 +53,18 @@ class PersonCreator extends React.Component {
               middleName={this.state.middleName}
               email={this.state.email}
               inside={this.state.inside}
+              subdivision={this.state.subdivision}
               onChange={this.handlePersonChange}
             />
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={this.handlePersonCreate}>Создать</Button>
-          {' '}
-          <Button color="secondary" onClick={this.props.toggle}>Отменить</Button>
+          <Button color="primary" onClick={this.handlePersonCreate}>
+            Создать
+          </Button>{' '}
+          <Button color="secondary" onClick={this.props.toggle}>
+            Отменить
+          </Button>
         </ModalFooter>
       </Modal>
     );

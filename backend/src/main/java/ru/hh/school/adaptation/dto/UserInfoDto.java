@@ -16,6 +16,8 @@ public class UserInfoDto {
 
   public String inside;
 
+  public String subdivision;
+
   public boolean isAdmin;
 
   public boolean isStranger;
@@ -26,6 +28,7 @@ public class UserInfoDto {
     middleName = user.getSelf().getMiddleName();
     email = user.getSelf().getEmail();
     inside = user.getSelf().getInside();
+    subdivision = user.getSelf().getSubdivision();
     isAdmin = user.getAccessRule().getAccessType().equals(ADMIN);
     isStranger = user.getAccessRule().getAccessType().equals(OTHER);
   }
