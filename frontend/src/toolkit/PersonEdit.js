@@ -11,13 +11,14 @@ class PersonEdit extends React.Component {
       lastName: this.props.lastName,
       middleName: this.props.middleName,
       email: this.props.email,
-      inside: this.props.inside
-    }
+      inside: this.props.inside,
+      subdivision: this.props.subdivision,
+    };
     return person;
   }
 
-  handleInputChange = event => {
-    const {name, value} = event.target;
+  handleInputChange = (event) => {
+    const { name, value } = event.target;
 
     const person = this.makePerson();
     person[name] = value;
@@ -63,6 +64,13 @@ class PersonEdit extends React.Component {
           name="inside"
           type="inside"
           value={this.props.inside}
+          onChange={this.handleInputChange}
+        />
+        <LabeledInput
+          title="Подразделение"
+          name="subdivision"
+          type="subdivision"
+          value={this.props.subdivision}
           onChange={this.handleInputChange}
         />
       </div>

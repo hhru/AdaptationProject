@@ -17,6 +17,8 @@ public class UserDto {
 
   public String inside;
 
+  public String subdivision;
+
   public UserDto() {
   }
 
@@ -36,5 +38,6 @@ public class UserDto {
     middleName = user.getSelf().getMiddleName();
     email = user.getSelf().getEmail();
     inside = user.getSelf().getInside();
+    subdivision = user.getSelf().getSubdivision();
   }
 }

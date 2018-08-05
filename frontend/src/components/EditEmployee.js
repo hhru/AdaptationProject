@@ -35,6 +35,7 @@ class EditEmployee extends React.Component {
     middleName: '',
     email: '',
     inside: '',
+    subdivision: '',
     gender: FEMALE,
     position: '',
     employmentDate: '',
@@ -119,6 +120,7 @@ class EditEmployee extends React.Component {
       middleName,
       email,
       inside,
+      subdivision,
       gender,
       employmentDate,
       position,
@@ -131,6 +133,7 @@ class EditEmployee extends React.Component {
       middleName: middleName,
       email: email,
       inside: inside,
+      subdivision: subdivision,
       gender: gender,
       employmentDate: employmentDate,
       position: position,
@@ -177,6 +180,7 @@ class EditEmployee extends React.Component {
       middleName,
       email,
       inside,
+      subdivision,
       gender,
       position,
       employmentDate,
@@ -194,6 +198,7 @@ class EditEmployee extends React.Component {
         middleName: middleName,
         email: email,
         inside: inside,
+        subdivision: subdivision,
       },
       chief: { id: chiefId },
       mentor: mentorId ? { id: mentorId } : null,
@@ -221,6 +226,7 @@ class EditEmployee extends React.Component {
         middleName: employeeDto.employee.middleName,
         email: employeeDto.employee.email,
         inside: employeeDto.employee.inside,
+        subdivision: employeeDto.employee.subdivision,
         gender: employeeDto.gender,
         position: employeeDto.position,
         employmentDate: employeeDto.employmentDate,
@@ -316,6 +322,7 @@ class EditEmployee extends React.Component {
             middleName={this.state.middleName}
             email={this.state.email}
             inside={this.state.inside}
+            subdivision={this.state.subdivision}
             gender={this.state.gender}
             position={this.state.position}
             employmentDate={this.state.employmentDate}

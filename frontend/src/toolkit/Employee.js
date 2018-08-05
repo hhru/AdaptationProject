@@ -12,38 +12,39 @@ class Employee extends React.Component {
       middleName: this.props.middleName,
       email: this.props.email,
       inside: this.props.inside,
+      subdivision: this.props.subdivision,
       gender: this.props.gender,
       position: this.props.position,
-      employmentDate: this.props.employmentDate
+      employmentDate: this.props.employmentDate,
     };
   }
 
-  handlePersonChange = person => {
+  handlePersonChange = (person) => {
     let employee = this.makeEmployee();
     employee = {
       ...employee,
-      ...person
+      ...person,
     };
     this.props.onChange(employee);
-  }
+  };
 
-  handlePositionChange = event => {
+  handlePositionChange = (event) => {
     const employee = this.makeEmployee();
     employee.position = event.target.value;
     this.props.onChange(employee);
-  }
+  };
 
-  handleEmploymentDateChange = event => {
+  handleEmploymentDateChange = (event) => {
     const employee = this.makeEmployee();
     employee.employmentDate = event.target.value;
     this.props.onChange(employee);
-  }
+  };
 
-  handleGenderChange= gender => {
+  handleGenderChange = (gender) => {
     const employee = this.makeEmployee();
     employee.gender = gender;
     this.props.onChange(employee);
-  }
+  };
 
   render() {
     return (
@@ -55,12 +56,10 @@ class Employee extends React.Component {
           middleName={this.props.middleName}
           email={this.props.email}
           inside={this.props.inside}
+          subdivision={this.props.subdivision}
           onChange={this.handlePersonChange}
         />
-        <GenderEdit
-          gender={this.props.gender}
-          onChange={this.handleGenderChange}
-        />
+        <GenderEdit gender={this.props.gender} onChange={this.handleGenderChange} />
         <LabeledInput
           title="Должность"
           name="position"
@@ -81,6 +80,5 @@ class Employee extends React.Component {
     );
   }
 }
-
 
 export default Employee;

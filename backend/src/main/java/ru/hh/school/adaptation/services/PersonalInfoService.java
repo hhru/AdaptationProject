@@ -59,6 +59,7 @@ public class PersonalInfoService {
 
   public PersonalInfo updatePersonalInfo(PersonalInfo personalInfo, PersonalDto personalDto) {
     personalInfo.setInside(personalDto.inside);
+    personalInfo.setSubdivision(personalDto.subdivision);
     personalInfo.setEmail(personalDto.email);
     personalInfo.setLastName(personalDto.lastName);
     personalInfo.setMiddleName(personalDto.middleName);
@@ -74,6 +75,7 @@ public class PersonalInfoService {
     personalInfo.setLastName(personalDto.lastName);
     personalInfo.setEmail(personalDto.email);
     personalInfo.setInside(personalDto.inside);
+    personalInfo.setSubdivision(personalDto.subdivision);
     personalInfoDao.save(personalInfo);
     return personalInfo;
   }
@@ -90,6 +92,14 @@ public class PersonalInfoService {
               fromPersonalInfo.getInside() +
               " на " +
               toPersonalDto.inside);
+      commentService.createLog(log);
+    }
+
+    if (!fromPersonalInfo.getSubdivision().equals(toPersonalDto.subdivision)) {
+      log.setMessage("Подразделение было изменено с " +
+              fromPersonalInfo.getSubdivision() +
+              " на " +
+              toPersonalDto.subdivision);
       commentService.createLog(log);
     }
 
