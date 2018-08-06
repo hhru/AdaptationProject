@@ -2,7 +2,6 @@ package ru.hh.school.adaptation.misc;
 
 import ru.hh.school.adaptation.entities.PersonalInfo;
 
-import java.lang.StringBuilder;
 import java.io.UnsupportedEncodingException;
 
 public class CommonUtils {
