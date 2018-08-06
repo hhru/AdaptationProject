@@ -224,7 +224,7 @@ class AddEmployee extends React.Component {
     return (
       <Container>
         <PersonCreator
-          title="Создание начальника"
+          title="Создание руководителя"
           modal={this.state.chiefModal}
           toggle={this.toggleChiefCreator}
           onCreate={this.handleChiefCreate}
@@ -255,7 +255,7 @@ class AddEmployee extends React.Component {
           <Person
             id="chief"
             persons={this.state.persons}
-            title="Начальник"
+            title="Руководитель"
             personId={this.state.chiefId}
             onChange={this.handleChiefChange}
             onAdd={this.toggleChiefCreator}

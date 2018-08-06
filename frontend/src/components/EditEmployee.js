@@ -300,7 +300,7 @@ class EditEmployee extends React.Component {
     return (
       <Container>
         <PersonCreator
-          title="Создание начальника"
+          title="Создание руководителя"
           modal={this.state.chiefModal}
           toggle={this.toggleChiefCreator}
           onCreate={this.handleChiefCreate}
@@ -331,7 +331,7 @@ class EditEmployee extends React.Component {
           <Person
             id="chief"
             persons={this.state.persons}
-            title="Начальник"
+            title="Руководитель"
             personId={this.state.chiefId}
             onChange={this.handleChiefChange}
             onAdd={this.toggleChiefCreator}
@@ -361,13 +361,12 @@ class EditEmployee extends React.Component {
             </Col>
             <Col sm={{ size: 2, order: 3, offset: 7 }}>
               <Button block onClick={this.toggleDismissModal} color={dismissed ? 'info' : 'danger'}>
-                {dismissed ? 'Восстановить' : 'Уволить'}
+                {dismissed ? 'Восстановить' : 'ИС не пройден'}
               </Button>
 
               <Modal isOpen={this.state.dismissModal} toggle={this.toggleDismissModal}>
                 <ModalHeader toggle={this.toggleDismissModal}>
-                  {dismissed ? 'Восстановить' : 'Уволить'}
-                  {' сотрудника?'}
+                  {dismissed ? 'Восстановление сотрудника' : 'Увольнение сотрудника'}
                 </ModalHeader>
 
                 <ModalBody>
