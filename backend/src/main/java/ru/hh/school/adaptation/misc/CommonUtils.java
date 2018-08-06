@@ -2,16 +2,19 @@ package ru.hh.school.adaptation.misc;
 
 import ru.hh.school.adaptation.entities.PersonalInfo;
 
+import java.lang.StringBuilder;
 import java.io.UnsupportedEncodingException;
 
 public class CommonUtils {
 
   public static String makeFioFromPersonalInfo(PersonalInfo personalInfo) {
-    return String.format("%s %s %s",
-        personalInfo.getLastName(),
-        personalInfo.getFirstName(),
-        personalInfo.getMiddleName()
-    );
+    StringBuilder sb = new StringBuilder();
+    sb.append(personalInfo.getFirstName());
+    if (personalInfo.getMiddleName() != null) {
+      sb.append(" ").append(personalInfo.getMiddleName());
+    }
+    sb.append(" ").append(personalInfo.getLastName());
+    return sb.toString();
   }
 
   public static String getContentDispositionFilename(String agent, String fileName) {
