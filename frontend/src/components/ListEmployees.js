@@ -256,7 +256,7 @@ class ListEmployees extends React.Component {
                       checked={this.state.showDismissed}
                       onChange={this.onShowDismissed}
                     />{' '}
-                    <span>Уволенные</span>
+                    <span>Не прошедшие ИС</span>
                   </Label>
                 </FormGroup>
               </Form>

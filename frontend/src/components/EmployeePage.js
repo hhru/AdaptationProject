@@ -394,7 +394,7 @@ class EmployeePage extends React.Component {
           <Col sm={{ size: 5, offset: 1 }}>
             <div className="ml-4">
               <p className="mb-2 text-muted">
-                {`Начальник: ${chiefFirstName} ${
+                {`Руководитель: ${chiefFirstName} ${
                   chiefMiddleName == null ? '' : chiefMiddleName
                 } ${chiefLastName}`}{' '}
                 <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + chiefInside}>(inside)</a>
@@ -727,7 +727,7 @@ class WorkflowStage extends React.Component {
   getDescription(type) {
     switch (type) {
       case 'ADD':
-        return 'Начальнику был выслан бланк для заполнения задач на испытательный период.';
+        return 'Руководителю был выслан бланк для заполнения задач на испытательный период.';
       case 'TASK_LIST':
         return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
       case 'WELCOME_MEETING':
