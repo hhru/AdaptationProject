@@ -306,7 +306,7 @@ class EditEmployee extends React.Component {
           onCreate={this.handleChiefCreate}
         />
         <PersonCreator
-          title="Создание ментора"
+          title="Создание куратора"
           modal={this.state.mentorModal}
           toggle={this.toggleMentorCreator}
           onCreate={this.handleMentorCreate}
@@ -339,7 +339,7 @@ class EditEmployee extends React.Component {
           <Person
             id="mentor"
             persons={this.state.persons}
-            title="Ментор"
+            title="Куратор"
             personId={this.state.mentorId}
             hasEmpty={true}
             onChange={this.handleMentorChange}

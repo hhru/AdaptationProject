@@ -401,7 +401,7 @@ class EmployeePage extends React.Component {
               </p>
               {this.state.data.mentor != null && (
                 <p className="mb-2 text-muted">
-                  {`Ментор: ${mentorFirstName} ${
+                  {`Куратор: ${mentorFirstName} ${
                     mentorMiddleName == null ? '' : mentorMiddleName
                   } ${mentorLastName}`}{' '}
                   <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + mentorInside}>
