@@ -180,7 +180,7 @@ public class EmployeeService {
       commentService.createLog(log);
     }
     if (fromEmployee.getMentor() != mentor) {
-      log.setMessage("Ментор был изменен с " +
+      log.setMessage("Куратор был изменен с " +
               fromEmployee.getMentor().getFirstName() + " " + fromEmployee.getMentor().getLastName() +
               " на " +
               mentor.getFirstName() + " " + mentor.getLastName());
