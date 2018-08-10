@@ -1,27 +1,22 @@
 import PersonChooser from '../toolkit/PersonChooser';
 
 import React from 'react';
-import {
-  Col,
-  Button,
-  Label,
-  FormGroup,
-  InputGroup,
-  InputGroupAddon,
-} from 'reactstrap';
+import { Col, Button, Label, FormGroup, InputGroup, InputGroupAddon } from 'reactstrap';
 
 class Person extends React.Component {
-  personChange = id => {
+  personChange = (id) => {
     if (this.props.onChange instanceof Function) {
       this.props.onChange(id);
     }
-  }
+  };
 
   render() {
     return (
       <FormGroup row>
-        <Label sm={2}>{this.props.title}</Label>
-        <Col sm={10}>
+        <Label sm={4} lg={2}>
+          {this.props.title}
+        </Label>
+        <Col sm={8} lg={10}>
           <InputGroup>
             <PersonChooser
               id={this.props.id}
@@ -34,7 +29,7 @@ class Person extends React.Component {
               <Button onClick={this.props.onAdd}>{'Создать'}</Button>
             </InputGroupAddon>
           </InputGroup>
-        </Col>  
+        </Col>
       </FormGroup>
     );
   }

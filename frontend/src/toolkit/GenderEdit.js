@@ -4,7 +4,7 @@ import React from 'react';
 import { Col, FormGroup, Label, Input } from 'reactstrap';
 
 class GenderEdit extends React.Component {
-  genderChange = changeEvent => {
+  genderChange = (changeEvent) => {
     const gender = changeEvent.target.value;
     this.props.onChange(gender);
   };
@@ -12,8 +12,10 @@ class GenderEdit extends React.Component {
   render() {
     return (
       <FormGroup row>
-        <Label sm={2}>{'Пол'}</Label>
-        <Col sm={10}>
+        <Label sm={4} lg={2}>
+          {'Пол'}
+        </Label>
+        <Col sm={8} lg={10}>
           <FormGroup check>
             <Label check>
               <Input
@@ -23,22 +25,20 @@ class GenderEdit extends React.Component {
                 value={FEMALE}
                 checked={this.props.gender === FEMALE}
                 onChange={this.genderChange}
-              />
-              {' '}
+              />{' '}
               {'Женский'}
             </Label>
           </FormGroup>
           <FormGroup check>
             <Label check>
-            <Input
+              <Input
                 type="radio"
                 id="male"
                 name="genderRadio"
                 value={MALE}
                 checked={this.props.gender === MALE}
                 onChange={this.genderChange}
-              />
-              {' '}
+              />{' '}
               {'Мужской'}
             </Label>
           </FormGroup>
