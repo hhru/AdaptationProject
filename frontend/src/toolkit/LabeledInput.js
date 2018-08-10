@@ -5,8 +5,8 @@ class LabeledInput extends React.Component {
   render() {
     return (
       <FormGroup row>
-        <Label for={this.props.name} sm={2}>{this.props.title}</Label>
-        <Col sm={10}>
+        <Label for={this.props.name} sm={4}>{this.props.title}</Label>
+        <Col sm={8}>
           <Input
             type={this.props.type}
             name={this.props.name}
