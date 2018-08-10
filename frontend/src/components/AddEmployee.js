@@ -271,7 +271,7 @@ class AddEmployee extends React.Component {
           />
 
           <FormGroup row>
-            <Col sm={{ size: 6, order: 2, offset: 2 }}>
+            <Col sm={{ size: 6, order: 2, offset: 4 }} lg={{ size: 6, order: 2, offset: 2 }}>
               <Button onClick={this.handleCreateEmployee} color="primary">
                 {'Создать сотрудника'}
               </Button>

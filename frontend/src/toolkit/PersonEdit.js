@@ -1,5 +1,6 @@
 import GenderEdit from './GenderEdit';
 import LabeledInput from './LabeledInput';
+import LabeledInputWithHelp from './LabeledInputWithHelp';
 
 import React from 'react';
 import { Col, FormGroup, Label, Input } from 'reactstrap';
@@ -66,8 +67,9 @@ class PersonEdit extends React.Component {
           value={this.props.inside}
           onChange={this.handleInputChange}
         />
-        <LabeledInput
+        <LabeledInputWithHelp
           title="Подразделение"
+          help="Подразделение, департамент, отдел, команда"
           name="subdivision"
           type="subdivision"
           value={this.props.subdivision}

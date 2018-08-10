@@ -1,7 +1,7 @@
 import React from 'react';
-import { Col, FormGroup, Label, Input } from 'reactstrap';
+import { Col, FormGroup, FormText, Input, Label } from 'reactstrap';
 
-class LabeledInput extends React.Component {
+class LabeledInputWithHelp extends React.Component {
   render() {
     return (
       <FormGroup row>
@@ -16,10 +16,11 @@ class LabeledInput extends React.Component {
             value={this.props.value}
             onChange={this.props.onChange}
           />
+          <FormText>{this.props.help}</FormText>
         </Col>
       </FormGroup>
     );
   }
 }
 
-export default LabeledInput;
+export default LabeledInputWithHelp;
