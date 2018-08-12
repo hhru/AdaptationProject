@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
@@ -37,20 +38,8 @@ public class PersonalInfoService {
     return getAllPersonalInfo().stream().map(PersonalDto::new).collect(Collectors.toList());
   }
 
-  public PersonalInfo getOrCreatePersonalInfo(PersonalDto personalDto){
-    if (personalDto.id == null){
-      return dtoToEntity(personalDto);
-    } else {
-      return personalInfoDao.getRecordById(personalDto.id);
-    }
-  }
-
-  public PersonalInfo getPersonalInfo(PersonalDto personalDto){
-    if (personalDto != null && personalDto.id != null){
-      return personalInfoDao.getRecordById(personalDto.id);
-    } else {
-      return null;
-    }
+  public Optional<PersonalInfo> getPersonalInfoById(Integer id){
+    return personalInfoDao.getRecordById(id);
   }
 
   @Transactional

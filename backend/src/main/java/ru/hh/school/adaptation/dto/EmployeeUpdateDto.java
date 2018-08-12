@@ -12,9 +12,9 @@ public class EmployeeUpdateDto {
 
   public PersonalDto self;
 
-  public PersonalDto chief;
+  public Integer chiefId;
 
-  public PersonalDto mentor;
+  public Integer mentorId;
 
   public Integer hrId;
 
