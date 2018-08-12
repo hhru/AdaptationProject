@@ -162,7 +162,7 @@ class ListEmployees extends React.Component {
         id: 'number',
         sortable: false,
         filterable: false,
-        width: 30,
+        width: 35,
         resizable: false,
         Cell: (row) => {
           const num = ++rowIndex;
