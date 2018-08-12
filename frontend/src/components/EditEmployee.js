@@ -92,14 +92,13 @@ class EditEmployee extends React.Component {
     };
     const failed = (error) => {
       console.log(error);
-      alert(error);
     };
 
     this.personCreate(person, updateChief, failed);
   };
 
   handleMentorCreate = (person) => {
-    this.toggleChiefCreator();
+    this.toggleMentorCreator();
 
     const updateMentor = (newPerson) => {
       console.log(newPerson);
@@ -107,7 +106,6 @@ class EditEmployee extends React.Component {
     };
     const failed = (error) => {
       console.log(error);
-      alert(error);
     };
 
     this.personCreate(person, updateMentor, failed);

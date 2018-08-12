@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dto.PersonalDto;
@@ -134,6 +135,12 @@ public class PersonalInfoService {
               toPersonalDto.firstName);
       commentService.createLog(log);
     }
+  }
+
+  public boolean isValidPersonalDto(PersonalDto personalDto) {
+    return StringUtils.isNotBlank(personalDto.firstName) &&
+        StringUtils.isNotBlank(personalDto.lastName) &&
+        StringUtils.isNotBlank(personalDto.email);
   }
 
 }
