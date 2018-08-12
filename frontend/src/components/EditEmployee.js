@@ -87,7 +87,6 @@ class EditEmployee extends React.Component {
     this.toggleChiefCreator();
 
     const updateChief = (newPerson) => {
-      console.log(newPerson);
       this.setState({ chiefId: newPerson.id });
     };
     const failed = (error) => {
@@ -101,7 +100,6 @@ class EditEmployee extends React.Component {
     this.toggleMentorCreator();
 
     const updateMentor = (newPerson) => {
-      console.log(newPerson);
       this.setState({ mentorId: newPerson.id });
     };
     const failed = (error) => {
@@ -216,7 +214,6 @@ class EditEmployee extends React.Component {
     };
 
     const updateEmployee = (employeeDto) => {
-      console.log(employeeDto);
       this.setState({
         dismissed: employeeDto.dismissed,
         firstName: employeeDto.employee.firstName,
