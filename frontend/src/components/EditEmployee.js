@@ -384,7 +384,7 @@ class EditEmployee extends React.Component {
                     color={dismissed ? 'info' : 'danger'}
                     onClick={this.handleDismissEmployee}
                   >
-                    {dismissed ? 'Восстановить' : 'Уволить'}
+                    {dismissed ? 'Восстановить' : 'ИС не пройден'}
                   </Button>
                   <Button outline color="secondary" onClick={this.toggleDismissModal}>
                     Отменить
