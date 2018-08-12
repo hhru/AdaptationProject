@@ -65,7 +65,6 @@ class AddEmployee extends React.Component {
     this.toggleChiefCreator();
 
     const updateChief = (newPerson) => {
-      console.log(newPerson);
       this.setState({
         chiefId: newPerson.id,
       });
@@ -81,7 +80,6 @@ class AddEmployee extends React.Component {
     this.toggleMentorCreator();
 
     const updateMentor = (newPerson) => {
-      console.log(newPerson);
       this.setState({ mentorId: newPerson.id });
     };
     const failed = (error) => {
