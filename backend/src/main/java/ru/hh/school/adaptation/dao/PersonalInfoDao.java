@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.dao;
 
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.hh.school.adaptation.entities.PersonalInfo;
@@ -15,8 +16,8 @@ public class PersonalInfoDao {
     this.sessionFactory = sessionFactory;
   }
 
-  public PersonalInfo getRecordById(Integer id) {
-    return sessionFactory.getCurrentSession().get(PersonalInfo.class, id);
+  public Optional<PersonalInfo> getRecordById(Integer id) {
+    return Optional.ofNullable(sessionFactory.getCurrentSession().get(PersonalInfo.class, id));
   }
 
   public List<PersonalInfo> getAllRecords() {

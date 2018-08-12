@@ -10,9 +10,9 @@ public class EmployeeCreateDto {
 
   public PersonalDto self;
 
-  public PersonalDto chief;
+  public Integer chiefId;
 
-  public PersonalDto mentor;
+  public Integer mentorId;
 
   public String position;
 

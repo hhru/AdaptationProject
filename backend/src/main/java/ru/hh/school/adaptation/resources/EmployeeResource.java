@@ -12,9 +12,6 @@ import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.dto.TransitionDto;
 import ru.hh.school.adaptation.dto.WorkflowStepDto;
-import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
-import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
@@ -110,18 +107,26 @@ public class EmployeeResource {
   @Path("/employee/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public EmployeeDto createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto) {
-    User user = authService.getUser().orElseThrow(() -> new AccessDeniedException("The user is not logged in."));
-    EmployeeCreateInternalDto employeeCreateInternalDto = new EmployeeCreateInternalDto(user.getId(), employeeCreateDto);
-    return employeeService.createEmployee(employeeCreateInternalDto);
+  public Response createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto) {
+    if (employeeService.isValidEmployeeCreateDto(employeeCreateDto)) {
+      return Response.status(Response.Status.CREATED)
+          .entity(employeeService.createEmployee(employeeCreateDto))
+          .build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).build();
   }
 
   @PUT
   @Produces("application/json")
   @Path("/employee/update")
   @ResponseBody
-  public EmployeeDto updateEmployee(@RequestBody EmployeeUpdateDto employeeUpdateDto){
-    return employeeService.updateEmployee(employeeUpdateDto);
+  public Response updateEmployee(@RequestBody EmployeeUpdateDto employeeUpdateDto){
+    if (employeeService.isValidEmployeeUpdateDto(employeeUpdateDto)) {
+      return Response.status(Response.Status.CREATED)
+          .entity(employeeService.updateEmployee(employeeUpdateDto))
+          .build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).build();
   }
 
   @POST

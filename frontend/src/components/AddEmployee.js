@@ -154,8 +154,8 @@ class AddEmployee extends React.Component {
       gender: gender,
       position: position,
       employmentDate: employmentDate,
-      chief: { id: chiefId },
-      mentor: mentorId ? { id: mentorId } : null,
+      chiefId: chiefId,
+      mentorId: mentorId ? mentorId : null,
     };
 
     this.createEmployee(employee);

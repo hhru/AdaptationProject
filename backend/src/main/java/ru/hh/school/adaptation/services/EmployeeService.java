@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.commons.lang3.time.DateUtils;
@@ -10,7 +11,7 @@ import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
-import ru.hh.school.adaptation.dto.EmployeeCreateInternalDto;
+import ru.hh.school.adaptation.dto.EmployeeCreateDto;
 import ru.hh.school.adaptation.dto.EmployeeDto;
 import ru.hh.school.adaptation.dto.EmployeeUpdateDto;
 import ru.hh.school.adaptation.entities.Comment;
@@ -18,6 +19,7 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.User;
+import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
 import ru.hh.school.adaptation.misc.CommonUtils;
@@ -91,17 +93,21 @@ public class EmployeeService {
   }
 
   @Transactional
-  public EmployeeDto createEmployee(EmployeeCreateInternalDto employeeCreateInternalDto){
+  public EmployeeDto createEmployee(EmployeeCreateDto employeeCreateDto){
+    User user = authService.getUser().orElseThrow(() -> new AccessDeniedException("The user is not logged in."));
+
     Employee employee = new Employee();
-    employee.setSelf(personalInfoService.createPersonalInfo(employeeCreateInternalDto.self));
-    employee.setChief(personalInfoService.getOrCreatePersonalInfo(employeeCreateInternalDto.chief));
-    if (employeeCreateInternalDto.mentor != null){
-      employee.setMentor(personalInfoService.getOrCreatePersonalInfo(employeeCreateInternalDto.mentor));
+    employee.setSelf(personalInfoService.createPersonalInfo(employeeCreateDto.self));
+    employee.setChief(personalInfoService.getPersonalInfoById(employeeCreateDto.chiefId)
+        .orElseThrow(() -> new EntityNotFoundException(String.format("PersonalInfo with id = %d does not exist", employeeCreateDto.chiefId))));
+    if (employeeCreateDto.mentorId != null){
+      employee.setMentor(personalInfoService.getPersonalInfoById(employeeCreateDto.mentorId)
+          .orElseThrow(() -> new EntityNotFoundException(String.format("PersonalInfo with id = %d does not exist", employeeCreateDto.chiefId))));
     }
-    employee.setHr(userDao.getRecordById(employeeCreateInternalDto.hrId));
-    employee.setPosition(employeeCreateInternalDto.position);
-    employee.setGender(employeeCreateInternalDto.gender);
-    employee.setEmploymentDate(employeeCreateInternalDto.employmentDate);
+    employee.setHr(userDao.getRecordById(user.getId()));
+    employee.setPosition(employeeCreateDto.position);
+    employee.setGender(employeeCreateDto.gender);
+    employee.setEmploymentDate(employeeCreateDto.employmentDate);
     employeeDao.save(employee);
 
     employee.setComments(null);
@@ -118,10 +124,12 @@ public class EmployeeService {
       Employee employee = employeeDao.getRecordById(employeeUpdateDto.id);
       User hr = userDao.getRecordById(employeeUpdateDto.hrId);
       PersonalInfo mentor = null;
-      if (employeeUpdateDto.mentor != null){
-        mentor = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.mentor);
+      if (employeeUpdateDto.mentorId != null){
+        mentor = personalInfoService.getPersonalInfoById(employeeUpdateDto.mentorId)
+            .orElseThrow(() -> new EntityNotFoundException(String.format("PersonalInfo with id = %d does not exist", employeeUpdateDto.chiefId)));
       }
-      PersonalInfo chief = personalInfoService.getOrCreatePersonalInfo(employeeUpdateDto.chief);
+      PersonalInfo chief = personalInfoService.getPersonalInfoById(employeeUpdateDto.chiefId)
+          .orElseThrow(() -> new EntityNotFoundException(String.format("PersonalInfo with id = %d does not exist", employeeUpdateDto.chiefId)));
       PersonalInfo selfInfo = employee.getSelf();
 
       logEmployeeUpdate(employee, employeeUpdateDto, hr, mentor, chief);
@@ -180,11 +188,16 @@ public class EmployeeService {
       commentService.createLog(log);
     }
     if (fromEmployee.getMentor() != mentor) {
-      log.setMessage("Куратор был изменен с " +
-              fromEmployee.getMentor().getFirstName() + " " + fromEmployee.getMentor().getLastName() +
-              " на " +
-              mentor.getFirstName() + " " + mentor.getLastName());
-      commentService.createLog(log);
+      if (fromEmployee.getMentor() != null) {
+        log.setMessage("Куратор был изменен с " +
+            fromEmployee.getMentor().getFirstName() + " " + fromEmployee.getMentor().getLastName() +
+            " на " +
+            mentor.getFirstName() + " " + mentor.getLastName());
+        commentService.createLog(log);
+      } else {
+        log.setMessage("Назначен куратор: " + mentor.getFirstName() + " " + mentor.getLastName());
+        commentService.createLog(log);
+      }
     }
     if (fromEmployee.getChief() != chief) {
       log.setMessage("Руководитель был изменен с " +
@@ -279,6 +292,24 @@ public class EmployeeService {
       comment.setMessage(dismissComment);
       commentService.createComment(comment);
     }
+  }
+
+  public boolean isValidEmployeeCreateDto(EmployeeCreateDto employeeCreateDto) {
+    return personalInfoService.isValidPersonalDto(employeeCreateDto.self) &&
+        employeeCreateDto.chiefId != null &&
+        StringUtils.isNotBlank(employeeCreateDto.position) &&
+        employeeCreateDto.gender != null &&
+        employeeCreateDto.employmentDate != null;
+  }
+
+  public boolean isValidEmployeeUpdateDto(EmployeeUpdateDto employeeUpdateDto) {
+    return personalInfoService.isValidPersonalDto(employeeUpdateDto.self) &&
+        employeeUpdateDto.chiefId != null &&
+        StringUtils.isNotBlank(employeeUpdateDto.position) &&
+        employeeUpdateDto.gender != null &&
+        employeeUpdateDto.employmentDate != null &&
+        employeeUpdateDto.id != null &&
+        employeeUpdateDto.hrId != null;
   }
 
 }
