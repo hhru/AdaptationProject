@@ -72,14 +72,13 @@ class AddEmployee extends React.Component {
     };
     const failed = (error) => {
       console.log(error);
-      alert(error);
     };
 
     this.createPerson(person, updateChief, failed);
   };
 
   handleMentorCreate = (person) => {
-    this.toggleChiefCreator();
+    this.toggleMentorCreator();
 
     const updateMentor = (newPerson) => {
       console.log(newPerson);
@@ -87,7 +86,6 @@ class AddEmployee extends React.Component {
     };
     const failed = (error) => {
       console.log(error);
-      alert(error);
     };
 
     this.createPerson(person, updateMentor, failed);

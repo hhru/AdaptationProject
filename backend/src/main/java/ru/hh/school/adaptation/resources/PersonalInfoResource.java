@@ -1,11 +1,9 @@
 package ru.hh.school.adaptation.resources;
 
-import org.springframework.http.HttpStatus;
+import javax.ws.rs.core.Response;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.hh.school.adaptation.dto.PersonalDto;
-import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 
 import javax.inject.Inject;
@@ -38,11 +36,14 @@ public class PersonalInfoResource {
   @POST
   @Produces("application/json")
   @Path("/personal/create")
-  @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public PersonalDto createPerson(@RequestBody PersonalDto personalDto) {
-    PersonalInfo personalInfo = personalInfoService.createPersonalInfo(personalDto);
-    return new PersonalDto(personalInfo);
+  public Response createPerson(@RequestBody PersonalDto personalDto) {
+    if (personalInfoService.isValidPersonalDto(personalDto)) {
+      return Response.status(Response.Status.CREATED)
+          .entity(new PersonalDto(personalInfoService.createPersonalInfo(personalDto)))
+          .build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).build();
   }
 
 }
