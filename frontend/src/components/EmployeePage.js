@@ -381,7 +381,7 @@ class EmployeePage extends React.Component {
           <Col sm={{ size: 5 }} className="">
             <div className="float-right mr-3">
               <a href={'/edit_employee/' + this.state.employeeId}>
-                <span className="text-muted edit-profile">
+                <span className="text-muted underline">
                   Редактировать&nbsp;
                   <FaPencilSquare size={20} color="#c6c6c6" />
                 </span>

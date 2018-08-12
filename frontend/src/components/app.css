@@ -51,9 +51,15 @@ textarea {
   height: 30px;
 }
 
-.edit-profile:hover {
+.underline:hover {
   text-decoration: underline;
-  text-decoration-color: #c6c6c6 !important;
+  text-decoration-color: #e6e6e6 !important;
+
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
 }
 
 .empty-for-main-page-left {
