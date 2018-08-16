@@ -21,15 +21,17 @@ class ListEmployees extends React.Component {
     this.state = {
       isLoading: true,
       filterable: false,
-      filterColor: '#c6c6c6',
+      filterColor: '#e6e6e6',
       showDismissed: false,
       showCompleted: false,
+      showActive: true,
       employeeList: [],
     };
 
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.onFiltered = this.onFiltered.bind(this);
     this.onShowCompleted = this.onShowCompleted.bind(this);
+    this.onShowActive = this.onShowActive.bind(this);
     this.onShowDismissed = this.onShowDismissed.bind(this);
     this.filteredData = this.filteredData.bind(this);
     this.customFilter = this.customFilter.bind(this);
@@ -43,7 +45,7 @@ class ListEmployees extends React.Component {
   onFiltered() {
     this.setState({
       filterable: !this.state.filterable,
-      filterColor: this.state.filterable ? '#c6c6c6' : '#a0a0a0',
+      filterColor: this.state.filterable ? '#e6e6e6' : '#a0a0a0',
     });
   }
 
@@ -70,6 +72,12 @@ class ListEmployees extends React.Component {
     });
   }
 
+  onShowActive(e) {
+    this.setState({
+      showActive: !this.state.showActive,
+    });
+  }
+
   onShowDismissed(e) {
     this.setState({
       showDismissed: !this.state.showDismissed,
@@ -79,16 +87,25 @@ class ListEmployees extends React.Component {
   filteredData() {
     let result = this.state.employeeList;
 
+    if (!this.state.showActive) {
+      result = result.filter((e) => {
+        const curStep = e.workflow.filter((w) => w.status == 'CURRENT');
+        return e.dismissed ? true : curStep.length === 0;
+      });
+    }
+
     if (!this.state.showCompleted) {
       result = result.filter((e) => {
         const curStep = e.workflow.filter((w) => w.status == 'CURRENT');
-        return curStep.length == 0 ? false : true;
+        //return curStep.length == 0 ? false : true;
+        return e.dismissed ? true : curStep.length !== 0;
       });
     }
 
     if (!this.state.showDismissed) {
       result = result.filter((e) => !e.dismissed);
     }
+
     return result;
   }
 
@@ -121,8 +138,6 @@ class ListEmployees extends React.Component {
   }
 
   render() {
-    let rowIndex = 0;
-
     const fullTextToDisplay = {
       ADD: 'Добавление в систему',
       TASK_LIST: 'Постановка задач',
@@ -148,30 +163,6 @@ class ListEmployees extends React.Component {
     };
 
     let columns = [
-      {
-        Header: () => {
-          return (
-            <FaFilter
-              size={16}
-              color={this.state.filterColor}
-              className="cur-pointer"
-              onClick={this.onFiltered}
-            />
-          );
-        },
-        id: 'number',
-        sortable: false,
-        filterable: false,
-        width: 30,
-        resizable: false,
-        Cell: (row) => {
-          const num = ++rowIndex;
-          if (rowIndex == this.state.employeeList.length) {
-            rowIndex = 0;
-          }
-          return <span className="text-muted ml-1">{num}</span>;
-        },
-      },
       {
         Header: 'ФИО',
         id: 'fullName',
@@ -230,9 +221,33 @@ class ListEmployees extends React.Component {
 
     return (
       <div>
-        {this.state.filterable && (
-          <Row className="mb-1">
-            <Col sm={{ size: 2, offset: 8 }}>
+        <Row className="mb-1">
+          <Col sm={{ size: 2, offset: 0 }}>
+            <span className="text-muted cur-pointer underline" onClick={this.onFiltered}>
+              <FaFilter size={20} color={this.state.filterColor} onClick={this.onFiltered} />
+              &nbsp;Фильтр
+            </span>
+          </Col>
+
+          {this.state.filterable && (
+            <Col sm={{ size: 2, offset: 3 }}>
+              <Form>
+                <FormGroup check className="text-muted">
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      checked={this.state.showActive}
+                      onChange={this.onShowActive}
+                    />{' '}
+                    <span>Активные</span>
+                  </Label>
+                </FormGroup>
+              </Form>
+            </Col>
+          )}
+
+          {this.state.filterable && (
+            <Col sm={{ size: 2 }}>
               <Form>
                 <FormGroup check className="text-muted">
                   <Label check>
@@ -246,8 +261,10 @@ class ListEmployees extends React.Component {
                 </FormGroup>
               </Form>
             </Col>
+          )}
 
-            <Col sm={{ size: 2 }}>
+          {this.state.filterable && (
+            <Col sm={{ size: 3 }}>
               <Form>
                 <FormGroup check className="text-muted">
                   <Label check>
@@ -261,8 +278,8 @@ class ListEmployees extends React.Component {
                 </FormGroup>
               </Form>
             </Col>
-          </Row>
-        )}
+          )}
+        </Row>
 
         <ReactTable
           filterable={this.state.filterable}
