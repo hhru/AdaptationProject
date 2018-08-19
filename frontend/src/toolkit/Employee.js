@@ -1,6 +1,8 @@
 import GenderEdit from '../toolkit/GenderEdit';
 import PersonEdit from '../toolkit/PersonEdit';
 import LabeledInput from '../toolkit/LabeledInput';
+import { Row, Col } from 'reactstrap';
+import { AvField } from 'availity-reactstrap-validation';
 
 import React from 'react';
 
@@ -59,23 +61,31 @@ class Employee extends React.Component {
           subdivision={this.props.subdivision}
           onChange={this.handlePersonChange}
         />
-        <GenderEdit gender={this.props.gender} onChange={this.handleGenderChange} />
-        <LabeledInput
-          title="Должность"
-          name="position"
-          type="text"
-          isRequired={false}
-          value={this.props.position}
-          onChange={this.handlePositionChange}
-        />
-        <LabeledInput
-          title="Дата выхода"
-          name="employmentDate"
-          type="date"
-          isRequired={true}
-          value={this.props.employmentDate}
-          onChange={this.handleEmploymentDateChange}
-        />
+        <Row>
+          <Col sm="12">
+            <AvField
+              name="position"
+              label="Должность"
+              value={this.props.position}
+              onChange={this.handlePositionChange}
+              required
+              errorMessage="Введите должность"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="12">
+            <AvField
+              name="employmentDate"
+              label="Дата выхода"
+              type="date"
+              value={this.props.employmentDate}
+              onChange={this.handleEmploymentDateChange}
+              required
+              errorMessage="Выберите дату выхода"
+            />
+          </Col>
+        </Row>
       </div>
     );
   }

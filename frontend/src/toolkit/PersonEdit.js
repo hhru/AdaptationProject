@@ -3,7 +3,9 @@ import LabeledInput from './LabeledInput';
 import LabeledInputWithHelp from './LabeledInputWithHelp';
 
 import React from 'react';
-import { Col, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
+import { AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
+import { FEMALE, MALE } from '../constants/gender';
 
 class PersonEdit extends React.Component {
   makePerson() {
@@ -30,51 +32,82 @@ class PersonEdit extends React.Component {
   };
 
   render() {
+    const defaultValues = {};
     return (
       <div>
-        <LabeledInput
-          title="Фамилия"
-          name="lastName"
-          type="text"
-          value={this.props.lastName}
-          onChange={this.handleInputChange}
-        />
-        <LabeledInput
-          title="Имя"
-          name="firstName"
-          type="text"
-          value={this.props.firstName}
-          onChange={this.handleInputChange}
-        />
-        <LabeledInput
-          title="Отчество"
-          name="middleName"
-          type="text"
-          value={this.props.middleName}
-          onChange={this.handleInputChange}
-        />
-        <LabeledInput
-          title="Email"
-          name="email"
-          type="email"
-          value={this.props.email}
-          onChange={this.handleInputChange}
-        />
-        <LabeledInput
-          title="Инсайд"
-          name="inside"
-          type="inside"
-          value={this.props.inside}
-          onChange={this.handleInputChange}
-        />
-        <LabeledInputWithHelp
-          title="Подразделение"
-          help="Подразделение, департамент, отдел, команда"
-          name="subdivision"
-          type="subdivision"
-          value={this.props.subdivision}
-          onChange={this.handleInputChange}
-        />
+        <Row>
+          <Col sm="4">
+            <AvField
+              name="lastName"
+              label="Фамилия"
+              value={this.props.lastName}
+              onChange={this.handleInputChange}
+              required
+              errorMessage="Введите фамилию"
+            />
+          </Col>
+          <Col sm="4">
+            <AvField
+              name="firstName"
+              label="Имя"
+              value={this.props.firstName}
+              onChange={this.handleInputChange}
+              required
+              errorMessage="Введите имя"
+            />
+          </Col>
+          <Col sm="4">
+            <AvField
+              name="middleName"
+              label="Отчество"
+              value={this.props.middleName}
+              onChange={this.handleInputChange}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col sm="4">
+            <AvRadioGroup name="genderRadioGroup" required errorMessage="Выберите пол">
+              <AvRadio label="Мужской" value={MALE} />
+              <AvRadio label="Женский" value={FEMALE} />
+            </AvRadioGroup>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col sm="6">
+            <AvField
+              name="email"
+              label="Email"
+              type="email"
+              value={this.props.email}
+              onChange={this.handleInputChange}
+              required
+              errorMessage="Введите валидный email"
+            />
+          </Col>
+          <Col sm="6">
+            <AvField
+              name="inside"
+              label="Инсайд"
+              onChange={this.handleInputChange}
+              value={this.props.inside}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col sm="12">
+            <AvField
+              name="subdivision"
+              label="Подразделение"
+              value={this.props.subdivision}
+              onChange={this.handleInputChange}
+              helpMessage="Подразделение, департамент, отдел, команда"
+            />
+          </Col>
+        </Row>
       </div>
     );
   }
