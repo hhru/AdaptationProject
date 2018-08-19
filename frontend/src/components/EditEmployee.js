@@ -9,8 +9,11 @@ import Person from '../toolkit/Person';
 import Employee from '../toolkit/Employee';
 import User from '../toolkit/User';
 
+import { AvForm } from 'availity-reactstrap-validation';
+
 import React from 'react';
 import {
+  Row,
   Col,
   Button,
   Form,
@@ -30,6 +33,7 @@ import axios from 'axios';
 
 class EditEmployee extends React.Component {
   state = {
+    disableSend: false,
     firstName: '',
     lastName: '',
     middleName: '',
@@ -280,17 +284,29 @@ class EditEmployee extends React.Component {
   }
 
   employeeUpdate(employeeUpdateDto) {
+    if (this.state.disableSend) {
+      return;
+    }
+    this.state.disableSend = true;
+
     axios
       .put('/api/employee/update', employeeUpdateDto)
-      .then((response) => this.props.history.push('/employee/' + response.data.id))
+      .then((response) => {
+        this.props.history.push('/employee/' + response.data.id);
+        this.state.disableSend = false;
+      })
       .catch((error) => {
         console.log(error);
         alert(error);
+        this.state.disableSend = false;
       });
   }
 
   render() {
     const dismissed = this.state.dismissed;
+    const defaultValues = {
+      genderRadioGroup: this.state.gender,
+    };
 
     return (
       <Container>
@@ -307,7 +323,7 @@ class EditEmployee extends React.Component {
           onCreate={this.handleMentorCreate}
         />
 
-        <Form>
+        <AvForm model={defaultValues}>
           <FormGroup row>
             <h3>Редактирование сотрудника</h3>
           </FormGroup>
@@ -348,13 +364,8 @@ class EditEmployee extends React.Component {
             onChange={this.handleHrChange}
           />
 
-          <FormGroup row>
-            <Col sm={{ size: 1, order: 2, offset: 2 }}>
-              <Button onClick={this.handleUpdateEmployee} color="primary">
-                {'Применить'}
-              </Button>
-            </Col>
-            <Col sm={{ size: 2, order: 3, offset: 7 }}>
+          <Row className="mt-4">
+            <Col sm={{ size: 2, offset: 1 }}>
               <Button block onClick={this.toggleDismissModal} color={dismissed ? 'info' : 'danger'}>
                 {dismissed ? 'Восстановить' : 'ИС не пройден'}
               </Button>
@@ -392,8 +403,14 @@ class EditEmployee extends React.Component {
                 </ModalFooter>
               </Modal>
             </Col>
-          </FormGroup>
-        </Form>
+
+            <Col sm={{ size: 2, offset: 7 }}>
+              <Button onClick={this.handleUpdateEmployee} color="primary">
+                {'Применить'}
+              </Button>
+            </Col>
+          </Row>
+        </AvForm>
       </Container>
     );
   }

@@ -1,7 +1,7 @@
 import PersonChooser from '../toolkit/PersonChooser';
 
 import React from 'react';
-import { Col, FormGroup, Label } from 'reactstrap';
+import { Row, Col, FormGroup, Label } from 'reactstrap';
 
 class User extends React.Component {
   personChange = (id) => {
@@ -12,19 +12,21 @@ class User extends React.Component {
 
   render() {
     return (
-      <FormGroup row>
-        <Label sm={4} lg={2}>
-          {this.props.title}
-        </Label>
-        <Col sm={8} lg={10}>
-          <PersonChooser
-            id={this.props.id}
-            persons={this.props.persons}
-            personId={this.props.personId}
-            onChange={this.personChange}
-          />
-        </Col>
-      </FormGroup>
+      <div>
+        <Row>
+          <Label sm={4}>{this.props.title}</Label>
+        </Row>
+        <Row>
+          <Col sm={12} lg={12}>
+            <PersonChooser
+              id={this.props.id}
+              persons={this.props.persons}
+              personId={this.props.personId}
+              onChange={this.personChange}
+            />
+          </Col>
+        </Row>
+      </div>
     );
   }
 }

@@ -1,7 +1,7 @@
 import PersonChooser from '../toolkit/PersonChooser';
 
 import React from 'react';
-import { Col, Button, Label, FormGroup, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Row, Col, Button, Label, FormGroup, InputGroup, InputGroupAddon } from 'reactstrap';
 
 class Person extends React.Component {
   personChange = (id) => {
@@ -12,25 +12,27 @@ class Person extends React.Component {
 
   render() {
     return (
-      <FormGroup row>
-        <Label sm={4} lg={2}>
-          {this.props.title}
-        </Label>
-        <Col sm={8} lg={10}>
-          <InputGroup>
-            <PersonChooser
-              id={this.props.id}
-              persons={this.props.persons}
-              personId={this.props.personId}
-              hasEmpty={this.props.hasEmpty}
-              onChange={this.personChange}
-            />
-            <InputGroupAddon addonType="append">
-              <Button onClick={this.props.onAdd}>{'Создать'}</Button>
-            </InputGroupAddon>
-          </InputGroup>
-        </Col>
-      </FormGroup>
+      <div>
+        <Row>
+          <Label sm={4}>{this.props.title}</Label>
+        </Row>
+        <Row>
+          <Col sm={8} lg={12}>
+            <InputGroup>
+              <PersonChooser
+                id={this.props.id}
+                persons={this.props.persons}
+                personId={this.props.personId}
+                hasEmpty={this.props.hasEmpty}
+                onChange={this.personChange}
+              />
+              <InputGroupAddon addonType="append">
+                <Button onClick={this.props.onAdd}>{'Создать'}</Button>
+              </InputGroupAddon>
+            </InputGroup>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }

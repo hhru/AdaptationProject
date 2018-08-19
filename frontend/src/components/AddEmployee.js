@@ -8,8 +8,11 @@ import PersonCreator from '../toolkit/PersonCreator';
 import Person from '../toolkit/Person';
 import Employee from '../toolkit/Employee';
 
+import { AvForm, AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
+
 import React from 'react';
 import {
+  Row,
   Col,
   Button,
   Form,
@@ -25,6 +28,7 @@ import axios from 'axios';
 
 class AddEmployee extends React.Component {
   state = {
+    disableSend: false,
     firstName: '',
     lastName: '',
     middleName: '',
@@ -41,21 +45,13 @@ class AddEmployee extends React.Component {
     mentorModal: false,
   };
 
-  toggleChiefCreator = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
-
+  toggleChiefCreator = () => {
     this.setState({
       chiefModal: !this.state.chiefModal,
     });
   };
 
-  toggleMentorCreator = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
-
+  toggleMentorCreator = () => {
     this.setState({
       mentorModal: !this.state.mentorModal,
     });
@@ -123,9 +119,7 @@ class AddEmployee extends React.Component {
     this.setState({ mentorId: mentorId ? mentorId : null });
   };
 
-  handleCreateEmployee = (event) => {
-    event.preventDefault();
-
+  handleCreateEmployee = () => {
     const {
       firstName,
       lastName,
@@ -205,18 +199,43 @@ class AddEmployee extends React.Component {
   }
 
   createEmployee(employee) {
+    if (this.state.disableSend) {
+      return;
+    }
+    this.state.disableSend = true;
+
     axios
       .post('/api/employee/create', employee)
       .then((response) => {
         this.props.history.push('/employee/' + response.data.id);
+        this.state.disableSend = false;
       })
       .catch((error) => {
         console.log(error);
         alert(error);
+        this.state.disableSend = false;
       });
   }
 
+  clickFunc = (e) => {
+    switch (e) {
+      case 'valid':
+        this.handleCreateEmployee();
+        break;
+      case 'chiefCreate':
+        this.toggleChiefCreator();
+        break;
+      case 'mentorCreate':
+        this.toggleMentorCreator(this);
+        break;
+    }
+  };
+
   render() {
+    const defaultValues = {
+      genderRadioGroup: MALE,
+    };
+
     return (
       <Container>
         <PersonCreator
@@ -232,10 +251,15 @@ class AddEmployee extends React.Component {
           onCreate={this.handleMentorCreate}
         />
 
-        <Form>
+        <AvForm
+          model={defaultValues}
+          onValidSubmit={() => this.clickFunc('valid')}
+          onInvalidSubmit={() => {}}
+        >
           <FormGroup row>
             <h3>Создание сотрудника</h3>
           </FormGroup>
+
           <Employee
             firstName={this.state.firstName}
             lastName={this.state.lastName}
@@ -254,7 +278,7 @@ class AddEmployee extends React.Component {
             title="Руководитель"
             personId={this.state.chiefId}
             onChange={this.handleChiefChange}
-            onAdd={this.toggleChiefCreator}
+            onAdd={() => this.clickFunc('chiefCreate')}
           />
           <Person
             id="mentor"
@@ -263,17 +287,17 @@ class AddEmployee extends React.Component {
             personId={this.state.mentorId}
             hasEmpty={true}
             onChange={this.handleMentorChange}
-            onAdd={this.toggleMentorCreator}
+            onAdd={() => this.clickFunc('mentorCreate')}
           />
 
-          <FormGroup row>
-            <Col sm={{ size: 6, order: 2, offset: 4 }} lg={{ size: 6, order: 2, offset: 2 }}>
-              <Button onClick={this.handleCreateEmployee} color="primary">
-                {'Создать сотрудника'}
-              </Button>
+          <Row className="mt-4">
+            <Col sm={{ size: 6, offset: 5 }}>
+              <FormGroup>
+                <Button color="primary">{'Создать сотрудника'}</Button>
+              </FormGroup>
             </Col>
-          </FormGroup>
-        </Form>
+          </Row>
+        </AvForm>
       </Container>
     );
   }
