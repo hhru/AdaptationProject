@@ -18,6 +18,8 @@ import java.util.Map;
 public class QuestionnaireStep {
 
   private String addTaskLink;
+  private String dmsEmail1;
+  private String dmsEmail2;
 
   private CommentService commentService;
   private MailService mailService;
@@ -31,6 +33,8 @@ public class QuestionnaireStep {
     this.commentService = commentService;
     this.questionnaireService = questionnaireService;
 
+    dmsEmail1 = fileSettings.getProperties().getProperty("adaptation.dms.email1");
+    dmsEmail2 = fileSettings.getProperties().getProperty("adaptation.dms.email2");
     addTaskLink = "https://" + fileSettings.getProperties().getProperty("adaptation.host") + "/questionnaire/%s";
   }
 
@@ -42,8 +46,9 @@ public class QuestionnaireStep {
 
     params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
-    params.put("{{gender}}", employee.getGender()==Gender.MALE?"него":"нее");
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "create_dms", params);
+    params.put("{{gender}}", employee.getGender()==Gender.MALE?"прошёл":"прошла");
+    mailService.sendMail(dmsEmail1, "create_dms", params);
+    mailService.sendMail(dmsEmail2, "create_dms", params);
 
     Log log = new Log();
     log.setEmployee(employee);
