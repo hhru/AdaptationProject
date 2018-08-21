@@ -48,9 +48,14 @@ public class AddStep {
 
     scheduledExecutorService.schedule(() -> taskListMail(employee), 1, TimeUnit.SECONDS);
 
-    long delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
-    boolean demo = true;
-    scheduledExecutorService.schedule(() -> welcomeMail(employee), demo ? 3 : delay, TimeUnit.SECONDS);
+    long delay;
+    if (employee.getEmploymentDate().after(new Date())) {
+      delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
+      scheduledExecutorService.schedule(() -> welcomeMail(employee), delay, TimeUnit.SECONDS);
+    } else if (new SimpleDateFormat("ddMMyyyy").format(new Date()).equals(new SimpleDateFormat("ddMMyyyy").format(employee.getEmploymentDate()))) {
+      delay = 1;
+      scheduledExecutorService.schedule(() -> welcomeMail(employee), delay, TimeUnit.SECONDS);
+    }
   }
 
   private void sendCalendar(Employee employee) {
@@ -76,6 +81,7 @@ public class AddStep {
 
   private void welcomeMail(Employee employee) {
     Map<String, String> params = new HashMap<>();
+    params.put("{{userName}}", employee.getSelf().getFirstName());
     params.put("{{gender_provel}}", employee.getGender() == Gender.MALE ? "провел" : "провела");
     params.put("{{gender_samomu}}", employee.getGender() == Gender.MALE ? "самому" : "самой");
     params.put("{{gender_osvoilsya}}", employee.getGender() == Gender.MALE ? "освоился" : "освоилась");
