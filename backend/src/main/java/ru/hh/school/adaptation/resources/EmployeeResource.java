@@ -15,7 +15,6 @@ import ru.hh.school.adaptation.dto.WorkflowStepDto;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.TransitionService;
-import ru.hh.school.adaptation.services.auth.AuthService;
 
 import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
@@ -36,14 +35,12 @@ public class EmployeeResource {
   private final EmployeeService employeeService;
   private final TransitionService transitionService;
   private final CommentService commentService;
-  private final AuthService authService;
 
   public EmployeeResource(EmployeeService employeeService, TransitionService transitionService,
-                          CommentService commentService, AuthService authService) {
+                          CommentService commentService) {
     this.employeeService = employeeService;
     this.transitionService = transitionService;
     this.commentService = commentService;
-    this.authService = authService;
   }
 
   @GET
