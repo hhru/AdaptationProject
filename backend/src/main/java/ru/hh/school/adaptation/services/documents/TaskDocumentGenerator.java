@@ -32,7 +32,11 @@ public abstract class TaskDocumentGenerator extends DocumentGenerator {
     for (int i = 0; i < taskList.size(); i++) {
       recs[i][0] = Integer.toString(i + 1);
       recs[i][1] = taskList.get(i).getText();
-      recs[i][2] = taskList.get(i).getDeadlineDate().toString();
+      if (taskList.get(i).getDeadlineDate() != null) {
+        recs[i][2] = taskList.get(i).getDeadlineDate().toString();
+      } else {
+        recs[i][2] = null;
+      }
       recs[i][3] = taskList.get(i).getResources();
     }
 

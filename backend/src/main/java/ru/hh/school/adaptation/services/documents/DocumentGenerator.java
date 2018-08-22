@@ -36,7 +36,12 @@ public abstract class DocumentGenerator {
       for (Map.Entry<String, String> replPair : replacements.entrySet()) {
         String find = replPair.getKey();
         String repl = replPair.getValue();
-        TextSegement found = paragraph.searchText(find, new PositionInParagraph());
+        TextSegement found;
+        try {
+          found = paragraph.searchText(find, new PositionInParagraph());
+        } catch (NullPointerException e) {
+          continue;
+        }
         if (found != null) {
           count++;
           if (found.getBeginRun() == found.getEndRun()) {
