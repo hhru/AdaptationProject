@@ -1,15 +1,11 @@
 package ru.hh.school.adaptation.services.workflow;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.context.annotation.Lazy;
 import ru.hh.nab.core.util.FileSettings;
-import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.Gender;
 import ru.hh.school.adaptation.entities.TaskForm;
-import ru.hh.school.adaptation.services.CommentService;
-import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.MailService;
+import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
 
 import javax.inject.Singleton;
@@ -18,9 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class AddStep {
@@ -29,33 +22,20 @@ public class AddStep {
 
   private MailService mailService;
   private TaskService taskService;
-  private EmployeeService employeeService;
-  private CommentService commentService;
-  private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+  private ScheduledMailService scheduledMailService;
 
-  public AddStep(FileSettings fileSettings, MailService mailService, TaskService taskService,
-                 CommentService commentService, @Lazy EmployeeService employeeService) {
+  public AddStep(FileSettings fileSettings, MailService mailService, TaskService taskService, ScheduledMailService scheduledMailService) {
     this.mailService = mailService;
     this.taskService = taskService;
-    this.commentService = commentService;
-    this.employeeService = employeeService;
+    this.scheduledMailService = scheduledMailService;
 
     addTaskLink = "https://" + fileSettings.getProperties().getProperty("adaptation.host") + "/add_tasks/%s";
   }
 
   public void onAdd(Employee employee) {
     sendCalendar(employee);
-
-    scheduledExecutorService.schedule(() -> taskListMail(employee), 1, TimeUnit.SECONDS);
-
-    long delay;
-    if (employee.getEmploymentDate().after(new Date())) {
-      delay = (employee.getEmploymentDate().getTime() - new Date().getTime())/1000;
-      scheduledExecutorService.schedule(() -> welcomeMail(employee), delay, TimeUnit.SECONDS);
-    } else if (new SimpleDateFormat("ddMMyyyy").format(new Date()).equals(new SimpleDateFormat("ddMMyyyy").format(employee.getEmploymentDate()))) {
-      delay = 1;
-      scheduledExecutorService.schedule(() -> welcomeMail(employee), delay, TimeUnit.SECONDS);
-    }
+    taskListMail(employee);
+    scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
   }
 
   private void sendCalendar(Employee employee) {
@@ -77,47 +57,6 @@ public class AddStep {
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
     mailService.sendMail(employee.getChief().getEmail(), "chief_missions", params);
-  }
-
-  private void welcomeMail(Employee employee) {
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName());
-    params.put("{{gender_provel}}", employee.getGender() == Gender.MALE ? "провел" : "провела");
-    params.put("{{gender_samomu}}", employee.getGender() == Gender.MALE ? "самому" : "самой");
-    params.put("{{gender_osvoilsya}}", employee.getGender() == Gender.MALE ? "освоился" : "освоилась");
-    params.put("{{gender_smog}}", employee.getGender() == Gender.MALE ? "смог" : "смогла");
-    mailService.sendMail(employee.getSelf().getEmail(), "welcome2", params);
-
-    Log log = new Log();
-    log.setEmployee(employee);
-    log.setAuthor("Adaptation");
-    log.setMessage("Сотруднику отправлено welcome-письмо");
-    log.setEventDate(new Date());
-    commentService.createLog(log);
-  }
-
-  private void welcomeMeetingNotify(Employee employee) {
-    Employee employeeCurrent = employeeService.getEmployee(employee.getId());
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employeeCurrent.getSelf().getFirstName() + " " + employeeCurrent.getSelf().getLastName());
-    params.put("{{meetingType}}", "welcome-встречи");
-    mailService.sendMail(employeeCurrent.getHr().getSelf().getEmail(), "meeting_room", params);
-  }
-
-  private void interimMeetingNotify(Employee employee) {
-    Employee employeeCurrent = employeeService.getEmployee(employee.getId());
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employeeCurrent.getSelf().getFirstName() + " " + employeeCurrent.getSelf().getLastName());
-    params.put("{{meetingType}}", "промежуточной встречи");
-    mailService.sendMail(employeeCurrent.getHr().getSelf().getEmail(), "meeting_room", params);
-  }
-
-  private void finalMeetingNotify(Employee employee) {
-    Employee employeeCurrent = employeeService.getEmployee(employee.getId());
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employeeCurrent.getSelf().getFirstName() + " " + employeeCurrent.getSelf().getLastName());
-    params.put("{{meetingType}}", "итоговой встречи");
-    mailService.sendMail(employeeCurrent.getHr().getSelf().getEmail(), "meeting_room", params);
   }
 
 }

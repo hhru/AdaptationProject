@@ -14,6 +14,7 @@ import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.LogDao;
 import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
+import ru.hh.school.adaptation.dao.ScheduledMailDao;
 import ru.hh.school.adaptation.dao.TaskDao;
 import ru.hh.school.adaptation.dao.TaskFormDao;
 import ru.hh.school.adaptation.dao.QuestionnaireAnswerDao;
@@ -26,6 +27,7 @@ import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.entities.ScheduledMail;
 import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.QuestionnaireAnswer;
@@ -42,6 +44,7 @@ import ru.hh.school.adaptation.services.AdminService;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
+import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
 import ru.hh.school.adaptation.services.QuestionnaireService;
 import ru.hh.school.adaptation.services.TransitionService;
@@ -71,6 +74,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
+    ScheduledMailDao.class,
     TransitionDao.class,
     TaskDao.class,
     TaskFormDao.class,
@@ -79,6 +83,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     AdminService.class,
     EmployeeService.class,
     CommentService.class,
+    ScheduledMailService.class,
     TransitionService.class,
     TaskService.class,
     QuestionnaireService.class,
@@ -121,6 +126,7 @@ public class AdaptationCommonConfig {
         Employee.class,
         User.class,
         PersonalInfo.class,
+        ScheduledMail.class,
         Transition.class,
         Task.class,
         TaskForm.class,
