@@ -105,7 +105,7 @@ public class EmployeeResource {
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public Response createEmployee(@RequestBody EmployeeCreateDto employeeCreateDto) {
-    if (employeeService.isValidEmployeeCreateDto(employeeCreateDto) && false) {
+    if (employeeService.isValidEmployeeCreateDto(employeeCreateDto)) {
       return Response.status(Response.Status.CREATED)
           .entity(employeeService.createEmployee(employeeCreateDto))
           .build();
