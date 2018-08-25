@@ -2,6 +2,8 @@ package ru.hh.school.adaptation.services;
 
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import javax.activation.DataHandler;
@@ -23,19 +25,15 @@ import javax.mail.PasswordAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hh.nab.core.util.FileSettings;
-import ru.hh.school.adaptation.dao.MailTemplateDao;
-import ru.hh.school.adaptation.entities.MailTemplate;
 
 @Singleton
 public class MailService {
+  private final String templatePath;
   private final Session session;
-  private MailTemplateDao mailTemplateDao;
   private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 
   @Inject
-  public MailService(FileSettings fileSettings, MailTemplateDao mailTemplateDao){
-    this.mailTemplateDao = mailTemplateDao;
-
+  public MailService(FileSettings fileSettings){
     final String username = fileSettings.getProperties().getProperty("mail.smtp.username");
     final String password = fileSettings.getProperties().getProperty("mail.smtp.password");
 
@@ -45,13 +43,21 @@ public class MailService {
           return new PasswordAuthentication(username, password);
         }
       });
+
+    templatePath = fileSettings.getProperties().getProperty("template.path");
   }
 
-  public void sendMail(String toEmail, String messageName, Map<String, String> parameterMap){
-    MailTemplate mailTemplate = mailTemplateDao.getRecordByName(messageName);
-    String text = applyTemplate(mailTemplate.getHtml(), parameterMap);
-    String title = applyTemplate(mailTemplate.getTitle(), parameterMap);
-    sendMail(toEmail, text, title);
+  public void sendMail(String email, String template, String subject, Map<String, String> params){
+    String message;
+    try {
+      message = new String(Files.readAllBytes(Paths.get(templatePath + template)));
+    } catch (IOException e) {
+      logger.error("Can't read mail template file: {}\n{}", template, e);
+      return;
+    }
+
+    String text = applyTemplate(message, params);
+    sendMail(email, text, subject);
   }
 
   public void sendMail(String toEmail, String messageHtml, String subject) {

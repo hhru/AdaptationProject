@@ -25,7 +25,7 @@ public abstract class DocumentGenerator {
   protected String documentPath;
 
   public DocumentGenerator(FileSettings fileSettings, String propertyName) {
-    this.documentPath = System.getProperty("settingsDir") + "/" + fileSettings.getString(propertyName);
+    this.documentPath = System.getProperty("templatesDir") + "/" + fileSettings.getString(propertyName);
   }
 
   protected long replaceInParagraphs(Map<String, String> replacements, List<XWPFParagraph> xwpfParagraphs) {

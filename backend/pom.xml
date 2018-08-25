@@ -113,47 +113,11 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <jdbc.url>${env.JDBC_URL}</jdbc.url>
-                <jdbc.user>${env.JDBC_USER}</jdbc.user>
-                <jdbc.password>${env.JDBC_PASSWORD}</jdbc.password>
-
-                <oauth.url>${env.OAUTH_URL}</oauth.url>
-                <oauth.client.id>${env.OAUTH_CLIENT_ID}</oauth.client.id>
-                <oauth.client.secret>${env.OAUTH_CLIENT_SECRET}</oauth.client.secret>
-
-                <jira.username>${env.JIRA_USERNAME}</jira.username>
-                <jira.password>${env.JIRA_PASSWORD}</jira.password>
-                <jira.key>${env.JIRA_KEY}</jira.key>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
-
     <build>
         <resources>
+            <!--log settings-->
             <resource>
-                <directory>src/etc/adaptation</directory>
-                <includes>
-                    <include>*.properties</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-
-            <resource>
-                <directory>src/etc/adaptation</directory>
-                <excludes>
-                    <exclude>*.properties</exclude>
-                </excludes>
-            </resource>
-
-            <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/main/resources/configs</directory>
             </resource>
         </resources>
 
@@ -173,7 +137,11 @@
                     <systemProperties>
                         <systemProperty>
                             <key>settingsDir</key>
-                            <value>${basedir}/src/etc/adaptation</value>
+                            <value>${basedir}/src/main/resources/configs</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>templatesDir</key>
+                            <value>${basedir}/src/main/resources/templates</value>
                         </systemProperty>
                     </systemProperties>
                     <mainClass>ru.hh.school.adaptation.AdaptationMain</mainClass>
@@ -230,14 +198,6 @@
                     <executable>javac</executable>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
 

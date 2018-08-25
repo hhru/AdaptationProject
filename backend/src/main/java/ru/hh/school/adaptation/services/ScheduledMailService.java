@@ -70,7 +70,7 @@ public class ScheduledMailService {
     params.put("{{gender_samomu}}", employee.getGender() == Gender.MALE ? "самому" : "самой");
     params.put("{{gender_osvoilsya}}", employee.getGender() == Gender.MALE ? "освоился" : "освоилась");
     params.put("{{gender_smog}}", employee.getGender() == Gender.MALE ? "смог" : "смогла");
-    mailService.sendMail(employee.getSelf().getEmail(), "welcome2", params);
+    mailService.sendMail(employee.getSelf().getEmail(), "welcome_2.html", "Приветственное письмо", params);
 
     Log log = new Log();
     log.setEmployee(employee);

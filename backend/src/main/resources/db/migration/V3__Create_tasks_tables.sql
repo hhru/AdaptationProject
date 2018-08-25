@@ -15,5 +15,3 @@ CREATE TABLE task
   comment VARCHAR(4096),
   is_deleted BOOLEAN DEFAULT FALSE NOT NULL
 );
-
-INSERT INTO task_form (employee_id, key) VALUES (1, '0685aca2dca7467eadbd0e6efa442351');

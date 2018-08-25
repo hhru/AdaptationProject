@@ -15,4 +15,6 @@ dependency-reduced-pom.xml
 node_modules
 frontend/dist
 backend/nbactions.xml
-backend/src/etc/adaptation/service.properties
+docker-compose.yml
+backend/src/main/resources/templates
+backend/src/main/resources/configs/service.properties

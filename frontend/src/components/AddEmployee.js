@@ -35,7 +35,7 @@ class AddEmployee extends React.Component {
     email: '',
     inside: '',
     subdivision: '',
-    gender: FEMALE,
+    gender: MALE,
     position: '',
     employmentDate: '',
     chiefId: null,

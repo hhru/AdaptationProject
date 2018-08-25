@@ -56,7 +56,7 @@ public class AddStep {
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
-    mailService.sendMail(employee.getChief().getEmail(), "chief_missions", params);
+    mailService.sendMail(employee.getChief().getEmail(), "chief_missions.html", "Задачи на испытательный срок", params);
   }
 
 }

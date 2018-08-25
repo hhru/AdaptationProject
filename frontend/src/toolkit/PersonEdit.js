@@ -68,10 +68,7 @@ class PersonEdit extends React.Component {
 
         <Row>
           <Col sm="4">
-            <AvRadioGroup name="genderRadioGroup" required errorMessage="Выберите пол">
-              <AvRadio label="Мужской" value={MALE} />
-              <AvRadio label="Женский" value={FEMALE} />
-            </AvRadioGroup>
+            <GenderEdit gender={this.props.gender} onChange={this.props.onGenderChange} />
           </Col>
         </Row>
 

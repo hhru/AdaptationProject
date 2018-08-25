@@ -57,9 +57,11 @@ class Employee extends React.Component {
           lastName={this.props.lastName}
           middleName={this.props.middleName}
           email={this.props.email}
+          gender={this.props.gender}
           inside={this.props.inside}
           subdivision={this.props.subdivision}
           onChange={this.handlePersonChange}
+          onGenderChange={this.handleGenderChange}
         />
         <Row>
           <Col sm="12">
