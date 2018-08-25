@@ -42,13 +42,13 @@ public class QuestionnaireStep {
     Questionnaire questionnaire = questionnaireService.createQuestionnaire(employee);
     Map<String, String> params = new HashMap<>();
     params.put("{{url}}", String.format(addTaskLink, questionnaire.getKey()));
-    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire", params);
+    mailService.sendMail(employee.getSelf().getEmail(), "questionnaire.html", "Опросник для новичка", params);
 
     params = new HashMap<>();
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{gender}}", employee.getGender()==Gender.MALE?"прошёл":"прошла");
-    mailService.sendMail(dmsEmail1, "create_dms", params);
-    mailService.sendMail(dmsEmail2, "create_dms", params);
+    mailService.sendMail(dmsEmail1, "create_dms.html", "Оформление ДМС", params);
+    mailService.sendMail(dmsEmail2, "create_dms.html", "Оформление ДМС", params);
 
     Log log = new Log();
     log.setEmployee(employee);

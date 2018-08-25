@@ -12,7 +12,6 @@ import ru.hh.school.adaptation.dao.AccessRuleDao;
 import ru.hh.school.adaptation.dao.CommentDao;
 import ru.hh.school.adaptation.dao.EmployeeDao;
 import ru.hh.school.adaptation.dao.LogDao;
-import ru.hh.school.adaptation.dao.MailTemplateDao;
 import ru.hh.school.adaptation.dao.PersonalInfoDao;
 import ru.hh.school.adaptation.dao.ScheduledMailDao;
 import ru.hh.school.adaptation.dao.TaskDao;
@@ -25,7 +24,6 @@ import ru.hh.school.adaptation.entities.AccessRule;
 import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
-import ru.hh.school.adaptation.entities.MailTemplate;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.ScheduledMail;
 import ru.hh.school.adaptation.entities.Task;
@@ -71,7 +69,6 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     AccessRuleDao.class,
     CommentDao.class,
     LogDao.class,
-    MailTemplateDao.class,
     EmployeeDao.class,
     UserDao.class,
     ScheduledMailDao.class,
@@ -122,7 +119,6 @@ public class AdaptationCommonConfig {
   MappingConfig mappingConfig() {
     return new MappingConfig(
         AccessRule.class,
-        MailTemplate.class,
         Employee.class,
         User.class,
         PersonalInfo.class,

@@ -20,19 +20,6 @@ class GenderEdit extends React.Component {
             <Label check>
               <Input
                 type="radio"
-                id="female"
-                name="genderRadio"
-                value={FEMALE}
-                checked={this.props.gender === FEMALE}
-                onChange={this.genderChange}
-              />{' '}
-              {'Женский'}
-            </Label>
-          </FormGroup>
-          <FormGroup check>
-            <Label check>
-              <Input
-                type="radio"
                 id="male"
                 name="genderRadio"
                 value={MALE}
@@ -40,6 +27,19 @@ class GenderEdit extends React.Component {
                 onChange={this.genderChange}
               />{' '}
               {'Мужской'}
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input
+                type="radio"
+                id="female"
+                name="genderRadio"
+                value={FEMALE}
+                checked={this.props.gender === FEMALE}
+                onChange={this.genderChange}
+              />{' '}
+              {'Женский'}
             </Label>
           </FormGroup>
         </Col>

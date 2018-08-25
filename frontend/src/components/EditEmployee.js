@@ -40,7 +40,7 @@ class EditEmployee extends React.Component {
     email: '',
     inside: '',
     subdivision: '',
-    gender: FEMALE,
+    gender: MALE,
     position: '',
     employmentDate: '',
     hrId: null,

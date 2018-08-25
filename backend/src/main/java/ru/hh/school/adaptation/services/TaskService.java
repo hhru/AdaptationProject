@@ -89,7 +89,7 @@ public class TaskService {
     String taskUrl = String.format("https://" + adaptationHost + "/api/employee/tasks/%d/doc", employee.getId());
     params.put("{{userName}}", fio);
     params.put("{{taskUrl}}", taskUrl);
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify", params);
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_task_notify.html", "Задачи на испытательный срок поставлены", params);
   }
 
   @Transactional

@@ -102,7 +102,7 @@ public class QuestionnaireService {
     String taskUrl = String.format("https://" + adaptationHost + "/employee/%d/questionnaire", employee.getId());
     params.put("{{userName}}", fio);
     params.put("{{questionnaireUrl}}", taskUrl);
-    mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_questionnaire_notify", params);
+    mailService.sendMail(employee.getHr().getSelf().getEmail(), "hr_questionnaire_notify.html", "Пройден опросник новичка", params);
   }
 
   @Transactional(readOnly = true)
