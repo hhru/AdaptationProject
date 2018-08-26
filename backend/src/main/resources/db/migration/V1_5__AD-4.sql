@@ -15,12 +15,3 @@ CREATE TABLE questionnaire_answer
   answer_text VARCHAR(512)
 );
 
-INSERT INTO questionnaire (employee_id, key, is_complete) VALUES (1, '0685aca2dca7467eadbd0e6efa442352', false);
-
-
-CREATE TABLE scheduled_mail
-(
-  id              SERIAL PRIMARY KEY,
-  trigger_date    TIMESTAMP NOT NULL,
-  employee_id     INT REFERENCES employee(id) NOT NULL
-);
