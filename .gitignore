@@ -18,3 +18,4 @@ backend/nbactions.xml
 docker-compose.yml
 backend/src/main/resources/templates
 backend/src/main/resources/configs/service.properties
+
