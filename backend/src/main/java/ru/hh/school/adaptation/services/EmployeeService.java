@@ -3,7 +3,6 @@ package ru.hh.school.adaptation.services;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +27,15 @@ import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
 
 import javax.inject.Singleton;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -209,26 +211,30 @@ public class EmployeeService {
   }
 
   private void notifyNewHr(User hr, Employee employee) {
-    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     String hrEmail = hr.getSelf().getEmail();
 
-    Date now = new Date();
-    Date interimDate = DateUtils.addDays(DateUtils.addMonths(employee.getEmploymentDate(), 1), 15);
-    Date finalDate = DateUtils.addMonths(employee.getEmploymentDate(), 3);
+    mailService.sendMail(
+        hrEmail,
+        new StringJoiner(" ")
+            .add("Привет. Ты был назначен на сопровождение нового сотрудника.")
+            .add(String.format("%s %s", employee.getSelf().getFirstName(), employee.getSelf().getLastName()))
+            .add("рассчитывает на твою поддержку в прохождении испытательного срока.")
+            .add("Более подробную информацию ты можешь получить по ссылке")
+            .add(String.format("https://%s/employee/%d", adaptationHost, employee.getId()))
+            .toString(),
+        "Сопровождение нового сотрудника"
+    );
 
-    String subject="Сопровождение нового сотрудника";
-    String messageBody="Привет. Ты был назначен на сопровождение нового сотрудника. " +
-            employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName() +
-            " рассчитывает на твою поддержку в прохождении испытательного срока. " +
-            "Более подробную информацию ты можешь получить по ссылке " +
-            "https://" + adaptationHost + "/employee/" + employee.getId();
-    mailService.sendMail(hrEmail, messageBody, subject);
+    LocalDate employmentDate = employee.getEmploymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    LocalDateTime interimDate = LocalDateTime.of(employmentDate.plusMonths(1).plusDays(15), LocalTime.of(13, 0));
+    LocalDateTime finalDate = LocalDateTime.of(employmentDate.plusMonths(3), LocalTime.of(13, 0));
 
-    if (interimDate.after(now)) {
-      mailService.sendCalendar(hrEmail, "Промежуточная встреча", dateFormat.format(interimDate));
+    LocalDateTime now = LocalDateTime.now();
+    if (interimDate.isAfter(now)) {
+      mailService.sendCalendar(hrEmail, "Промежуточная встреча", interimDate, 30);
     }
-    if (finalDate.after(now)) {
-      mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(finalDate));
+    if (finalDate.isAfter(now)) {
+      mailService.sendCalendar(hrEmail, "Итоговая встреча", finalDate, 30);
     }
   }
 

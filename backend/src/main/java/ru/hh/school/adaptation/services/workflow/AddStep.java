@@ -9,9 +9,9 @@ import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
 
 import javax.inject.Singleton;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,16 +39,14 @@ public class AddStep {
   }
 
   private void sendCalendar(Employee employee) {
-    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     String hrEmail = employee.getHr().getSelf().getEmail();
-
-    Date d1 = employee.getEmploymentDate();
-    Date d2 = DateUtils.addDays(DateUtils.addMonths(d1, 1), 15);
-    Date d3 = DateUtils.addMonths(d1, 3);
-
-    mailService.sendCalendar(hrEmail, "Welcome-встреча", dateFormat.format(d1));
-    mailService.sendCalendar(hrEmail, "Промежуточная встреча", dateFormat.format(d2));
-    mailService.sendCalendar(hrEmail, "Итоговая встреча", dateFormat.format(d3));
+    LocalDateTime welcomeDate = LocalDateTime.of(
+        employee.getEmploymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+        LocalTime.of(13, 0)
+    );
+    mailService.sendCalendar(hrEmail, "Welcome-встреча", welcomeDate, 30);
+    mailService.sendCalendar(hrEmail, "Промежуточная встреча", welcomeDate.plusMonths(1).plusDays(15), 30);
+    mailService.sendCalendar(hrEmail, "Итоговая встреча", welcomeDate.plusMonths(3), 30);
   }
 
   private void taskListMail(Employee employee) {
