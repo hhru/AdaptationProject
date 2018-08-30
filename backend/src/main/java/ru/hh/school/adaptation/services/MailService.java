@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Map;
 
 import javax.activation.DataHandler;
@@ -22,6 +25,16 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.PasswordAuthentication;
 
+import biweekly.Biweekly;
+import biweekly.ICalVersion;
+import biweekly.ICalendar;
+import biweekly.component.VAlarm;
+import biweekly.component.VEvent;
+import biweekly.property.Classification;
+import biweekly.property.Method;
+import biweekly.property.Trigger;
+import biweekly.util.Duration;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hh.nab.core.util.FileSettings;
@@ -90,7 +103,7 @@ public class MailService {
     return template;
   }
 
-  public void sendCalendar(String toEmail, String summary, String date) {
+  public void sendCalendar(String toEmail, String summary, LocalDateTime date, Integer duration) {
     Runnable task = () -> {
       try {
         MimeMessage message = new MimeMessage(session);
@@ -102,28 +115,25 @@ public class MailService {
         message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject("Outlook Meeting Request");
 
-        StringBuffer sb = new StringBuffer();
-        StringBuffer buffer = sb.append("BEGIN:VCALENDAR\n" +
-                "VERSION:2.0\n" +
-                "METHOD:REQUEST\n" +
-                "BEGIN:VEVENT\n" +
-                "DTSTART:" + date + "T100000\n" +
-                "DTEND:" + date + "T110000\n" +
-                "SUMMARY:" + summary + "\n" +
-                "ORGANIZER:MAILTO:" + session.getProperties().getProperty("mail.smtp.from.name") + "\n" +
-                "CLASS:PUBLIC\n" +
-                "PRIORITY:3\n" +
-                "BEGIN:VALARM\n" +
-                "TRIGGER:-PT30M\n" +
-                "ACTION:DISPLAY\n" +
-                "END:VALARM\n" +
-                "END:VEVENT\n" +
-                "END:VCALENDAR");
+        Date dateStart = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+
+        ICalendar icalendar = new ICalendar();
+        icalendar.setMethod(Method.REQUEST);
+        icalendar.setVersion(ICalVersion.V2_0);
+        VEvent event = new VEvent();
+        event.setSummary(summary);
+        event.setOrganizer(session.getProperties().getProperty("mail.smtp.from.name"));
+        event.setPriority(3);
+        event.setClassification(Classification.PUBLIC);
+        event.setDateStart(dateStart);
+        event.setDuration(new Duration.Builder().minutes(duration).build());
+        event.addAlarm(VAlarm.audio(new Trigger(DateUtils.addMinutes(dateStart, -30))));
+        icalendar.addEvent(event);
 
         MimeBodyPart messageCalendar = new MimeBodyPart();
         messageCalendar.setHeader("Content-Class", "urn:content-classes:calendarmessage");
         messageCalendar.setHeader("Content-ID", "calendar_message");
-        messageCalendar.setDataHandler(new DataHandler(new ByteArrayDataSource(buffer.toString(), "text/calendar;charset=utf-8")));
+        messageCalendar.setDataHandler(new DataHandler(new ByteArrayDataSource(Biweekly.write(icalendar).go(), "text/calendar;charset=utf-8")));
 
         Multipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(messageCalendar);
