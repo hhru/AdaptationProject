@@ -1,13 +1,12 @@
 package ru.hh.school.adaptation.services.documents;
 
-import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.misc.CommonUtils;
 
 public class ChiefTaskDocumentGenerator extends TaskDocumentGenerator {
 
-  public ChiefTaskDocumentGenerator(FileSettings fileSettings) {
-    super(fileSettings, "document.template.task");
+  public ChiefTaskDocumentGenerator() {
+    super("task_template.docx");
   }
 
   @Override

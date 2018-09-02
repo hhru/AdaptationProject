@@ -11,7 +11,6 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
-import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.misc.Named;
 
@@ -24,8 +23,8 @@ public abstract class DocumentGenerator {
 
   protected String documentPath;
 
-  public DocumentGenerator(FileSettings fileSettings, String propertyName) {
-    this.documentPath = System.getProperty("templatesDir") + "/" + fileSettings.getString(propertyName);
+  public DocumentGenerator(String templateName) {
+    this.documentPath = System.getProperty("templatesDir") + "/doc/" + templateName;
   }
 
   protected long replaceInParagraphs(Map<String, String> replacements, List<XWPFParagraph> xwpfParagraphs) {

@@ -1,0 +1,25 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/db/adapt:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: adapt
+
+  backend:
+    image: backend
+    volumes:
+      - $PWD/templates:/usr/share/templates
+    depends_on:
+      - postgres
+
+  frontend:
+    image: frontend
+    ports:
+      - 3000:80
+    depends_on:
+      - backend

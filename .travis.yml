@@ -5,6 +5,22 @@ addons:
 
 matrix:
   include:
+    - language: java
+      if: branch IN (master)
+      sudo: required
+      services:
+        - docker
+      before_install:
+        - cd backend
+      install:
+        - mvn clean install
+        - docker build -t backend .
+        - docker save backend > backend.tar
+      after_success:
+        - export SSHPASS=$DEPLOY_PASS
+        - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/backend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/backend.tar
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/backend.tar && rm ~/app/backend.tar'
+
     - language: node_js
       if: branch IN (master)
       sudo: required
@@ -22,11 +38,11 @@ matrix:
       after_success:
         - export SSHPASS=$DEPLOY_PASS
         - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/frontend/frontend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/frontend.tar
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/frontend.tar'
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/frontend.tar && rm ~/app/frontend.tar'
 
     - language: docker-compose
       if: branch IN (master)
       sudo: false
       script:
         - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'cd ~/source/AdaptationProject && git checkout master && git pull && docker-compose restart'
+        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'cd ~/app && docker-compose down && docker-compose up -d'
