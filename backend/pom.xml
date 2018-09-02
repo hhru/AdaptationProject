@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.hh.school</groupId>
     <artifactId>adaptation-project</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0</version>
 
     <parent>
         <groupId>ru.hh.public-pom</groupId>
@@ -17,6 +17,7 @@
         <postgres.jdbc.version>42.2.1</postgres.jdbc.version>
         <jersey.version>2.22.2</jersey.version>
         <scribejava.version>5.3.0</scribejava.version>
+        <flyway.version>5.1.4</flyway.version>
     </properties>
 
     <dependencies>
@@ -118,11 +119,36 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <jdbc.url>${env.ADAPT_JDBC_URL}</jdbc.url>
+                <jdbc.user>${env.ADAPT_JDBC_USER}</jdbc.user>
+                <jdbc.password>${env.ADAPT_JDBC_PASSWORD}</jdbc.password>
+
+                <oauth.url>${env.ADAPT_OAUTH_URL}</oauth.url>
+                <oauth.client.id>${env.ADAPT_OAUTH_CLIENT_ID}</oauth.client.id>
+                <oauth.client.secret>${env.ADAPT_OAUTH_CLIENT_SECRET}</oauth.client.secret>
+
+                <smtp.host>${env.ADAPT_SMTP_HOST}</smtp.host>
+                <smtp.user>${env.ADAPT_SMTP_USER}</smtp.user>
+                <smtp.password>${env.ADAPT_SMTP_PASSWORD}</smtp.password>
+
+                <dms.email1>${env.ADAPT_EMAIL1}</dms.email1>
+                <dms.email2>${env.ADAPT_EMAIL2}</dms.email2>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
-            <!--log settings-->
             <resource>
                 <directory>src/main/resources/configs</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -139,16 +165,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <systemProperties>
-                        <systemProperty>
-                            <key>settingsDir</key>
-                            <value>${basedir}/src/main/resources/configs</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>templatesDir</key>
-                            <value>${basedir}/src/main/resources/templates</value>
-                        </systemProperty>
-                    </systemProperties>
                     <mainClass>ru.hh.school.adaptation.AdaptationMain</mainClass>
                 </configuration>
             </plugin>
@@ -207,13 +223,36 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>ru.hh.school.adaptation.AdaptationMain</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>5.0.7</version>
+                <version>${flyway.version}</version>
                 <configuration>
-                    <url>${env.JDBC_URL}</url>
-                    <user>${env.JDBC_USER}</user>
-                    <password>${env.JDBC_PASSWORD}</password>
+                    <url>${env.ADAPT_JDBC_URL}</url>
+                    <user>${env.ADAPT_JDBC_USER}</user>
+                    <password>${env.ADAPT_JDBC_PASSWORD}</password>
                 </configuration>
                 <dependencies>
                     <dependency>

@@ -5,7 +5,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.xmlbeans.XmlException;
-import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Task;
 import ru.hh.school.adaptation.entities.TaskForm;
@@ -18,8 +17,8 @@ import java.util.Map;
 
 public abstract class TaskDocumentGenerator extends DocumentGenerator {
 
-  public TaskDocumentGenerator(FileSettings fileSettings, String propertyName) {
-    super(fileSettings, propertyName);
+  public TaskDocumentGenerator(String templateName) {
+    super(templateName);
   }
 
   private void addTasksRows(TaskForm taskForm, XWPFTable table, int startFromId) throws IOException, XmlException {

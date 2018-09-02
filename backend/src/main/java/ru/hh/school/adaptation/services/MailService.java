@@ -57,7 +57,7 @@ public class MailService {
         }
       });
 
-    templatePath = fileSettings.getProperties().getProperty("template.path");
+    templatePath = System.getProperty("templatesDir") + "/mail/";
   }
 
   public void sendMail(String email, String template, String subject, Map<String, String> params){
