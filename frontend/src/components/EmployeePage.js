@@ -35,7 +35,7 @@ class EmployeePage extends React.Component {
         id: null,
         currentWorkflowStep: '',
         currentUserIsHr: false,
-        dismissed: true,
+        dismissed: false,
         employee: {
           id: null,
           firstName: '',
@@ -534,6 +534,8 @@ class NextStep extends React.Component {
     this.state = {
       modal: false,
       commentValue: '',
+      dismissModal: false,
+      dismissCommentValue: '',
     };
 
     this.nextStep = this.nextStep.bind(this);
@@ -595,11 +597,46 @@ class NextStep extends React.Component {
     return result[0].type;
   }
 
+  toggleDismissModal = () => {
+    this.setState({
+      dismissModal: !this.state.dismissModal,
+    });
+  };
+
+  onDismissCommentChange = (event) => {
+    this.setState({
+      dismissCommentValue: event.target.value,
+    });
+  };
+
+  handleDismissEmployee = (event) => {
+    this.toggleDismissModal();
+    const employeeId = this.props.parent.state.data.id;
+    const dismissComment = this.state.dismissCommentValue;
+    this.state.dismissCommentValue = '';
+    const url =
+      '/api/employee/' +
+      employeeId +
+      (this.props.parent.state.data.dismissed ? '/undismiss' : '/dismiss');
+
+    axios
+      .post(url, dismissComment)
+      .then((response) => {
+        //window.location.reload();
+        this.props.parent.state.data.dismissed = !this.props.parent.state.data.dismissed;
+        this.props.parent.forceUpdate();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   render() {
     var parent = this.props.parent;
     var currentWorkflowType = this.getCurrentType(parent);
     var isDisabled = parent.state.data.dismissed;
-    if (!isDisabled) {
+    const dismissed = parent.state.data.dismissed;
+    if (!dismissed) {
       isDisabled =
         currentWorkflowType == 'NONE' || currentWorkflowType == 'QUESTIONNAIRE' ? true : false;
     }
@@ -611,15 +648,25 @@ class NextStep extends React.Component {
 
     return (
       <div>
-        <Button
-          outline
-          disabled={isDisabled}
-          color="secondary"
-          onClick={this.toggleModal}
-          className=""
-        >
-          Перевести далее
-        </Button>
+        <Row>
+          <Col>
+            <Button outline onClick={this.toggleDismissModal} color={dismissed ? 'info' : 'danger'}>
+              {dismissed ? 'Восстановить' : 'ИС не пройден'}
+            </Button>
+          </Col>
+
+          <Col>
+            <Button
+              outline
+              disabled={isDisabled}
+              color="primary"
+              onClick={this.toggleModal}
+              className=""
+            >
+              Перевести далее
+            </Button>
+          </Col>
+        </Row>
 
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={parent.className}>
           <ModalHeader toggle={this.toggleModal}>Перевести на следующий этап?</ModalHeader>
@@ -644,6 +691,39 @@ class NextStep extends React.Component {
             </Button>
             <Button outline color="danger" onClick={this.toggleModal}>
               Отмена
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={this.state.dismissModal} toggle={this.toggleDismissModal}>
+          <ModalHeader toggle={this.toggleDismissModal}>
+            {dismissed ? 'Восстановление сотрудника' : 'Увольнение сотрудника'}
+          </ModalHeader>
+
+          <ModalBody>
+            <Form>
+              <FormGroup>
+                <Input
+                  type="text"
+                  name="text"
+                  placeholder="Написать комментарий"
+                  onChange={this.onDismissCommentChange}
+                  value={this.state.dismissCommentValue}
+                />
+              </FormGroup>
+            </Form>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              outline
+              color={dismissed ? 'info' : 'danger'}
+              onClick={this.handleDismissEmployee}
+            >
+              {dismissed ? 'Восстановить' : 'ИС не пройден'}
+            </Button>
+            <Button outline color="secondary" onClick={this.toggleDismissModal}>
+              Отменить
             </Button>
           </ModalFooter>
         </Modal>

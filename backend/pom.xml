@@ -250,9 +250,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
                 <configuration>
-                    <url>${env.ADAPT_JDBC_URL}</url>
-                    <user>${env.ADAPT_JDBC_USER}</user>
-                    <password>${env.ADAPT_JDBC_PASSWORD}</password>
+                    <url>${jdbc.url}</url>
+                    <user>${jdbc.user}</user>
+                    <password>${jdbc.password}</password>
                 </configuration>
                 <dependencies>
                     <dependency>
