@@ -33,20 +33,23 @@ public class AddStep {
   }
 
   public void onAdd(Employee employee) {
-    sendCalendar(employee);
-    taskListMail(employee);
-    scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
-  }
-
-  private void sendCalendar(Employee employee) {
-    String hrEmail = employee.getHr().getSelf().getEmail();
     LocalDateTime welcomeDate = LocalDateTime.of(
         employee.getEmploymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
         LocalTime.of(13, 0)
     );
-    mailService.sendCalendar(hrEmail, "Welcome-встреча", welcomeDate, 30);
-    mailService.sendCalendar(hrEmail, "Промежуточная встреча", welcomeDate.plusMonths(1).plusDays(15), 30);
-    mailService.sendCalendar(hrEmail, "Итоговая встреча", welcomeDate.plusMonths(3), 30);
+    sendCalendar(employee.getHr().getSelf().getEmail(), welcomeDate);
+    sendCalendar(employee.getChief().getEmail(), welcomeDate);
+    if (employee.getMentor() != null) {
+      sendCalendar(employee.getMentor().getEmail(), welcomeDate);
+    }
+    taskListMail(employee);
+    scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
+  }
+
+  private void sendCalendar(String email, LocalDateTime welcomeDate) {
+    mailService.sendCalendar(email, "Welcome-встреча", welcomeDate, 30);
+    mailService.sendCalendar(email, "Промежуточная встреча", welcomeDate.plusMonths(1).plusDays(15), 30);
+    mailService.sendCalendar(email, "Итоговая встреча", welcomeDate.plusMonths(3), 30);
   }
 
   private void taskListMail(Employee employee) {

@@ -1,5 +1,8 @@
 package ru.hh.school.adaptation.services;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.WorkflowStepType;
 import ru.hh.school.adaptation.services.workflow.AddStep;
@@ -15,6 +18,8 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WorkflowService {
+
+  private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
   private AddStep addStep;
   private TaskListStep taskListStep;
@@ -39,32 +44,34 @@ public class WorkflowService {
   }
 
   public void stepAction(Employee employee, WorkflowStepType workflowStepType) {
-    switch (workflowStepType) {
-      case ADD:
-        addStep.onAdd(employee);
-        break;
-      case TASK_LIST:
-        taskListStep.onTaskList();
-        break;
-      case WELCOME_MEETING:
-        welcomeMeetingStep.onWelcomeMeeting();
-        break;
-      case INTERIM_MEETING:
-        interimMeeteingStep.onInterimMeeting();
-        break;
-      case INTERIM_MEETING_RESULT:
-        interimMeetingResultStep.onInterimMeetingResult(employee);
-        break;
-      case FINAL_MEETING:
-        finalMeetingStep.onFinalMeeting();
-        break;
-      case FINAL_MEETING_RESULT:
-        finalMeetingResultStep.onFinalMeetingResult(employee);
-        break;
-      case QUESTIONNAIRE:
-        questionnaireStep.onQuestionnaire(employee);
-        break;
-    }
+    scheduledExecutorService.schedule(() -> {
+      switch (workflowStepType) {
+        case ADD:
+          addStep.onAdd(employee);
+          break;
+        case TASK_LIST:
+          taskListStep.onTaskList();
+          break;
+        case WELCOME_MEETING:
+          welcomeMeetingStep.onWelcomeMeeting();
+          break;
+        case INTERIM_MEETING:
+          interimMeeteingStep.onInterimMeeting();
+          break;
+        case INTERIM_MEETING_RESULT:
+          interimMeetingResultStep.onInterimMeetingResult(employee);
+          break;
+        case FINAL_MEETING:
+          finalMeetingStep.onFinalMeeting();
+          break;
+        case FINAL_MEETING_RESULT:
+          finalMeetingResultStep.onFinalMeetingResult(employee);
+          break;
+        case QUESTIONNAIRE:
+          questionnaireStep.onQuestionnaire(employee);
+          break;
+      }
+    }, 1, TimeUnit.SECONDS);
   }
 
 }
