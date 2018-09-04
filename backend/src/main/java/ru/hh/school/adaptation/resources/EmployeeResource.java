@@ -151,4 +151,12 @@ public class EmployeeResource {
     return employeeService.generateProbationResultDoc(employeeId, userAgent);
   }
 
+  @POST
+  @Produces("application/json")
+  @Path("/employee/{employeeId}/resend_chief_tasks")
+  @ResponseBody
+  public void resendChiefTasks(@PathParam("employeeId") Integer employeeId){
+    employeeService.resendChiefTasks(employeeId);
+  }
+
 }

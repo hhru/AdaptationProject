@@ -495,7 +495,7 @@ class EmployeePage extends React.Component {
                   }}
                 >
                   <h6>
-                    <span className="text-muted">Приложения (3)</span>
+                    <span className="text-muted">Приложения (4)</span>
                   </h6>
                 </NavLink>
               </NavItem>
@@ -800,7 +800,7 @@ class WorkflowStage extends React.Component {
       case 'FINAL_MEETING_RESULT':
         return 'Результаты итоговой встречи';
       case 'QUESTIONNAIRE':
-        return 'Опросник новичка';
+        return 'Завершение ИС';
     }
   }
 
@@ -811,17 +811,17 @@ class WorkflowStage extends React.Component {
       case 'TASK_LIST':
         return 'Необходимо получить задачи от руководителя, распечатать и подписать их.';
       case 'WELCOME_MEETING':
-        return 'Ожидается день выхода на работу. Не забудь отправить welcome-письмо и провести welcome-встречу.';
+        return 'Ожидается день выхода на работу. Не забудь провести welcome-встречу.';
       case 'INTERIM_MEETING':
-        return 'Необходимо забронировать перговорную конату и провести промежуточную встречу.';
+        return 'Необходимо забронировать переговорную комнату и провести промежуточную встречу.';
       case 'INTERIM_MEETING_RESULT':
         return 'Необходимо заполнить результаты промежуточной встречи.';
       case 'FINAL_MEETING':
-        return 'Необходимо забронировать перговорную конату и провести итоговую встречу.';
+        return 'Необходимо забронировать переговорную комнату и провести итоговую встречу.';
       case 'FINAL_MEETING_RESULT':
         return 'Необходимо заполнить результаты итоговой встречи.';
       case 'QUESTIONNAIRE':
-        return 'Сотрудник получил опросник для новичка и работает над его заполнением.';
+        return 'Сотрудник проходит опросник новичка. Назначенным hr-ам выслан запрос на заведение ДМС.';
     }
   }
 
@@ -1037,7 +1037,43 @@ class LogItem extends React.Component {
 class Attach extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      resendModal: false,
+      resendDisabled: false,
+    };
+
+    this.toggleResendModal = this.toggleResendModal.bind(this);
+    this.resendChiefTasks = this.resendChiefTasks.bind(this);
     this.downloadProbationResult = this.downloadProbationResult.bind(this);
+  }
+
+  toggleResendModal() {
+    this.setState({
+      resendModal: !this.state.resendModal,
+    });
+  }
+
+  resendChiefTasks() {
+    if (this.state.resendDisabled) {
+      return;
+    }
+
+    this.state.resendDisabled = true;
+    const url = '/api/employee/' + this.props.parent.state.employeeId + '/resend_chief_tasks';
+    const self = this;
+
+    axios
+      .post(url, {})
+      .then(function(response) {
+        self.state.resendDisabled = false;
+      })
+      .catch(function(error) {
+        self.state.resendDisabled = false;
+        alert('Не удалось установить связь с сервером');
+      });
+
+    this.toggleResendModal();
   }
 
   downloadProbationResult() {
@@ -1062,6 +1098,9 @@ class Attach extends React.Component {
           <ListGroupItem href="#" tag="a" className="" onClick={this.downloadProbationResult}>
             Отчет о прохождении испытательного срока
           </ListGroupItem>
+          <ListGroupItem href="#" tag="a" className="" onClick={this.toggleResendModal}>
+            Отправить дополнительное письмо руководителю о постановке задач на ИС
+          </ListGroupItem>
         </ListGroup>
 
         <EmployeeTasksModal
@@ -1069,6 +1108,20 @@ class Attach extends React.Component {
           isOpen={parent.state.tasksModal}
           parentToggle={parent.toggleTasksModal}
         />
+
+        <Modal isOpen={this.state.resendModal} toggle={this.toggleResendModal}>
+          <ModalHeader toggle={this.toggleResendModal}>
+            Отправить дополнительное письмо руководителю о постановке задач на ИС?
+          </ModalHeader>
+          <ModalFooter>
+            <Button outline color="primary" onClick={this.resendChiefTasks}>
+              Отправить
+            </Button>
+            <Button outline color="danger" onClick={this.toggleResendModal}>
+              Отмена
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
