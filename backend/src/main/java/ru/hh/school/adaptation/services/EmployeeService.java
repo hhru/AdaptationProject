@@ -1,5 +1,7 @@
 package ru.hh.school.adaptation.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
@@ -17,6 +19,7 @@ import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
@@ -41,7 +44,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class EmployeeService {
 
-  private String adaptationHost;
+  private final String adaptationHost;
 
   private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -53,10 +56,11 @@ public class EmployeeService {
   private ProbationResultDocumentGenerator probationResultDocumentGenerator;
   private AuthService authService;
   private MailService mailService;
+  private TaskService taskService;
 
   public EmployeeService(FileSettings fileSettings, EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService,
                          TransitionService transitionService, ProbationResultDocumentGenerator probationResultDocumentGenerator,
-                         CommentService commentService, AuthService authService, MailService mailService) {
+                         CommentService commentService, AuthService authService, MailService mailService, TaskService taskService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
     this.userDao = userDao;
@@ -65,6 +69,7 @@ public class EmployeeService {
     this.commentService = commentService;
     this.probationResultDocumentGenerator = probationResultDocumentGenerator;
     this.mailService = mailService;
+    this.taskService = taskService;
 
     adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
   }
@@ -316,6 +321,23 @@ public class EmployeeService {
         employeeUpdateDto.employmentDate != null &&
         employeeUpdateDto.id != null &&
         employeeUpdateDto.hrId != null;
+  }
+
+  @Transactional
+  public void resendChiefTasks(Integer employeeId) {
+    Employee employee = employeeDao.getEmployeeWithTaskForm(employeeId);
+    if (employee == null) {
+      throw new EntityNotFoundException(String.format("Employee with id = %d does not exist", employeeId));
+    }
+    if (employee.getTaskForm() == null) {
+      TaskForm taskForm = taskService.createTaskForm(employee);
+      employee.setTaskForm(taskForm);
+    }
+
+    Map<String, String> params = new HashMap<>();
+    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
+    params.put("{{url}}", String.format("https://" + adaptationHost + "/add_tasks/%s", employee.getTaskForm().getKey()));
+    mailService.sendMail(employee.getChief().getEmail(), "chief_missions.html", "Задачи на испытательный срок", params);
   }
 
 }

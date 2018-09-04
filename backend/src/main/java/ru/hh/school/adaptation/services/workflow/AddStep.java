@@ -18,7 +18,7 @@ import java.util.Map;
 @Singleton
 public class AddStep {
 
-  private String addTaskLink;
+  private final String addTaskLink;
 
   private MailService mailService;
   private TaskService taskService;

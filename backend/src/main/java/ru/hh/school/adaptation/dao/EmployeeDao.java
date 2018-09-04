@@ -32,4 +32,14 @@ public class EmployeeDao {
     sessionFactory.getCurrentSession().update(employee);
   }
 
+  public Employee getEmployeeWithTaskForm(Integer employeeId) {
+    Employee employee = sessionFactory.getCurrentSession().get(Employee.class, employeeId);
+
+    if (employee != null) {
+      employee.setTaskForm(employee.getTaskForm());
+    }
+
+    return employee;
+  }
+
 }
