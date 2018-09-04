@@ -39,6 +39,7 @@ public class ScheduledMailService {
     scheduledMailDao.getAll().forEach(this::scheduleWelcomeMail);
   }
 
+  @Transactional
   public void scheduleNewMail(Integer employeeId, Date date) {
     ScheduledMail scheduledMail = new ScheduledMail();
     scheduledMail.setEmployeeId(employeeId);
