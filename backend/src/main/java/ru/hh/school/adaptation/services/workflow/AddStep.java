@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services.workflow;
 
+import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.Employee;
@@ -33,23 +34,19 @@ public class AddStep {
   }
 
   public void onAdd(Employee employee) {
-    LocalDateTime welcomeDate = LocalDateTime.of(
-        employee.getEmploymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-        LocalTime.of(13, 0)
-    );
-    sendCalendar(employee.getHr().getSelf().getEmail(), welcomeDate);
-    sendCalendar(employee.getChief().getEmail(), welcomeDate);
+    sendCalendar(employee.getHr().getSelf().getEmail(), employee);
+    sendCalendar(employee.getChief().getEmail(), employee);
     if (employee.getMentor() != null) {
-      sendCalendar(employee.getMentor().getEmail(), welcomeDate);
+      sendCalendar(employee.getMentor().getEmail(), employee);
     }
     taskListMail(employee);
     scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
   }
 
-  private void sendCalendar(String email, LocalDateTime welcomeDate) {
-    mailService.sendCalendar(email, "Welcome-встреча", welcomeDate, 30);
-    mailService.sendCalendar(email, "Промежуточная встреча", welcomeDate.plusMonths(1).plusDays(15), 30);
-    mailService.sendCalendar(email, "Итоговая встреча", welcomeDate.plusMonths(3), 30);
+  private void sendCalendar(String email, Employee employee) {
+    mailService.sendCalendar(email, "Welcome-встреча", dateConverter(employee.getEmploymentDate()), 30);
+    mailService.sendCalendar(email, "Промежуточная встреча", dateConverter(employee.getInterimDate()), 30);
+    mailService.sendCalendar(email, "Итоговая встреча", dateConverter(employee.getFinalDate()), 30);
   }
 
   private void taskListMail(Employee employee) {
@@ -58,6 +55,10 @@ public class AddStep {
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
     mailService.sendMail(employee.getChief().getEmail(), "chief_missions.html", "Задачи на испытательный срок", params);
+  }
+
+  private LocalDateTime dateConverter(Date normalDate) {
+    return LocalDateTime.of(normalDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
   }
 
 }

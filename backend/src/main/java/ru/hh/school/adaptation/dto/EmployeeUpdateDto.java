@@ -27,4 +27,10 @@ public class EmployeeUpdateDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentDate;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date interimDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date finalDate;
+
 }

@@ -50,6 +50,14 @@ public class Employee {
   @Temporal(TemporalType.DATE)
   private Date employmentDate;
 
+  @Column(name = "interim_date")
+  @Temporal(TemporalType.DATE)
+  private Date interimDate;
+
+  @Column(name = "final_date")
+  @Temporal(TemporalType.DATE)
+  private Date finalDate;
+
   @ManyToOne(cascade = {CascadeType.ALL})
   @JoinColumn(name = "hr_id")
   private User hr;
@@ -101,6 +109,22 @@ public class Employee {
 
   public void setEmploymentDate(Date employmentDate) {
     this.employmentDate = employmentDate;
+  }
+
+  public Date getInterimDate() {
+    return interimDate;
+  }
+
+  public void setInterimDate(Date interimDate) {
+    this.interimDate = interimDate;
+  }
+
+  public Date getFinalDate() {
+    return finalDate;
+  }
+
+  public void setFinalDate(Date finalDate) {
+    this.finalDate = finalDate;
   }
 
   public Gender getGender() {

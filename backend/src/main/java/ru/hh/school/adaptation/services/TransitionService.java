@@ -128,10 +128,10 @@ public class TransitionService {
           transition.setDeadlineTimestamp(DateUtils.addDays(employee.getEmploymentDate(), 1));
           break;
         case INTERIM_MEETING:
-          transition.setDeadlineTimestamp(DateUtils.addMonths(DateUtils.addDays(employee.getEmploymentDate(), 1), 15));
+          transition.setDeadlineTimestamp(DateUtils.addDays(employee.getInterimDate(), 1));
           break;
         case FINAL_MEETING:
-          transition.setDeadlineTimestamp(DateUtils.addMonths(employee.getEmploymentDate(), 3));
+          transition.setDeadlineTimestamp(DateUtils.addDays(employee.getFinalDate(), 1));
           break;
       }
       transitionDao.save(transition);

@@ -28,6 +28,12 @@ public class EmployeeDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentDate;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date interimDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date finalDate;
+
   public List<WorkflowStepDto> workflow;
 
   public List<CommentDto> comments;
@@ -52,6 +58,8 @@ public class EmployeeDto {
     position = employee.getPosition();
     gender = employee.getGender();
     employmentDate = employee.getEmploymentDate();
+    interimDate = employee.getInterimDate();
+    finalDate = employee.getFinalDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepDto::new).collect(Collectors.toList());
     if (employee.getComments() != null) {
       comments = employee.getComments().stream().map(c -> new CommentDto(c, currentUserId)).collect(Collectors.toList());

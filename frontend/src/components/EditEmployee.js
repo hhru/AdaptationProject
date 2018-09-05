@@ -43,6 +43,8 @@ class EditEmployee extends React.Component {
     gender: MALE,
     position: '',
     employmentDate: '',
+    interimDate: '',
+    finalDate: '',
     hrId: null,
     chiefId: null,
     mentorId: null,
@@ -123,6 +125,8 @@ class EditEmployee extends React.Component {
       subdivision,
       gender,
       employmentDate,
+      interimDate,
+      finalDate,
       position,
       dismissed,
     } = employee;
@@ -136,6 +140,8 @@ class EditEmployee extends React.Component {
       subdivision: subdivision,
       gender: gender,
       employmentDate: employmentDate,
+      interimDate: interimDate,
+      finalDate: finalDate,
       position: position,
       dismissed: dismissed,
     });
@@ -184,6 +190,8 @@ class EditEmployee extends React.Component {
       gender,
       position,
       employmentDate,
+      interimDate,
+      finalDate,
       chiefId,
       mentorId,
       hrId,
@@ -206,6 +214,8 @@ class EditEmployee extends React.Component {
       gender: gender,
       position: position,
       employmentDate: employmentDate,
+      interimDate: interimDate,
+      finalDate: finalDate,
     };
 
     this.employeeUpdate(employeeUpdateDto);
@@ -229,6 +239,8 @@ class EditEmployee extends React.Component {
         gender: employeeDto.gender,
         position: employeeDto.position,
         employmentDate: employeeDto.employmentDate,
+        interimDate: employeeDto.interimDate,
+        finalDate: employeeDto.finalDate,
         chiefId: employeeDto.chief.id,
         mentorId: employeeDto.mentor ? employeeDto.mentor.id : undefined,
         hrId: employeeDto.hr.id,
@@ -337,6 +349,8 @@ class EditEmployee extends React.Component {
             gender={this.state.gender}
             position={this.state.position}
             employmentDate={this.state.employmentDate}
+            interimDate={this.state.interimDate}
+            finalDate={this.state.finalDate}
             onChange={this.handleEmployeeChange}
           />
           <Person

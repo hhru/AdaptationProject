@@ -1,6 +1,5 @@
 package ru.hh.school.adaptation.services.documents;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -49,7 +48,7 @@ public abstract class TaskDocumentGenerator extends DocumentGenerator {
     String mentroFio = employee.getMentor() == null ? "" : CommonUtils.makeFioFromPersonalInfo(employee.getMentor());
     replacements.put("{{employee.fullName}}", fio);
     replacements.put("{{employee.employmentDate}}", employee.getEmploymentDate().toString());
-    replacements.put("{{employee.endDate}}", DateUtils.addMonths(employee.getEmploymentDate(), 3).toString());
+    replacements.put("{{employee.endDate}}", employee.getFinalDate().toString());
     replacements.put("{{employee.position}}", employee.getPosition());
     replacements.put("{{employee.chief}}", chiefFio);
     replacements.put("{{employee.mentor}}", mentroFio);
