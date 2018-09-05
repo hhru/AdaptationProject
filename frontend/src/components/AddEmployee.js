@@ -38,6 +38,8 @@ class AddEmployee extends React.Component {
     gender: MALE,
     position: '',
     employmentDate: '',
+    interimDate: '',
+    finalDate: '',
     chiefId: null,
     mentorId: null,
     persons: [],
@@ -95,6 +97,8 @@ class AddEmployee extends React.Component {
       subdivision,
       gender,
       employmentDate,
+      interimDate,
+      finalDate,
       position,
     } = employee;
 
@@ -107,6 +111,8 @@ class AddEmployee extends React.Component {
       subdivision: subdivision,
       gender: gender,
       employmentDate: employmentDate,
+      interimDate: interimDate,
+      finalDate: finalDate,
       position: position,
     });
   };
@@ -130,6 +136,8 @@ class AddEmployee extends React.Component {
       gender,
       position,
       employmentDate,
+      interimDate,
+      finalDate,
       chiefId,
       mentorId,
     } = this.state;
@@ -146,6 +154,8 @@ class AddEmployee extends React.Component {
       gender: gender,
       position: position,
       employmentDate: employmentDate,
+      interimDate: interimDate,
+      finalDate: finalDate,
       chiefId: chiefId,
       mentorId: mentorId ? mentorId : null,
     };
@@ -270,6 +280,8 @@ class AddEmployee extends React.Component {
             gender={this.state.gender}
             position={this.state.position}
             employmentDate={this.state.employmentDate}
+            interimDate={this.state.interimDate}
+            finalDate={this.state.finalDate}
             onChange={this.handleEmployeeChange}
           />
           <Person

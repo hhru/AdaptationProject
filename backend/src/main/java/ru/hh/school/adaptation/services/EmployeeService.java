@@ -30,7 +30,6 @@ import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
 
 import javax.inject.Singleton;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -115,6 +114,8 @@ public class EmployeeService {
     employee.setPosition(employeeCreateDto.position);
     employee.setGender(employeeCreateDto.gender);
     employee.setEmploymentDate(employeeCreateDto.employmentDate);
+    employee.setInterimDate(employeeCreateDto.interimDate);
+    employee.setFinalDate(employeeCreateDto.finalDate);
     employeeDao.save(employee);
 
     employee.setComments(null);
@@ -144,6 +145,8 @@ public class EmployeeService {
 
       employee.setGender(employeeUpdateDto.gender);
       employee.setEmploymentDate(employeeUpdateDto.employmentDate);
+      employee.setInterimDate(employeeUpdateDto.interimDate);
+      employee.setFinalDate(employeeUpdateDto.finalDate);
       if (employee.getHr() != hr) {
         notifyNewHr(hr, employee);
       }
@@ -171,6 +174,20 @@ public class EmployeeService {
               fromEmployee.getEmploymentDate() +
               " на " +
               toEmployeeUpdateDto.employmentDate);
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getInterimDate() != toEmployeeUpdateDto.interimDate) {
+      log.setMessage("Промежуточная дата ИС была изменена с " +
+          fromEmployee.getInterimDate() +
+          " на " +
+          toEmployeeUpdateDto.interimDate);
+      commentService.createLog(log);
+    }
+    if (fromEmployee.getFinalDate() != toEmployeeUpdateDto.finalDate) {
+      log.setMessage("Дата окончания ИС была изменена с " +
+          fromEmployee.getFinalDate() +
+          " на " +
+          toEmployeeUpdateDto.finalDate);
       commentService.createLog(log);
     }
     if (fromEmployee.getGender() != toEmployeeUpdateDto.gender) {
@@ -230,9 +247,10 @@ public class EmployeeService {
         "Сопровождение нового сотрудника"
     );
 
-    LocalDate employmentDate = employee.getEmploymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    LocalDateTime interimDate = LocalDateTime.of(employmentDate.plusMonths(1).plusDays(15), LocalTime.of(13, 0));
-    LocalDateTime finalDate = LocalDateTime.of(employmentDate.plusMonths(3), LocalTime.of(13, 0));
+    LocalDateTime interimDate = LocalDateTime.of(employee.getInterimDate().toInstant()
+        .atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
+    LocalDateTime finalDate = LocalDateTime.of(employee.getFinalDate().toInstant()
+        .atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
 
     LocalDateTime now = LocalDateTime.now();
     if (interimDate.isAfter(now)) {
@@ -310,7 +328,9 @@ public class EmployeeService {
         employeeCreateDto.chiefId != null &&
         StringUtils.isNotBlank(employeeCreateDto.position) &&
         employeeCreateDto.gender != null &&
-        employeeCreateDto.employmentDate != null;
+        employeeCreateDto.employmentDate != null &&
+        employeeCreateDto.interimDate != null &&
+        employeeCreateDto.finalDate != null;
   }
 
   public boolean isValidEmployeeUpdateDto(EmployeeUpdateDto employeeUpdateDto) {
@@ -319,6 +339,8 @@ public class EmployeeService {
         StringUtils.isNotBlank(employeeUpdateDto.position) &&
         employeeUpdateDto.gender != null &&
         employeeUpdateDto.employmentDate != null &&
+        employeeUpdateDto.interimDate != null &&
+        employeeUpdateDto.finalDate != null &&
         employeeUpdateDto.id != null &&
         employeeUpdateDto.hrId != null;
   }

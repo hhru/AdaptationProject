@@ -23,6 +23,12 @@ public class EmployeeBriefDto {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
   public Date employmentDate;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date interimDate;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AdaptationCommonConfig.JSON_DATE_FORMAT)
+  public Date finalDate;
+
   public List<WorkflowStepBriefDto> workflow;
 
   public Boolean dismissed;
@@ -36,6 +42,8 @@ public class EmployeeBriefDto {
     }
     hr = new PersonalDto(employee.getHr());
     employmentDate = employee.getEmploymentDate();
+    interimDate = employee.getInterimDate();
+    finalDate = employee.getFinalDate();
     workflow = employee.getWorkflow().stream().map(WorkflowStepBriefDto::new).collect(Collectors.toList());
     dismissed = employee.getDismissed();
   }

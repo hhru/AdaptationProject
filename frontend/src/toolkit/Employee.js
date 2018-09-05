@@ -18,6 +18,8 @@ class Employee extends React.Component {
       gender: this.props.gender,
       position: this.props.position,
       employmentDate: this.props.employmentDate,
+      interimDate: this.props.interimDate,
+      finalDate: this.props.finalDate,
     };
   }
 
@@ -39,6 +41,34 @@ class Employee extends React.Component {
   handleEmploymentDateChange = (event) => {
     const employee = this.makeEmployee();
     employee.employmentDate = event.target.value;
+
+    var bufDate = employee.employmentDate.split('-');
+    bufDate = new Date(bufDate[0], parseInt(bufDate[1]) - 1, bufDate[2]);
+    bufDate.setMonth(bufDate.getMonth() + 1);
+    bufDate.setDate(bufDate.getDate() + 15);
+    var month =
+      bufDate.getMonth() + 1 < 10 ? '0' + (bufDate.getMonth() + 1) : bufDate.getMonth() + 1;
+    var day = bufDate.getDate() < 10 ? '0' + bufDate.getDate() : bufDate.getDate();
+    employee.interimDate = bufDate.getFullYear() + '-' + month + '-' + day;
+
+    bufDate.setMonth(bufDate.getMonth() + 1);
+    bufDate.setDate(bufDate.getDate() + 15);
+    month = bufDate.getMonth() + 1 < 10 ? '0' + (bufDate.getMonth() + 1) : bufDate.getMonth() + 1;
+    day = bufDate.getDate() < 10 ? '0' + bufDate.getDate() : bufDate.getDate();
+    employee.finalDate = bufDate.getFullYear() + '-' + month + '-' + day;
+
+    this.props.onChange(employee);
+  };
+
+  handleInterimDateChange = (event) => {
+    const employee = this.makeEmployee();
+    employee.interimDate = event.target.value;
+    this.props.onChange(employee);
+  };
+
+  handleFinalDateChange = (event) => {
+    const employee = this.makeEmployee();
+    employee.finalDate = event.target.value;
     this.props.onChange(employee);
   };
 
@@ -76,13 +106,35 @@ class Employee extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="12">
+          <Col sm="4">
             <AvField
               name="employmentDate"
               label="Дата выхода"
               type="date"
               value={this.props.employmentDate}
               onChange={this.handleEmploymentDateChange}
+              required
+              errorMessage="Выберите дату выхода"
+            />
+          </Col>
+          <Col sm="4">
+            <AvField
+              name="interimDate"
+              label="Промежуточная дата ИС"
+              type="date"
+              value={this.props.interimDate}
+              onChange={this.handleInterimDateChange}
+              required
+              errorMessage="Выберите дату выхода"
+            />
+          </Col>
+          <Col sm="4">
+            <AvField
+              name="finalDate"
+              label="Дата окончания ИС"
+              type="date"
+              value={this.props.finalDate}
+              onChange={this.handleFinalDateChange}
               required
               errorMessage="Выберите дату выхода"
             />
