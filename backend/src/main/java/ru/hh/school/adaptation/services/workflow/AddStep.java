@@ -39,6 +39,7 @@ public class AddStep {
     if (employee.getMentor() != null) {
       sendCalendar(employee.getMentor().getEmail(), employee);
     }
+    sendCalendar(employee.getSelf().getEmail(), employee);
     taskListMail(employee);
     scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
   }
