@@ -3,46 +3,29 @@ addons:
     packages:
       - sshpass
 
-matrix:
-  include:
-    - language: java
-      if: branch IN (master)
-      sudo: required
-      services:
-        - docker
-      before_install:
-        - cd backend
-      install:
-        - mvn clean install
-        - docker build -t backend .
-        - docker save backend > backend.tar
-      after_success:
-        - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/backend/backend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/backend.tar
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/backend.tar && rm ~/app/backend.tar'
+services:
+  - docker
 
-    - language: node_js
-      if: branch IN (master)
-      sudo: required
-      node_js:
-        - "lts/*"
-      cache: yarn
-      services:
-        - docker
-      before_install:
-        - cd frontend
-      script:
-        - yarn build
-        - docker build -t frontend .
-        - docker save frontend > frontend.tar
-      after_success:
-        - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no $TRAVIS_BUILD_DIR/frontend/frontend.tar $DEPLOY_USER@$DEPLOY_HOST:~/app/frontend.tar
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'docker load -i ~/app/frontend.tar && rm ~/app/frontend.tar'
+sudo: required
 
-    - language: docker-compose
-      if: branch IN (master)
-      sudo: false
-      script:
-        - export SSHPASS=$DEPLOY_PASS
-        - sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST -p $DEPLOY_PORT 'cd ~/app && docker-compose down && docker-compose up -d'
+language: generic
+
+if: branch = master OR env(ADAPT_BUILD_MODE) = test
+
+before_install:
+  - test "$ADAPT_BUILD_MODE" = test || export ADAPT_BUILD_MODE=prod
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_EMAIL1=$ADAPT_TEST_EMAIL1
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_EMAIL2=$ADAPT_TEST_EMAIL2
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_HOST=$ADAPT_TEST_SMTP_HOST
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_USER=$ADAPT_TEST_SMTP_USER
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_PASSWORD=$ADAPT_TEST_SMTP_PASSWORD
+  - export SSHPASS=$DEPLOY_PASS
+
+install:
+  - docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.$ADAPT_BUILD_MODE.yml build
+
+after_success:
+  - docker save adapt-backend adapt-frontend | sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST docker load
+  - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no docker-compose.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE
+  - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no docker-compose.$ADAPT_BUILD_MODE.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE/docker-compose.override.yml
+  - sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "cd adapt-$ADAPT_BUILD_MODE && docker-compose down && docker-compose up -d"

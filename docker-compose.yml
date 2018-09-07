@@ -1,25 +1,26 @@
-version: '2'
+version: "2.1"
+
 services:
   postgres:
     image: postgres
     restart: always
-    ports:
-      - 5432:5432
-    volumes:
-      - ~/db/adapt:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 30s
+      timeout: 30s
+      retries: 3
     environment:
       POSTGRES_DB: adapt
 
   backend:
-    image: backend
+    restart: always
     volumes:
-      - $PWD/templates:/usr/share/templates
+      - ./templates:/usr/share/adapt/templates
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   frontend:
-    image: frontend
-    ports:
-      - 3000:80
+    restart: always
     depends_on:
       - backend

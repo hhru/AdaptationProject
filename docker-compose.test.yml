@@ -1,0 +1,29 @@
+version: "2.1"
+
+services:
+  postgres:
+    ports:
+      - 5433:5432
+    volumes:
+      - ./db-scripts:/docker-entrypoint-initdb.d/
+    networks:
+      - default
+      - shared
+
+  backend:
+    image: adapt-backend:test
+
+  frontend:
+    image: adapt-frontend:test
+    networks:
+      default:
+        aliases:
+          - frontend
+      shared:
+        aliases:
+          - frontend-test
+
+networks:
+  shared:
+    external:
+      name: adapt-shared
