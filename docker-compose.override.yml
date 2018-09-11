@@ -1,0 +1,35 @@
+version: "2.1"
+
+services:
+  postgres:
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        ADAPT_BUILD_MODE: ${ADAPT_BUILD_MODE}
+        ADAPT_JDBC_URL: ${ADAPT_JDBC_URL}
+        ADAPT_JDBC_USER: ${ADAPT_JDBC_USER}
+        ADAPT_JDBC_PASSWORD: ${ADAPT_JDBC_PASSWORD}
+        ADAPT_OAUTH_URL: ${ADAPT_OAUTH_URL}
+        ADAPT_OAUTH_CLIENT_ID: ${ADAPT_OAUTH_CLIENT_ID}
+        ADAPT_OAUTH_CLIENT_SECRET: ${ADAPT_OAUTH_CLIENT_SECRET}
+        ADAPT_SMTP_HOST: ${ADAPT_SMTP_HOST}
+        ADAPT_SMTP_USER: ${ADAPT_SMTP_USER}
+        ADAPT_SMTP_PASSWORD: ${ADAPT_SMTP_PASSWORD}
+        ADAPT_EMAIL1: ${ADAPT_EMAIL1}
+        ADAPT_EMAIL2: ${ADAPT_EMAIL2}
+    image: adapt-backend:dev
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        ADAPT_BUILD_MODE: ${ADAPT_BUILD_MODE}
+    image: adapt-frontend:dev
+    ports:
+      - 3000:80

@@ -88,11 +88,19 @@ const ConnectedNavButtons = connect(mapStateToProps)(NavButtons);
 
 class Header extends React.Component {
   render() {
+    let navbarColor = 'dark';
+    let navbarBrandText = 'Adaptation';
+
+    if (ADAPT_TEST_MODE) {
+      navbarColor = 'dark progress-bar-striped';
+      navbarBrandText = 'Adapt_test';
+    }
+
     return (
-      <Navbar color="dark" dark expand="md" className="mb-3">
+      <Navbar color={navbarColor} dark expand="md" className="mb-3">
         <Container>
           <NavbarBrand className="ml-4 text-white" tag={Link} to="/">
-            Adaptation
+            {navbarBrandText}
           </NavbarBrand>
           <ConnectedNavButtons />
           <Nav className="ml-auto" navbar>

@@ -1,5 +1,7 @@
 FROM node:8-alpine AS builder
 
+ARG ADAPT_BUILD_MODE
+
 COPY . /opt/frontend
 WORKDIR /opt/frontend
 RUN yarn && yarn build

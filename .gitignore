@@ -16,4 +16,5 @@ node_modules
 frontend/dist
 backend/nbactions.xml
 templates
-
+.env
+/db

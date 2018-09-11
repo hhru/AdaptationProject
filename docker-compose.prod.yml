@@ -1,0 +1,33 @@
+version: "2.1"
+
+services:
+  postgres:
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      default:
+        aliases:
+          - postgres
+      shared:
+        aliases:
+          - postgres-prod
+
+  backend:
+    image: adapt-backend:prod
+
+  frontend:
+    image: adapt-frontend:prod
+    networks:
+      default:
+        aliases:
+          - frontend
+      shared:
+        aliases:
+          - frontend-prod
+
+networks:
+  shared:
+    external:
+      name: adapt-shared
