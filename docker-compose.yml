@@ -16,6 +16,7 @@ services:
     restart: always
     volumes:
       - ./templates:/usr/share/adapt/templates
+      - ./upload:/usr/share/adapt/upload
     depends_on:
       postgres:
         condition: service_healthy
