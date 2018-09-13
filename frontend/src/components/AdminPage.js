@@ -11,6 +11,7 @@ class AdminPage extends React.Component {
     };
 
     this.ruleList = this.ruleList.bind(this);
+    this.toggleEnv = this.toggleEnv.bind(this);
   }
 
   ruleList(e) {
@@ -30,12 +31,25 @@ class AdminPage extends React.Component {
       });
   }
 
+  toggleEnv() {
+    if (ADAPT_TEST_MODE) {
+      document.cookie = 'adaptation_session=';
+    } else {
+      document.cookie = 'adaptation_session=_TEST_';
+    }
+
+    location.reload();
+  }
+
   render() {
     return (
       <Container>
         <Row>
           <Button color="secondary" outline onClick={this.ruleList}>
             Список правил
+          </Button>
+          <Button color="secondary" outline onClick={this.toggleEnv} className="ml-4">
+            {ADAPT_TEST_MODE ? 'Перейти на прод' : 'Перейти на стенд'}
           </Button>
         </Row>
 
