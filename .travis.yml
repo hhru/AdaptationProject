@@ -20,12 +20,15 @@ before_install:
   - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_USER=$ADAPT_TEST_SMTP_USER
   - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_PASSWORD=$ADAPT_TEST_SMTP_PASSWORD
   - export SSHPASS=$DEPLOY_PASS
+  - export SSH_CMD="sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 install:
   - docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.$ADAPT_BUILD_MODE.yml build
 
 after_success:
-  - docker save adapt-backend adapt-frontend | sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST docker load
-  - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no docker-compose.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE
-  - sshpass -e scp -P $DEPLOY_PORT -o StrictHostKeyChecking=no docker-compose.$ADAPT_BUILD_MODE.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE/docker-compose.override.yml
-  - sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "cd adapt-$ADAPT_BUILD_MODE && docker-compose down && docker-compose up -d"
+  - docker save adapt-backend adapt-frontend | $SSH_CMD $DEPLOY_USER@$DEPLOY_HOST docker load
+  - rsync -e "$SSH_CMD" docker-compose.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE/
+  - rsync -e "$SSH_CMD" docker-compose.$ADAPT_BUILD_MODE.yml $DEPLOY_USER@$DEPLOY_HOST:~/adapt-$ADAPT_BUILD_MODE/docker-compose.override.yml
+  - test "$ADAPT_BUILD_MODE" = test || rsync -e "$SSH_CMD" nginx.conf $DEPLOY_USER@$DEPLOY_HOST:~/adapt-prod/
+  - test "$ADAPT_BUILD_MODE" = prod || rsync -e "$SSH_CMD" --chmod=+x copy-db.sh $DEPLOY_USER@$DEPLOY_HOST:~/adapt-test/db-scripts/
+  - $SSH_CMD $DEPLOY_USER@$DEPLOY_HOST "cd adapt-$ADAPT_BUILD_MODE && docker-compose up -d"
