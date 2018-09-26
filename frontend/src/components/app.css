@@ -1,6 +1,14 @@
-.main__article {
-  font-size: 20px;
-  color: red;
+.user-info {
+  color: #fcfcfc;
+  padding: 0 20px 0 0;
+}
+
+.header {
+  padding: 0 0 20px;
+}
+
+.jumbotron {
+  background-color: transparent !important;
 }
 
 .info-box {
