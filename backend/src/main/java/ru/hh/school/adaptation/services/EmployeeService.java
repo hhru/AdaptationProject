@@ -21,7 +21,6 @@ import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.User;
-import ru.hh.school.adaptation.exceptions.AccessDeniedException;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
 import ru.hh.school.adaptation.exceptions.RequestValidationException;
 import ru.hh.school.adaptation.misc.CommonUtils;
@@ -100,8 +99,6 @@ public class EmployeeService {
 
   @Transactional
   public EmployeeDto createEmployee(EmployeeCreateDto employeeCreateDto){
-    User user = authService.getUser().orElseThrow(() -> new AccessDeniedException("The user is not logged in."));
-
     Employee employee = new Employee();
     employee.setSelf(personalInfoService.createPersonalInfo(employeeCreateDto.self));
     employee.setChief(personalInfoService.getPersonalInfoById(employeeCreateDto.chiefId)
@@ -110,7 +107,7 @@ public class EmployeeService {
       employee.setMentor(personalInfoService.getPersonalInfoById(employeeCreateDto.mentorId)
           .orElseThrow(() -> new EntityNotFoundException(String.format("PersonalInfo with id = %d does not exist", employeeCreateDto.chiefId))));
     }
-    employee.setHr(userDao.getRecordById(user.getId()));
+    employee.setHr(userDao.getRecordById(employeeCreateDto.hrId));
     employee.setPosition(employeeCreateDto.position);
     employee.setGender(employeeCreateDto.gender);
     employee.setEmploymentDate(employeeCreateDto.employmentDate);
@@ -326,6 +323,7 @@ public class EmployeeService {
   public boolean isValidEmployeeCreateDto(EmployeeCreateDto employeeCreateDto) {
     return personalInfoService.isValidPersonalDto(employeeCreateDto.self) &&
         employeeCreateDto.chiefId != null &&
+        employeeCreateDto.hrId != null &&
         StringUtils.isNotBlank(employeeCreateDto.position) &&
         employeeCreateDto.gender != null &&
         employeeCreateDto.employmentDate != null &&

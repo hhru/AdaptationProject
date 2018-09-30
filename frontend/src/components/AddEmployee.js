@@ -7,6 +7,7 @@ import PersonChooser from '../toolkit/PersonChooser';
 import PersonCreator from '../toolkit/PersonCreator';
 import Person from '../toolkit/Person';
 import Employee from '../toolkit/Employee';
+import User from '../toolkit/User';
 
 import { AvForm, AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
 
@@ -36,6 +37,7 @@ class AddEmployee extends React.Component {
     inside: '',
     subdivision: '',
     gender: MALE,
+    hrId: null,
     position: '',
     employmentDate: '',
     interimDate: '',
@@ -43,8 +45,13 @@ class AddEmployee extends React.Component {
     chiefId: null,
     mentorId: null,
     persons: [],
+    users: [],
     chiefModal: false,
     mentorModal: false,
+  };
+
+  handleHrChange = (hrId) => {
+    this.setState({ hrId: hrId });
   };
 
   toggleChiefCreator = () => {
@@ -140,6 +147,7 @@ class AddEmployee extends React.Component {
       finalDate,
       chiefId,
       mentorId,
+      hrId,
     } = this.state;
 
     const employee = {
@@ -157,6 +165,7 @@ class AddEmployee extends React.Component {
       interimDate: interimDate,
       finalDate: finalDate,
       chiefId: chiefId,
+      hrId: hrId,
       mentorId: mentorId ? mentorId : null,
     };
 
@@ -177,6 +186,27 @@ class AddEmployee extends React.Component {
         alert(error);
       }
     );
+
+    this.listUsers(
+      (data) => {
+        console.log(data);
+        this.setState({
+          users: data.users,
+          hrId: data.hrId,
+        });
+      },
+      (error) => {
+        console.log(error);
+        alert(error);
+      }
+    );
+  }
+
+  listUsers(completed, failed) {
+    axios
+      .get('/api/users/all')
+      .then((response) => completed(response.data))
+      .catch((error) => failed(error));
   }
 
   listPersons(completed, failed) {
@@ -300,6 +330,13 @@ class AddEmployee extends React.Component {
             hasEmpty={true}
             onChange={this.handleMentorChange}
             onAdd={() => this.clickFunc('mentorCreate')}
+          />
+          <User
+            id="hr"
+            persons={this.state.users}
+            title="HR"
+            personId={this.state.hrId}
+            onChange={this.handleHrChange}
           />
 
           <Row className="mt-4">
