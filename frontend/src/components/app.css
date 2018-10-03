@@ -73,3 +73,12 @@ textarea {
 .empty-for-main-page-between-buttons {
   height: 20px;
 }
+
+.file-delete:hover {
+  cursor: pointer;
+}
+
+.file-delete {
+  font-size: 12pt;
+  float: right;
+}

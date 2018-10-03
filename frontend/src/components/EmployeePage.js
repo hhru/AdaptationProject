@@ -7,6 +7,7 @@ import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
 import EmployeeTasksModal from './tasks/EmployeeTasksModal';
+import EmployeeAttachModal from './EmployeeAttachModal';
 
 import { Jumbotron, Alert } from 'reactstrap';
 import { Container, Row, Col } from 'reactstrap';
@@ -158,9 +159,11 @@ class EmployeePage extends React.Component {
         ],
       },
       tasksModal: false,
+      attachModal: false,
     };
 
     this.toggleTasksModal = this.toggleTasksModal.bind(this);
+    this.toggleAttachModal = this.toggleAttachModal.bind(this);
     this.toggleAlert = this.toggleAlert.bind(this);
     this.commentRemove = this.commentRemove.bind(this);
     this.commentSubmit = this.commentSubmit.bind(this);
@@ -220,6 +223,12 @@ class EmployeePage extends React.Component {
     //console.log('toggle');
     this.setState({
       tasksModal: !this.state.tasksModal,
+    });
+  }
+
+  toggleAttachModal() {
+    this.setState({
+      attachModal: !this.state.attachModal,
     });
   }
 
@@ -509,7 +518,7 @@ class EmployeePage extends React.Component {
                 <Logs parent={this} />
               </TabPane>
               <TabPane tabId="3">
-                <Attach parent={this} />
+                <Actions parent={this} />
               </TabPane>
             </TabContent>
           </Col>
@@ -1034,7 +1043,7 @@ class LogItem extends React.Component {
   }
 }
 
-class Attach extends React.Component {
+class Actions extends React.Component {
   constructor(props) {
     super(props);
 
@@ -1101,12 +1110,21 @@ class Attach extends React.Component {
           <ListGroupItem href="#" tag="a" className="" onClick={this.toggleResendModal}>
             Отправить дополнительное письмо руководителю о постановке задач на ИС
           </ListGroupItem>
+          <ListGroupItem href="#" tag="a" className="" onClick={parent.toggleAttachModal}>
+            Загруженные файлы
+          </ListGroupItem>
         </ListGroup>
 
         <EmployeeTasksModal
           employeeId={parent.state.employeeId}
           isOpen={parent.state.tasksModal}
           parentToggle={parent.toggleTasksModal}
+        />
+
+        <EmployeeAttachModal
+          employeeId={parent.state.employeeId}
+          isOpen={parent.state.attachModal}
+          parentToggle={parent.toggleAttachModal}
         />
 
         <Modal isOpen={this.state.resendModal} toggle={this.toggleResendModal}>

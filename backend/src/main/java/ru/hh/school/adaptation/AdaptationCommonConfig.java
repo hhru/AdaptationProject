@@ -35,12 +35,14 @@ import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.resources.AdminResource;
 import ru.hh.school.adaptation.resources.AuthResource;
 import ru.hh.school.adaptation.resources.EmployeeResource;
+import ru.hh.school.adaptation.resources.FileUploadResource;
 import ru.hh.school.adaptation.resources.MainResource;
 import ru.hh.school.adaptation.resources.PersonalInfoResource;
 import ru.hh.school.adaptation.resources.TaskResource;
 import ru.hh.school.adaptation.services.AdminService;
 import ru.hh.school.adaptation.services.CommentService;
 import ru.hh.school.adaptation.services.EmployeeService;
+import ru.hh.school.adaptation.services.FileUploadService;
 import ru.hh.school.adaptation.services.PersonalInfoService;
 import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
@@ -80,6 +82,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     AdminService.class,
     EmployeeService.class,
     CommentService.class,
+    FileUploadService.class,
     ScheduledMailService.class,
     TransitionService.class,
     TaskService.class,
@@ -97,6 +100,7 @@ import ru.hh.school.adaptation.services.workflow.WelcomeMeetingStep;
     AuthResource.class,
     MainResource.class,
     EmployeeResource.class,
+    FileUploadResource.class,
     PersonalInfoResource.class,
     UserResource.class,
     ChiefTaskDocumentGenerator.class,
