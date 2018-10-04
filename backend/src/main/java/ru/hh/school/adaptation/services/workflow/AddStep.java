@@ -1,20 +1,21 @@
 package ru.hh.school.adaptation.services.workflow;
 
-import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import ru.hh.nab.core.util.FileSettings;
+
+import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.TaskForm;
+import ru.hh.school.adaptation.misc.CommonUtils;
 import ru.hh.school.adaptation.services.MailService;
 import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
 
 import javax.inject.Singleton;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Singleton
 public class AddStep {
@@ -34,20 +35,23 @@ public class AddStep {
   }
 
   public void onAdd(Employee employee) {
-    sendCalendar(employee.getHr().getSelf().getEmail(), employee);
-    sendCalendar(employee.getChief().getEmail(), employee);
-    if (employee.getMentor() != null) {
-      sendCalendar(employee.getMentor().getEmail(), employee);
-    }
-    sendCalendar(employee.getSelf().getEmail(), employee);
+    String[] attendees = Stream.of(
+        employee.getSelf().getEmail(),
+        employee.getHr().getSelf().getEmail(),
+        employee.getChief().getEmail(),
+        Optional.ofNullable(employee.getMentor()).orElse(new PersonalInfo()).getEmail()
+    ).filter((str) -> str != null).toArray(String[]::new);
+
+    sendMeetings(attendees, employee);
+
     taskListMail(employee);
     scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
   }
 
-  private void sendCalendar(String email, Employee employee) {
-    mailService.sendCalendar(email, "Welcome-встреча", dateConverter(employee.getEmploymentDate()), 30);
-    mailService.sendCalendar(email, "Промежуточная встреча", dateConverter(employee.getInterimDate()), 30);
-    mailService.sendCalendar(email, "Итоговая встреча", dateConverter(employee.getFinalDate()), 30);
+  private void sendMeetings(String[] attendees, Employee employee) {
+      mailService.sendMeeting("Welcome-встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getEmploymentDate()), 30);
+      mailService.sendMeeting("Промежуточная встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getInterimDate()), 30);
+      mailService.sendMeeting("Итоговая встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getFinalDate()), 30);
   }
 
   private void taskListMail(Employee employee) {
@@ -56,10 +60,6 @@ public class AddStep {
     params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
     params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
     mailService.sendMail(employee.getChief().getEmail(), "chief_missions.html", "Задачи на испытательный срок", params);
-  }
-
-  private LocalDateTime dateConverter(Date normalDate) {
-    return LocalDateTime.of(normalDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
   }
 
 }

@@ -30,14 +30,14 @@ import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerat
 
 import javax.inject.Singleton;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Singleton
 public class EmployeeService {
@@ -244,17 +244,26 @@ public class EmployeeService {
         "Сопровождение нового сотрудника"
     );
 
-    LocalDateTime interimDate = LocalDateTime.of(employee.getInterimDate().toInstant()
-        .atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
-    LocalDateTime finalDate = LocalDateTime.of(employee.getFinalDate().toInstant()
-        .atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.of(13, 0));
-
+    LocalDateTime welcomeDate = CommonUtils.dateConverter(employee.getEmploymentDate());
+    LocalDateTime interimDate = CommonUtils.dateConverter(employee.getInterimDate());
+    LocalDateTime finalDate = CommonUtils.dateConverter(employee.getFinalDate());
     LocalDateTime now = LocalDateTime.now();
+
+    String[] attendees = Stream.of(
+        hrEmail,
+        employee.getSelf().getEmail(),
+        employee.getChief().getEmail(),
+        Optional.ofNullable(employee.getMentor()).orElse(new PersonalInfo()).getEmail()
+    ).filter((str) -> str != null).toArray(String[]::new);
+
+    if (welcomeDate.isAfter(now)) {
+      mailService.sendMeeting("Welcome встреча", hrEmail, attendees, employee, welcomeDate, 30);
+    }
     if (interimDate.isAfter(now)) {
-      mailService.sendCalendar(hrEmail, "Промежуточная встреча", interimDate, 30);
+      mailService.sendMeeting("Промежуточная встреча", hrEmail, attendees, employee, interimDate, 30);
     }
     if (finalDate.isAfter(now)) {
-      mailService.sendCalendar(hrEmail, "Итоговая встреча", finalDate, 30);
+      mailService.sendMeeting("Итоговая встреча", hrEmail, attendees, employee, finalDate, 30);
     }
   }
 
