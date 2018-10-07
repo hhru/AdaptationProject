@@ -358,6 +358,7 @@ class EditEmployee extends React.Component {
             persons={this.state.persons}
             title="Руководитель"
             personId={this.state.chiefId}
+            required={true}
             onChange={this.handleChiefChange}
             onAdd={this.toggleChiefCreator}
           />
@@ -366,7 +367,7 @@ class EditEmployee extends React.Component {
             persons={this.state.persons}
             title="Куратор"
             personId={this.state.mentorId}
-            hasEmpty={true}
+            required={false}
             onChange={this.handleMentorChange}
             onAdd={this.toggleMentorCreator}
           />
