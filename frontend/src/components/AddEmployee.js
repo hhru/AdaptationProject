@@ -50,9 +50,7 @@ class AddEmployee extends React.Component {
     mentorModal: false,
   };
 
-  handleHrChange = (hrId) => {
-    this.setState({ hrId: hrId });
-  };
+  handleHrChange = (hrId) => this.setState({ hrId });
 
   toggleChiefCreator = () => {
     this.setState({
@@ -188,24 +186,15 @@ class AddEmployee extends React.Component {
     );
 
     this.listUsers(
-      (data) => {
-        console.log(data);
-        this.setState({
-          users: data.users,
-          hrId: data.hrId,
-        });
-      },
-      (error) => {
-        console.log(error);
-        alert(error);
-      }
+      ({ users, hrId }) => this.setState({ users, hrId }),
+      (error) => console.log(error)
     );
   }
 
   listUsers(completed, failed) {
     axios
       .get('/api/users/all')
-      .then((response) => completed(response.data))
+      .then(({ data }) => completed(data))
       .catch((error) => failed(error));
   }
 
@@ -252,7 +241,6 @@ class AddEmployee extends React.Component {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
         this.state.disableSend = false;
       });
   }
