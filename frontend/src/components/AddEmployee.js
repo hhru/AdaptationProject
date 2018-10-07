@@ -118,7 +118,7 @@ class AddEmployee extends React.Component {
   };
 
   handleChiefChange = (chiefId) => {
-    this.setState({ chiefId: chiefId });
+    this.setState({ chiefId: chiefId ? chiefId : null });
   };
 
   handleMentorChange = (mentorId) => {
@@ -166,10 +166,8 @@ class AddEmployee extends React.Component {
   componentDidMount() {
     this.listPersons(
       (persons) => {
-        const chiefId = Array.isArray(persons) && persons.length > 0 ? persons[0].id : null;
         this.setState({
           persons: persons,
-          chiefId: chiefId,
         });
       },
       (error) => {
@@ -289,6 +287,7 @@ class AddEmployee extends React.Component {
             persons={this.state.persons}
             title="Руководитель"
             personId={this.state.chiefId}
+            required={true}
             onChange={this.handleChiefChange}
             onAdd={() => this.clickFunc('chiefCreate')}
           />
@@ -297,7 +296,7 @@ class AddEmployee extends React.Component {
             persons={this.state.persons}
             title="Куратор"
             personId={this.state.mentorId}
-            hasEmpty={true}
+            required={false}
             onChange={this.handleMentorChange}
             onAdd={() => this.clickFunc('mentorCreate')}
           />
