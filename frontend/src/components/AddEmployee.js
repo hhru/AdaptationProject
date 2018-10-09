@@ -41,6 +41,7 @@ class AddEmployee extends React.Component {
     interimDate: '',
     finalDate: '',
     chiefId: null,
+    chiefValid: true,
     mentorId: null,
     persons: [],
     chiefModal: false,
@@ -118,14 +119,23 @@ class AddEmployee extends React.Component {
   };
 
   handleChiefChange = (chiefId) => {
-    this.setState({ chiefId: chiefId ? chiefId : null });
+    this.setState({ chiefId });
   };
 
   handleMentorChange = (mentorId) => {
     this.setState({ mentorId: mentorId ? mentorId : null });
   };
 
+  handleChiefValidChange = (chiefId) => {
+    this.setState({ chiefValid: Boolean(chiefId) });
+  };
+
   handleCreateEmployee = () => {
+    if (!this.state.chiefId) {
+      this.setState({ chiefValid: false });
+      return;
+    }
+
     const {
       firstName,
       lastName,
@@ -287,6 +297,8 @@ class AddEmployee extends React.Component {
             persons={this.state.persons}
             title="Руководитель"
             personId={this.state.chiefId}
+            chiefValid={this.state.chiefValid}
+            onValid={this.handleChiefValidChange}
             required={true}
             onChange={this.handleChiefChange}
             onAdd={() => this.clickFunc('chiefCreate')}
@@ -296,6 +308,7 @@ class AddEmployee extends React.Component {
             persons={this.state.persons}
             title="Куратор"
             personId={this.state.mentorId}
+            chiefValid={true}
             required={false}
             onChange={this.handleMentorChange}
             onAdd={() => this.clickFunc('mentorCreate')}

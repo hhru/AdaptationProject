@@ -51,6 +51,7 @@ class EditEmployee extends React.Component {
     persons: [],
     users: [],
     chiefModal: false,
+    chiefValid: true,
     dismissed: false,
     mentorModal: false,
     dismissModal: false,
@@ -151,6 +152,10 @@ class EditEmployee extends React.Component {
     this.setState({ chiefId: chiefId });
   };
 
+  handleChiefValidChange = (chiefId) => {
+    this.setState({ chiefValid: Boolean(chiefId) });
+  };
+
   handleMentorChange = (mentorId) => {
     this.setState({ mentorId: mentorId ? mentorId : null });
   };
@@ -176,6 +181,11 @@ class EditEmployee extends React.Component {
 
   handleUpdateEmployee = (event) => {
     event.preventDefault();
+
+    if (!this.state.chiefId) {
+      this.setState({ chiefValid: false });
+      return;
+    }
 
     const employeeId = this.props.match.params.id;
 
@@ -359,6 +369,8 @@ class EditEmployee extends React.Component {
             title="Руководитель"
             personId={this.state.chiefId}
             required={true}
+            chiefValid={this.state.chiefValid}
+            onValid={this.handleChiefValidChange}
             onChange={this.handleChiefChange}
             onAdd={this.toggleChiefCreator}
           />
@@ -368,6 +380,7 @@ class EditEmployee extends React.Component {
             title="Куратор"
             personId={this.state.mentorId}
             required={false}
+            chiefValid={true}
             onChange={this.handleMentorChange}
             onAdd={this.toggleMentorCreator}
           />
