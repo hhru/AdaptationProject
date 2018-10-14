@@ -14,6 +14,8 @@ public class EmployeeCreateDto {
 
   public Integer mentorId;
 
+  public Integer hrId;
+
   public String position;
 
   public Gender gender;

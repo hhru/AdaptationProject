@@ -251,9 +251,7 @@ class EditEmployee extends React.Component {
       this.setState({ persons: persons });
     };
 
-    const updateUsers = (users) => {
-      this.setState({ users: users });
-    };
+    const updateUsers = ({ users, hrId }) => this.setState({ users, hrId });
 
     const employeeId = this.props.match.params.id;
     this.getEmployee(employeeId, updateEmployee, failed);

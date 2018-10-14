@@ -1,0 +1,13 @@
+version: "2.1"
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: adapt
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
