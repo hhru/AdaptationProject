@@ -9,6 +9,8 @@ services:
     networks:
       - default
       - shared
+    environment:
+      ADAPT_MOCK_EMAIL: ${ADAPT_MOCK_EMAIL}
 
   backend:
     image: adapt-backend:test
