@@ -1,5 +1,8 @@
 package ru.hh.school.adaptation.services;
 
+import ru.hh.school.adaptation.entities.Employee;
+import ru.hh.school.adaptation.misc.CommonUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -103,33 +106,50 @@ public class MailService {
     return template;
   }
 
-  public void sendCalendar(String toEmail, String summary, LocalDateTime date, Integer duration) {
+  public ICalendar makeICal(String organizer, String[] attendees, String summary, LocalDateTime date, Integer duration) {
+    Date dateStart = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+
+    ICalendar icalendar = new ICalendar();
+    icalendar.setMethod(Method.REQUEST);
+    icalendar.setVersion(ICalVersion.V2_0);
+    VEvent event = new VEvent();
+    event.setSummary(summary);
+    event.setOrganizer(organizer);
+    for (String attendee : attendees) {
+      event.addAttendee(attendee);
+    }
+    event.setPriority(3);
+    event.setClassification(Classification.PUBLIC);
+    event.setDateStart(dateStart);
+    event.setDuration(new Duration.Builder().minutes(duration).build());
+    event.addAlarm(VAlarm.display(new Trigger(DateUtils.addMinutes(dateStart, -30)), summary));
+    icalendar.addEvent(event);
+
+    return icalendar;
+  }
+
+  public void sendMeeting(String subject, String recipient, String[] attendees, Employee employee, LocalDateTime date, Integer duration) {
+    String[] recipients = new String[]{recipient};
+    sendMeeting(subject, recipients, attendees, employee, date, duration);
+  }
+
+  public void sendMeeting(String subject, String[] recipients, String[] attendees, Employee employee, LocalDateTime date, Integer duration) {
+    String organizer = employee.getHr().getSelf().getEmail();
+    String info = new StringBuilder(subject)
+      .append(" (")
+      .append(CommonUtils.makeFioFromPersonalInfo(employee.getSelf()))
+      .append(")")
+      .toString();
+    ICalendar icalendar = makeICal(organizer, attendees, info, date, duration);
+
+    for (String recipient : recipients) {
+      sendCalendar(icalendar, recipient, info);
+    }
+  }
+
+  public void sendCalendar(ICalendar icalendar, String recipient, String subject) {
     Runnable task = () -> {
       try {
-        MimeMessage message = new MimeMessage(session);
-        message.addHeaderLine("method=REQUEST");
-        message.addHeaderLine("charset=UTF-8");
-        message.addHeaderLine("component=VEVENT");
-
-        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.fullName")));
-        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-        message.setSubject("Outlook Meeting Request");
-
-        Date dateStart = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
-
-        ICalendar icalendar = new ICalendar();
-        icalendar.setMethod(Method.REQUEST);
-        icalendar.setVersion(ICalVersion.V2_0);
-        VEvent event = new VEvent();
-        event.setSummary(summary);
-        event.setOrganizer(session.getProperties().getProperty("mail.smtp.from.name"));
-        event.setPriority(3);
-        event.setClassification(Classification.PUBLIC);
-        event.setDateStart(dateStart);
-        event.setDuration(new Duration.Builder().minutes(duration).build());
-        event.addAlarm(VAlarm.audio(new Trigger(DateUtils.addMinutes(dateStart, -30))));
-        icalendar.addEvent(event);
-
         MimeBodyPart messageCalendar = new MimeBodyPart();
         messageCalendar.setHeader("Content-Class", "urn:content-classes:calendarmessage");
         messageCalendar.setHeader("Content-ID", "calendar_message");
@@ -138,15 +158,22 @@ public class MailService {
         Multipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(messageCalendar);
 
+        MimeMessage message = new MimeMessage(session);
+        message.addHeaderLine("method=REQUEST");
+        message.addHeaderLine("charset=UTF-8");
+        message.addHeaderLine("component=VEVENT");
+        message.setFrom(new InternetAddress(session.getProperties().getProperty("mail.smtp.from.fullName")));
+        message.addRecipients(Message.RecipientType.TO, recipient);
+        message.setSubject(MimeUtility.encodeText(subject, "utf-8", "B"));
         message.setContent(multipart);
 
         Transport.send(message);
-        logger.info("Calendar for {} has been send", toEmail);
+        logger.info("Calendar for {} has been send", recipient);
       } catch (MessagingException|IOException e) {
-        logger.warn("Something went wrong with sending calendar for {} ", toEmail);
+        logger.warn("Something went wrong with sending calendar for {} ", recipient);
       }
     };
-    logger.info("Try send calendar for {} ", toEmail);
+    logger.info("Try send calendar for {} ", recipient);
     task.run();
   }
 }
