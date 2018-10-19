@@ -1,4 +1,4 @@
-FROM maven:3-jdk-8-alpine AS builder
+FROM maven:3-jdk-11-slim AS builder
 
 ARG ADAPT_BUILD_MODE
 
@@ -28,7 +28,7 @@ RUN mvn clean install
 
 
 
-FROM boxfuse/flyway:5-alpine
+FROM mvxio/flyway
 
 COPY --from=builder /usr/src/adapt/target /usr/share/adapt
 COPY src/main/resources/db/migration /flyway/sql
