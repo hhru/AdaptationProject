@@ -1,6 +1,5 @@
 package ru.hh.school.adaptation.services;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,16 +49,11 @@ public class ScheduledMailService {
   }
 
   private void scheduleWelcomeMail(ScheduledMail scheduledMail) {
-    long delay;
+    long delay = 1;
     if (scheduledMail.getTriggerDate().after(new Date())) {
       delay = (scheduledMail.getTriggerDate().getTime() - new Date().getTime())/1000;
-      scheduledExecutorService.schedule(() -> sendWelcomeMail(scheduledMail), delay, TimeUnit.SECONDS);
-    } else if (new SimpleDateFormat("ddMMyyyy").format(new Date()).equals(new SimpleDateFormat("ddMMyyyy").format(scheduledMail.getTriggerDate()))) {
-      delay = 1;
-      scheduledExecutorService.schedule(() -> sendWelcomeMail(scheduledMail), delay, TimeUnit.SECONDS);
-    } else {
-      scheduledMailDao.delete(scheduledMail);
     }
+    scheduledExecutorService.schedule(() -> sendWelcomeMail(scheduledMail), delay, TimeUnit.SECONDS);
   }
 
   private void sendWelcomeMail(ScheduledMail scheduledMail) {
