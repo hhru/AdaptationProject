@@ -47,9 +47,9 @@ class Header extends React.Component {
             <NavbarToggler onClick={this.toggleNavbar} />
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav navbar className="mr-auto">
-                <NavLink href="/list_employees">Сотрудники</NavLink>
-                <NavLink href="/add_employee">Добавить</NavLink>
-                {user.isAdmin && <NavLink href="/admin_page">Админка</NavLink>}
+                <NavLink tag={Link} to="/list_employees">Сотрудники</NavLink>
+                <NavLink tag={Link} to="/add_employee">Добавить</NavLink>
+                {user.isAdmin && <NavLink tag={Link} to="/admin_page">Админка</NavLink>}
               </Nav>
               <Nav>
                 <Form action="/api/logout" method="POST">
