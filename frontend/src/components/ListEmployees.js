@@ -11,43 +11,16 @@ import '!style-loader!css-loader!./ListEmployees.css';
 const PAGE_PARAMS_LOCAL_STORAGE_KEY = 'adaptEmployeeListParams';
 
 class ListEmployees extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const initialPageParams = this.loadPageParams();
-
-    this.state = {
-      isLoading: true,
-      filterable: initialPageParams.filterable,
-      defaultPageSize: initialPageParams.pageSize,
-      filterColor: this.getFilterColor(initialPageParams.filterable),
-      showDismissed: false,
-      showCompleted: false,
-      showActive: true,
-      employeeList: [],
-    };
-
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-    this.onFiltered = this.onFiltered.bind(this);
-    this.onPageSizeChange = this.onPageSizeChange.bind(this);
-    this.onShowCompleted = this.onShowCompleted.bind(this);
-    this.onShowActive = this.onShowActive.bind(this);
-    this.onShowDismissed = this.onShowDismissed.bind(this);
-    this.filteredData = this.filteredData.bind(this);
-    this.customFilter = this.customFilter.bind(this);
-    this.getTrProps = this.getTrProps.bind(this);
-  }
-
-  loadPageParams() {
+  loadPageParams = () => {
     const pageParams = JSON.parse(localStorage.getItem(PAGE_PARAMS_LOCAL_STORAGE_KEY)) || {
       filterable: false,
       defaultPageSize: 20,
     };
 
     return pageParams;
-  }
+  };
 
-  savePageParams(filterable, pageSize) {
+  savePageParams = (filterable, pageSize) => {
     localStorage.setItem(
       PAGE_PARAMS_LOCAL_STORAGE_KEY,
       JSON.stringify({
@@ -55,17 +28,30 @@ class ListEmployees extends React.Component {
         pageSize: pageSize,
       })
     );
-  }
+  };
 
-  getFilterColor(filterable) {
+  getFilterColor = (filterable) => {
     return filterable ? '#a0a0a0' : '#e6e6e6';
-  }
+  };
 
-  handleButtonClick(e, row) {
+  initialPageParams = this.loadPageParams();
+
+  state = {
+    isLoading: true,
+    filterable: this.initialPageParams.filterable,
+    defaultPageSize: this.initialPageParams.pageSize,
+    filterColor: this.getFilterColor(this.initialPageParams.filterable),
+    showDismissed: false,
+    showCompleted: false,
+    showActive: true,
+    employeeList: [],
+  };
+
+  handleButtonClick = (e, row) => {
     this.props.history.push('/employee/' + row.id);
-  }
+  };
 
-  onFiltered() {
+  onFiltered = () => {
     const filterable = !this.state.filterable;
 
     this.savePageParams(filterable, this.refs.table.state.pageSize);
@@ -74,48 +60,31 @@ class ListEmployees extends React.Component {
       filterable: filterable,
       filterColor: this.getFilterColor(filterable),
     });
-  }
+  };
 
-  onPageSizeChange(pageSize) {
+  onPageSizeChange = (pageSize) => {
     this.savePageParams(this.state.filterable, pageSize);
-  }
+  };
 
-  componentDidMount() {
-    axios
-      .get('/api/employee/all')
-      .then((response) => {
-        this.setState({
-          isLoading: false,
-          employeeList: response.data,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          isLoading: false,
-        });
-        console.log(error);
-      });
-  }
-
-  onShowCompleted(e) {
+  onShowCompleted = (e) => {
     this.setState({
       showCompleted: !this.state.showCompleted,
     });
-  }
+  };
 
-  onShowActive(e) {
+  onShowActive = (e) => {
     this.setState({
       showActive: !this.state.showActive,
     });
-  }
+  };
 
-  onShowDismissed(e) {
+  onShowDismissed = (e) => {
     this.setState({
       showDismissed: !this.state.showDismissed,
     });
-  }
+  };
 
-  filteredData() {
+  filteredData = () => {
     let result = this.state.employeeList;
 
     if (!this.state.showActive) {
@@ -138,9 +107,9 @@ class ListEmployees extends React.Component {
     }
 
     return result;
-  }
+  };
 
-  customFilter(filter, row, column) {
+  customFilter = (filter, row, column) => {
     const id = filter.pivotId || filter.id;
     if (row[id] === undefined) {
       return true;
@@ -155,9 +124,9 @@ class ListEmployees extends React.Component {
     }
     const filt = filter.value.toUpperCase();
     return str.toUpperCase().search(filt) != -1;
-  }
+  };
 
-  getTrProps(state, rowInfo) {
+  getTrProps = (state, rowInfo) => {
     return rowInfo == undefined
       ? {}
       : {
@@ -166,6 +135,23 @@ class ListEmployees extends React.Component {
             this.props.history.push('/employee/' + rowInfo.row._original.id);
           },
         };
+  };
+
+  componentDidMount() {
+    axios
+      .get('/api/employee/all')
+      .then((response) => {
+        this.setState({
+          isLoading: false,
+          employeeList: response.data,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          isLoading: false,
+        });
+        console.log(error);
+      });
   }
 
   render() {
