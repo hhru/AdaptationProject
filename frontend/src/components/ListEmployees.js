@@ -1,27 +1,26 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import FaCircle from 'react-icons/lib/fa/circle';
-import FaAdjust from 'react-icons/lib/fa/adjust';
-import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
-import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaFilter from 'react-icons/lib/fa/filter';
-import { Progress, Container, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Progress, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import ReactTable from 'react-table';
 
 import '!style-loader!css-loader!react-table/react-table.css';
 import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 import '!style-loader!css-loader!./ListEmployees.css';
-import classnames from 'classnames';
+
+const PAGE_PARAMS_LOCAL_STORAGE_KEY = 'adaptEmployeeListParams';
 
 class ListEmployees extends React.Component {
   constructor(props) {
     super(props);
 
+    const initialPageParams = this.loadPageParams();
+
     this.state = {
       isLoading: true,
-      filterable: false,
-      filterColor: '#e6e6e6',
+      filterable: initialPageParams.filterable,
+      defaultPageSize: initialPageParams.pageSize,
+      filterColor: this.getFilterColor(initialPageParams.filterable),
       showDismissed: false,
       showCompleted: false,
       showActive: true,
@@ -30,6 +29,7 @@ class ListEmployees extends React.Component {
 
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.onFiltered = this.onFiltered.bind(this);
+    this.onPageSizeChange = this.onPageSizeChange.bind(this);
     this.onShowCompleted = this.onShowCompleted.bind(this);
     this.onShowActive = this.onShowActive.bind(this);
     this.onShowDismissed = this.onShowDismissed.bind(this);
@@ -38,15 +38,46 @@ class ListEmployees extends React.Component {
     this.getTrProps = this.getTrProps.bind(this);
   }
 
+  loadPageParams() {
+    const pageParams = JSON.parse(localStorage.getItem(PAGE_PARAMS_LOCAL_STORAGE_KEY)) || {
+      filterable: false,
+      defaultPageSize: 20,
+    };
+
+    return pageParams;
+  }
+
+  savePageParams(filterable, pageSize) {
+    localStorage.setItem(
+      PAGE_PARAMS_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        filterable: filterable,
+        pageSize: pageSize,
+      })
+    );
+  }
+
+  getFilterColor(filterable) {
+    return filterable ? '#a0a0a0' : '#e6e6e6';
+  }
+
   handleButtonClick(e, row) {
     this.props.history.push('/employee/' + row.id);
   }
 
   onFiltered() {
+    const filterable = !this.state.filterable;
+
+    this.savePageParams(filterable, this.refs.table.state.pageSize);
+
     this.setState({
-      filterable: !this.state.filterable,
-      filterColor: this.state.filterable ? '#e6e6e6' : '#a0a0a0',
+      filterable: filterable,
+      filterColor: this.getFilterColor(filterable),
     });
+  }
+
+  onPageSizeChange(pageSize) {
+    this.savePageParams(this.state.filterable, pageSize);
   }
 
   componentDidMount() {
@@ -283,11 +314,14 @@ class ListEmployees extends React.Component {
 
         <ReactTable
           filterable={this.state.filterable}
+          defaultPageSize={this.state.defaultPageSize}
           loading={this.state.isLoading}
           data={data}
           columns={columns}
           getTrProps={this.getTrProps}
           defaultFilterMethod={this.customFilter}
+          onPageSizeChange={this.onPageSizeChange}
+          ref="table"
         />
       </div>
     );
