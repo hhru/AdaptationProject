@@ -1,90 +1,90 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import FaCircle from 'react-icons/lib/fa/circle';
-import FaAdjust from 'react-icons/lib/fa/adjust';
-import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle';
-import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaFilter from 'react-icons/lib/fa/filter';
-import { Progress, Container, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Progress, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import ReactTable from 'react-table';
 
 import '!style-loader!css-loader!react-table/react-table.css';
 import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 import '!style-loader!css-loader!./ListEmployees.css';
-import classnames from 'classnames';
+
+const PAGE_PARAMS_LOCAL_STORAGE_KEY = 'adaptEmployeeListParams';
 
 class ListEmployees extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: true,
+  loadPageParams = () => {
+    const pageParams = JSON.parse(localStorage.getItem(PAGE_PARAMS_LOCAL_STORAGE_KEY)) || {
       filterable: false,
-      filterColor: '#e6e6e6',
-      showDismissed: false,
-      showCompleted: false,
-      showActive: true,
-      employeeList: [],
+      defaultPageSize: 20,
     };
 
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-    this.onFiltered = this.onFiltered.bind(this);
-    this.onShowCompleted = this.onShowCompleted.bind(this);
-    this.onShowActive = this.onShowActive.bind(this);
-    this.onShowDismissed = this.onShowDismissed.bind(this);
-    this.filteredData = this.filteredData.bind(this);
-    this.customFilter = this.customFilter.bind(this);
-    this.getTrProps = this.getTrProps.bind(this);
-  }
+    return pageParams;
+  };
 
-  handleButtonClick(e, row) {
-    this.props.history.push('/employee/' + row.id);
-  }
-
-  onFiltered() {
-    this.setState({
-      filterable: !this.state.filterable,
-      filterColor: this.state.filterable ? '#e6e6e6' : '#a0a0a0',
-    });
-  }
-
-  componentDidMount() {
-    axios
-      .get('/api/employee/all')
-      .then((response) => {
-        this.setState({
-          isLoading: false,
-          employeeList: response.data,
-        });
+  savePageParams = (filterable, pageSize) => {
+    localStorage.setItem(
+      PAGE_PARAMS_LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        filterable: filterable,
+        pageSize: pageSize,
       })
-      .catch((error) => {
-        this.setState({
-          isLoading: false,
-        });
-        console.log(error);
-      });
-  }
+    );
+  };
 
-  onShowCompleted(e) {
+  getFilterColor = (filterable) => {
+    return filterable ? '#a0a0a0' : '#e6e6e6';
+  };
+
+  initialPageParams = this.loadPageParams();
+
+  state = {
+    isLoading: true,
+    filterable: this.initialPageParams.filterable,
+    defaultPageSize: this.initialPageParams.pageSize,
+    filterColor: this.getFilterColor(this.initialPageParams.filterable),
+    showDismissed: false,
+    showCompleted: false,
+    showActive: true,
+    employeeList: [],
+  };
+
+  handleButtonClick = (e, row) => {
+    this.props.history.push('/employee/' + row.id);
+  };
+
+  onFiltered = () => {
+    const filterable = !this.state.filterable;
+
+    this.savePageParams(filterable, this.refs.table.state.pageSize);
+
+    this.setState({
+      filterable: filterable,
+      filterColor: this.getFilterColor(filterable),
+    });
+  };
+
+  onPageSizeChange = (pageSize) => {
+    this.savePageParams(this.state.filterable, pageSize);
+  };
+
+  onShowCompleted = (e) => {
     this.setState({
       showCompleted: !this.state.showCompleted,
     });
-  }
+  };
 
-  onShowActive(e) {
+  onShowActive = (e) => {
     this.setState({
       showActive: !this.state.showActive,
     });
-  }
+  };
 
-  onShowDismissed(e) {
+  onShowDismissed = (e) => {
     this.setState({
       showDismissed: !this.state.showDismissed,
     });
-  }
+  };
 
-  filteredData() {
+  filteredData = () => {
     let result = this.state.employeeList;
 
     if (!this.state.showActive) {
@@ -107,9 +107,9 @@ class ListEmployees extends React.Component {
     }
 
     return result;
-  }
+  };
 
-  customFilter(filter, row, column) {
+  customFilter = (filter, row, column) => {
     const id = filter.pivotId || filter.id;
     if (row[id] === undefined) {
       return true;
@@ -124,9 +124,9 @@ class ListEmployees extends React.Component {
     }
     const filt = filter.value.toUpperCase();
     return str.toUpperCase().search(filt) != -1;
-  }
+  };
 
-  getTrProps(state, rowInfo) {
+  getTrProps = (state, rowInfo) => {
     return rowInfo == undefined
       ? {}
       : {
@@ -135,6 +135,23 @@ class ListEmployees extends React.Component {
             this.props.history.push('/employee/' + rowInfo.row._original.id);
           },
         };
+  };
+
+  componentDidMount() {
+    axios
+      .get('/api/employee/all')
+      .then((response) => {
+        this.setState({
+          isLoading: false,
+          employeeList: response.data,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          isLoading: false,
+        });
+        console.log(error);
+      });
   }
 
   render() {
@@ -283,11 +300,14 @@ class ListEmployees extends React.Component {
 
         <ReactTable
           filterable={this.state.filterable}
+          defaultPageSize={this.state.defaultPageSize}
           loading={this.state.isLoading}
           data={data}
           columns={columns}
           getTrProps={this.getTrProps}
           defaultFilterMethod={this.customFilter}
+          onPageSizeChange={this.onPageSizeChange}
+          ref="table"
         />
       </div>
     );
