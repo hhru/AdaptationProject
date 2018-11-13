@@ -1,30 +1,14 @@
-import { FEMALE, MALE } from '../constants/gender';
+import { MALE } from '../constants/gender';
 
-import GenderEdit from '../toolkit/GenderEdit';
-import PersonEdit from '../toolkit/PersonEdit';
-import LabeledInput from '../toolkit/LabeledInput';
-import PersonChooser from '../toolkit/PersonChooser';
 import PersonCreator from '../toolkit/PersonCreator';
 import Person from '../toolkit/Person';
 import Employee from '../toolkit/Employee';
 import User from '../toolkit/User';
 
-import { AvForm, AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
+import { AvForm } from 'availity-reactstrap-validation';
 
 import React from 'react';
-import {
-  Row,
-  Col,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  FormText,
-  Container,
-} from 'reactstrap';
+import { Row, Col, Button, FormGroup, Container } from 'reactstrap';
 import axios from 'axios';
 
 class AddEmployee extends React.Component {

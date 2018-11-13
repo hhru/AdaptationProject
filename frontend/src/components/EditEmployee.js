@@ -1,9 +1,5 @@
-import { FEMALE, MALE } from '../constants/gender';
+import { MALE } from '../constants/gender';
 
-import GenderEdit from '../toolkit/GenderEdit';
-import PersonEdit from '../toolkit/PersonEdit';
-import LabeledInput from '../toolkit/LabeledInput';
-import PersonChooser from '../toolkit/PersonChooser';
 import PersonCreator from '../toolkit/PersonCreator';
 import Person from '../toolkit/Person';
 import Employee from '../toolkit/Employee';
@@ -13,21 +9,7 @@ import { AvForm } from 'availity-reactstrap-validation';
 
 import React from 'react';
 import {
-  Row,
-  Col,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  FormText,
-  Container,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  Row, Col, Button, Form, FormGroup, Input, Container, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 import axios from 'axios';
 
@@ -118,18 +100,8 @@ class EditEmployee extends React.Component {
 
   handleEmployeeChange = (employee) => {
     const {
-      firstName,
-      lastName,
-      middleName,
-      email,
-      inside,
-      subdivision,
-      gender,
-      employmentDate,
-      interimDate,
-      finalDate,
-      position,
-      dismissed,
+      firstName, lastName, middleName, email, inside, subdivision, gender, employmentDate,
+      interimDate, finalDate, position, dismissed
     } = employee;
 
     this.setState({
@@ -190,21 +162,8 @@ class EditEmployee extends React.Component {
     const employeeId = this.props.match.params.id;
 
     const {
-      dismissed,
-      firstName,
-      lastName,
-      middleName,
-      email,
-      inside,
-      subdivision,
-      gender,
-      position,
-      employmentDate,
-      interimDate,
-      finalDate,
-      chiefId,
-      mentorId,
-      hrId,
+      dismissed, firstName, lastName, middleName, email, inside, subdivision, gender, position,
+      employmentDate, interimDate, finalDate, chiefId, mentorId, hrId,
     } = this.state;
 
     const employeeUpdateDto = {

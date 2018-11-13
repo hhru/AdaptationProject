@@ -154,6 +154,8 @@ class ListEmployees extends React.Component {
       });
   }
 
+  makeName = person => `${person.lastName} ${person.firstName} ${person.middleName ? person.middleName : ''}`;
+
   render() {
     const fullTextToDisplay = {
       ADD: 'Добавление в систему',
@@ -179,30 +181,24 @@ class ListEmployees extends React.Component {
       NONE: 100,
     };
 
-    let columns = [
+    const columns = [
       {
         Header: 'ФИО',
         id: 'fullName',
         minWidth: 150,
-        accessor: (row) =>
-          `${row.employee.firstName} ${
-            row.employee.middleName == null ? '' : row.employee.middleName
-          } ${row.employee.lastName}`,
+        accessor: row => this.makeName(row.employee)
       },
       {
         Header: 'HR',
         id: 'hrName',
         width: 280,
-        accessor: (row) =>
-          `${row.hr.firstName} ${row.hr.middleName == null ? '' : row.hr.middleName} ${
-            row.hr.lastName
-          }`,
+        accessor: row => this.makeName(row.hr)
       },
       {
         Header: 'Этап',
         id: 'progress',
         width: 350,
-        accessor: (row) => {
+        accessor: row => {
           const cut = row.workflow.filter((x) => x.status == 'CURRENT');
           const curStep = cut.length == 0 ? 'NONE' : cut[0].type;
           const color = cut.length == 0 ? 'success' : cut[0].overdue ? 'danger' : 'success';

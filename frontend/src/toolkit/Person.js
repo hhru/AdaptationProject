@@ -43,7 +43,7 @@ class Person extends React.Component {
                 <option key="" value="" />
                 {this.props.persons.map(({ id, firstName, lastName, email }) => (
                   <option key={id} value={id}>
-                    {`${firstName} ${lastName} - ${email}`}
+                    {`${lastName} ${firstName} - ${email}`}
                   </option>
                 ))}
               </Input>

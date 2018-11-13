@@ -181,19 +181,15 @@ class RuleTableItem extends React.Component {
       cmdValue: '',
       accessType: props.accessType,
     };
-
-    this.cmdSubmit = this.cmdSubmit.bind(this);
-    this.onCmdChange = this.onCmdChange.bind(this);
-    this.realSubmit = this.realSubmit.bind(this);
   }
 
-  onCmdChange(e) {
+  onCmdChange = (e) => {
     this.setState({
       cmdValue: e.target.value,
     });
   }
 
-  realSubmit(newRole) {
+  realSubmit = (newRole) => {
     const url = '/api/update_access/' + this.props.hhid;
     const self = this;
 
@@ -209,9 +205,11 @@ class RuleTableItem extends React.Component {
       });
   }
 
-  cmdSubmit(e) {
+  cmdSubmit = (e) => {
     e.preventDefault();
-    if (this.state.cmdValue === '') return;
+    if (this.state.cmdValue === '') {
+      return;
+    }
     this.realSubmit(this.state.cmdValue);
     this.setState({
       cmdValue: '',
@@ -219,13 +217,14 @@ class RuleTableItem extends React.Component {
   }
 
   render() {
+    const { id, hhid, email, accessType, firstName, lastName } = this.props;
     return (
       <tr>
-        <td>{this.props.id}</td>
-        <td>{this.props.hhid}</td>
-        <td>{this.props.firstName + ' ' + this.props.lastName}</td>
-        <td>{this.props.email}</td>
-        <td>{this.state.accessType}</td>
+        <td>{id}</td>
+        <td>{hhid}</td>
+        <td>{`${lastName} ${firstName}`}</td>
+        <td>{email}</td>
+        <td>{accessType}</td>
         <td>
           <Form onSubmit={(e) => this.cmdSubmit(e)}>
             <FormGroup>
