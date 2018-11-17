@@ -9,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Date;
 
 @Entity
 @Table(name = "task")
@@ -28,9 +25,11 @@ public class Task {
   @Column(name = "text")
   private String text;
 
-  @Column(name = "deadline_date")
-  @Temporal(TemporalType.DATE)
-  private Date deadlineDate;
+  @Column(name = "deadline")
+  private String deadline;
+
+  @Column(name = "is_weeks")
+  private Boolean isWeeks;
 
   @Column(name = "resources")
   private String resources;
@@ -61,12 +60,20 @@ public class Task {
     this.text = text;
   }
 
-  public Date getDeadlineDate() {
-    return deadlineDate;
+  public String getDeadline() {
+    return deadline;
   }
 
-  public void setDeadlineDate(Date deadlineDate) {
-    this.deadlineDate = deadlineDate;
+  public void setDeadline(String deadline) {
+    this.deadline = deadline;
+  }
+
+  public Boolean getIsWeeks() {
+    return isWeeks;
+  }
+
+  public void setIsWeeks(Boolean isWeeks) {
+    this.isWeeks = isWeeks;
   }
 
   public String getResources() {

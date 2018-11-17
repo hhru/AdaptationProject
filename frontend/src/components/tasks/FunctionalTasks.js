@@ -10,20 +10,14 @@ class FunctionalTaskRows extends React.Component {
     return (
       <React.Fragment>
         <FormGroup row>
-          <Col sm={7}>
+          <Col sm={6}>
             <p type="textarea" name="text" id="taskText">
-              Получить целостное представление о группе компаний Headhunter:
-              история, деятельность, структура, цели, продукты, корпоративная
-              культура
+              Получить целостное представление о группе компаний Headhunter: история, деятельность,
+              структура, цели, продукты, корпоративная культура
             </p>
           </Col>
-          <Col sm={2}>
-            <p
-              type="date"
-              name="date"
-              id="taskDate"
-              placeholder="date placeholder"
-            >
+          <Col sm={3}>
+            <p type="date" name="date" id="taskDate" placeholder="date placeholder">
               Середина испытательного срока
             </p>
           </Col>
@@ -34,20 +28,15 @@ class FunctionalTaskRows extends React.Component {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Col sm={7}>
+          <Col sm={6}>
             <p type="textarea" name="text" id="taskText">
-              Подробное изучение работы подразделения: цели, задачи и роль
-              подразделения в общей структуре, Внутренние процедуры и процессы,
-              регламенты, правила взаимодействия со смежными подразделениями
+              Подробное изучение работы подразделения: цели, задачи и роль подразделения в общей
+              структуре, Внутренние процедуры и процессы, регламенты, правила взаимодействия со
+              смежными подразделениями
             </p>
           </Col>
-          <Col sm={2}>
-            <p
-              type="date"
-              name="date"
-              id="taskDate"
-              placeholder="date placeholder"
-            >
+          <Col sm={3}>
+            <p type="date" name="date" id="taskDate" placeholder="date placeholder">
               Первые 3 недели
             </p>
           </Col>
