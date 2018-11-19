@@ -1,6 +1,5 @@
 import React from 'react';
-import { Row, Col, Form, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import PersonEdit from './PersonEdit';
+import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 
 class PersonCreator extends React.Component {

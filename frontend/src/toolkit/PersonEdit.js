@@ -1,26 +1,22 @@
 import GenderEdit from './GenderEdit';
-import LabeledInput from './LabeledInput';
-import LabeledInputWithHelp from './LabeledInputWithHelp';
 
 import React from 'react';
-import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
-import { AvField, AvRadioGroup, AvRadio } from 'availity-reactstrap-validation';
-import { FEMALE, MALE } from '../constants/gender';
+import { Row, Col } from 'reactstrap';
+import { AvField } from 'availity-reactstrap-validation';
 
 class PersonEdit extends React.Component {
   makePerson() {
-    const person = {
+    return {
       firstName: this.props.firstName,
       lastName: this.props.lastName,
       middleName: this.props.middleName,
       email: this.props.email,
       inside: this.props.inside,
       subdivision: this.props.subdivision,
-    };
-    return person;
+    }
   }
 
-  handleInputChange = (event) => {
+  inputChange = (event) => {
     const { name, value } = event.target;
 
     const person = this.makePerson();
@@ -32,7 +28,6 @@ class PersonEdit extends React.Component {
   };
 
   render() {
-    const defaultValues = {};
     return (
       <div>
         <Row>
@@ -41,7 +36,7 @@ class PersonEdit extends React.Component {
               name="lastName"
               label="Фамилия"
               value={this.props.lastName}
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
               required
               errorMessage="Введите фамилию"
             />
@@ -51,7 +46,7 @@ class PersonEdit extends React.Component {
               name="firstName"
               label="Имя"
               value={this.props.firstName}
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
               required
               errorMessage="Введите имя"
             />
@@ -61,7 +56,7 @@ class PersonEdit extends React.Component {
               name="middleName"
               label="Отчество"
               value={this.props.middleName}
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
             />
           </Col>
         </Row>
@@ -79,7 +74,7 @@ class PersonEdit extends React.Component {
               label="Email"
               type="email"
               value={this.props.email}
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
               required
               errorMessage="Введите валидный email"
             />
@@ -88,7 +83,7 @@ class PersonEdit extends React.Component {
             <AvField
               name="inside"
               label="Инсайд"
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
               value={this.props.inside}
             />
           </Col>
@@ -100,7 +95,7 @@ class PersonEdit extends React.Component {
               name="subdivision"
               label="Подразделение"
               value={this.props.subdivision}
-              onChange={this.handleInputChange}
+              onChange={this.inputChange}
               helpMessage="Подразделение, департамент, отдел, команда"
             />
           </Col>

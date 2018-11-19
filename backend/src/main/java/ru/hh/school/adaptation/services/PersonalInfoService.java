@@ -71,7 +71,7 @@ public class PersonalInfoService {
   }
 
   public void logPersonalInfoUpdate(PersonalInfo fromPersonalInfo, PersonalDto toPersonalDto, Employee employee) {
-    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    String user = authService.getUser().map(u -> u.getSelf().getLastName() + " " + u.getSelf().getFirstName()).orElse("Anonymous");
     Log log = new Log();
     log.setEmployee(employee);
     log.setAuthor(user);

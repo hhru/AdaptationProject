@@ -12,7 +12,7 @@ class PersonChooser extends React.Component {
     // Make persons options.
     let options = this.props.persons.map(person =>
       <option key={person.id} value={person.id}>
-        {`${person.firstName} ${person.lastName} - ${person.email}`}
+        {`${person.lastName} ${person.firstName} - ${person.email}`}
       </option>
     );
     // add an empty item to options if necessary.

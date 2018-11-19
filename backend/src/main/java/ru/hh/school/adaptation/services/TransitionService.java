@@ -63,7 +63,7 @@ public class TransitionService {
   }
 
   private void logNextTransition(Employee employee, WorkflowStepType stepType) {
-    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    String user = authService.getUser().map(u -> u.getSelf().getLastName() + " " + u.getSelf().getFirstName()).orElse("Anonymous");
     Log log = new Log();
     log.setEmployee(employee);
     log.setAuthor(user);

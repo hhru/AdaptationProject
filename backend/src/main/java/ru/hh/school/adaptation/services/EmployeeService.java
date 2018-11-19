@@ -160,7 +160,7 @@ public class EmployeeService {
   }
 
   private void logEmployeeUpdate(Employee fromEmployee, EmployeeUpdateDto toEmployeeUpdateDto, User hr, PersonalInfo mentor, PersonalInfo chief) {
-    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    String user = authService.getUser().map(u -> u.getSelf().getLastName() + " " + u.getSelf().getFirstName()).orElse("Anonymous");
     Log log = new Log();
     log.setEmployee(fromEmployee);
     log.setAuthor(user);
@@ -285,7 +285,7 @@ public class EmployeeService {
 
   @Transactional
   public void dismissEmployee(Integer id, String dismissComment) {
-    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    String user = authService.getUser().map(u -> u.getSelf().getLastName() + " " + u.getSelf().getFirstName()).orElse("Anonymous");
     Employee employee = employeeDao.getRecordById(id);
     employee.setDismissed(true);
     employeeDao.update(employee);
@@ -308,7 +308,7 @@ public class EmployeeService {
 
   @Transactional
   public void undismissEmployee(Integer id, String dismissComment) {
-    String user = authService.getUser().map(u -> u.getSelf().getFirstName() + " " + u.getSelf().getLastName()).orElse("Anonymous");
+    String user = authService.getUser().map(u -> u.getSelf().getLastName() + " " + u.getSelf().getFirstName()).orElse("Anonymous");
     Employee employee = employeeDao.getRecordById(id);
     employee.setDismissed(false);
     employeeDao.update(employee);
