@@ -71,7 +71,6 @@ class AddTask extends React.Component {
     let hasText = true;
     let hasDate = true;
     let hasResource = true;
-    console.log(this.state.taskContent);
     this.state.taskContent.forEach(function(task) {
       hasText = hasText && Boolean(task.text);
       hasResource = hasResource && Boolean(task.resources);
@@ -95,8 +94,6 @@ class AddTask extends React.Component {
     if (!this.validate()) {
       return;
     }
-    alert('все ок');
-    return;
     const url = '/api/tasks/submit';
     const self = this;
     axios

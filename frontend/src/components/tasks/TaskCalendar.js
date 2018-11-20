@@ -6,14 +6,10 @@ import moment from 'moment';
 import '!style-loader!css-loader!react-datepicker/dist/react-datepicker.css';
 
 class TaskCalendar extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      deadlineDate: moment(),
-      deadlineWeeks: '',
-    };
-  }
+  state = {
+    deadlineDate: moment(),
+    deadlineWeeks: '',
+  };
 
   componentDidMount() {
     if (this.props.isWeeks) {
@@ -31,32 +27,30 @@ class TaskCalendar extends React.Component {
   };
 
   radioHandler = () => {
-    let value = this.props.isWeeks
+    const value = this.props.isWeeks
       ? this.state.deadlineDate.format('DD.MM.YYYY')
       : this.state.deadlineWeeks;
     this.props.onChange(value, !this.props.isWeeks);
   };
 
   weeksHandler = (event) => {
-    let value = event.target.value;
+    const value = event.target.value;
     this.setState({ deadlineWeeks: value });
     this.props.onChange(value, true);
   };
 
   render() {
+    const { number, isWeeks } = this.props;
+    const { deadlineDate, deadlineWeeks } = this.state;
     return (
       <FormGroup tag="fieldset">
         <FormGroup check>
           <Label check>
-            <Input
-              type="radio"
-              name={this.props.number}
-              checked={!this.props.isWeeks}
-              onChange={this.radioHandler}
-            />Выбрать дату
+            <Input type="radio" name={number} checked={!isWeeks} onChange={this.radioHandler} />Выбрать
+            дату
             <DatePicker
               dateFormat="DD/MM/YYYY"
-              selected={this.state.deadlineDate}
+              selected={deadlineDate}
               onChange={this.dateHandler}
               className="chief-input"
             />
@@ -65,17 +59,13 @@ class TaskCalendar extends React.Component {
 
         <FormGroup check>
           <Label check>
-            <Input
-              type="radio"
-              name={this.props.number}
-              checked={this.props.isWeeks}
-              onChange={this.radioHandler}
-            />Указать количество недель
+            <Input type="radio" name={number} checked={isWeeks} onChange={this.radioHandler} />Указать
+            количество недель
             <input
               type="text"
               name="text"
               onChange={this.weeksHandler}
-              value={this.state.deadlineWeeks}
+              value={deadlineWeeks}
               className="chief-input"
             />
           </Label>
