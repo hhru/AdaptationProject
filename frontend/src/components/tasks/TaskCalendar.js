@@ -12,10 +12,11 @@ class TaskCalendar extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.isWeeks) {
-      this.setState({ deadlineWeeks: this.props.deadline });
+    const { isWeeks, deadline } = this.props;
+    if (isWeeks) {
+      this.setState({ deadlineWeeks: deadline });
     } else {
-      this.setState({ deadlineDate: moment(this.props.deadline, 'DD.MM.YYYY') });
+      this.setState({ deadlineDate: moment(deadline, 'DD.MM.YYYY') });
     }
   }
 
@@ -52,7 +53,7 @@ class TaskCalendar extends React.Component {
               dateFormat="DD/MM/YYYY"
               selected={deadlineDate}
               onChange={this.dateHandler}
-              className="chief-input"
+              className="form-control"
             />
           </Label>
         </FormGroup>
@@ -66,7 +67,7 @@ class TaskCalendar extends React.Component {
               name="text"
               onChange={this.weeksHandler}
               value={deadlineWeeks}
-              className="chief-input"
+              className="form-control"
             />
           </Label>
         </FormGroup>
