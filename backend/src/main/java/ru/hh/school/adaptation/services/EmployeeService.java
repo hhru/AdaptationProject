@@ -1,5 +1,6 @@
 package ru.hh.school.adaptation.services;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ public class EmployeeService {
   private final String adaptationHost;
 
   private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+  private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
   private EmployeeDao employeeDao;
   private UserDao userDao;
@@ -166,25 +168,25 @@ public class EmployeeService {
     log.setAuthor(user);
     log.setEventDate(new Date());
 
-    if (fromEmployee.getEmploymentDate() != toEmployeeUpdateDto.employmentDate) {
+    if (!simpleDateFormat.format(fromEmployee.getEmploymentDate()).equals(simpleDateFormat.format(toEmployeeUpdateDto.employmentDate))) {
       log.setMessage("Дата выхода на работу была изменена с " +
-              fromEmployee.getEmploymentDate() +
+              simpleDateFormat.format(fromEmployee.getEmploymentDate()) +
               " на " +
-              toEmployeeUpdateDto.employmentDate);
+              simpleDateFormat.format(toEmployeeUpdateDto.employmentDate));
       commentService.createLog(log);
     }
-    if (fromEmployee.getInterimDate() != toEmployeeUpdateDto.interimDate) {
+    if (!simpleDateFormat.format(fromEmployee.getInterimDate()).equals(simpleDateFormat.format(toEmployeeUpdateDto.interimDate))) {
       log.setMessage("Промежуточная дата ИС была изменена с " +
-          fromEmployee.getInterimDate() +
+          simpleDateFormat.format(fromEmployee.getInterimDate()) +
           " на " +
-          toEmployeeUpdateDto.interimDate);
+          simpleDateFormat.format(toEmployeeUpdateDto.interimDate));
       commentService.createLog(log);
     }
-    if (fromEmployee.getFinalDate() != toEmployeeUpdateDto.finalDate) {
+    if (!simpleDateFormat.format(fromEmployee.getFinalDate()).equals(simpleDateFormat.format(toEmployeeUpdateDto.finalDate))) {
       log.setMessage("Дата окончания ИС была изменена с " +
-          fromEmployee.getFinalDate() +
+          simpleDateFormat.format(fromEmployee.getFinalDate()) +
           " на " +
-          toEmployeeUpdateDto.finalDate);
+          simpleDateFormat.format(toEmployeeUpdateDto.finalDate));
       commentService.createLog(log);
     }
     if (fromEmployee.getGender() != toEmployeeUpdateDto.gender) {
