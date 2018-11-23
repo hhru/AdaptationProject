@@ -9,9 +9,27 @@ import EmployeeTasksModal from './tasks/EmployeeTasksModal';
 import EmployeeAttachModal from './EmployeeAttachModal';
 
 import {
-  Alert, Row, Col, ListGroup, ListGroupItem, Form, FormGroup, Input,
-  Popover, PopoverHeader, PopoverBody, Button, Modal, ModalHeader,
-  ModalBody, ModalFooter, TabContent, TabPane, Nav, NavItem, NavLink
+  Alert,
+  Row,
+  Col,
+  ListGroup,
+  ListGroupItem,
+  Form,
+  FormGroup,
+  Input,
+  Popover,
+  PopoverHeader,
+  PopoverBody,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink,
 } from 'reactstrap';
 import '!style-loader!css-loader!./app.css';
 import classnames from 'classnames';
@@ -349,15 +367,13 @@ class EmployeePage extends React.Component {
       subdivision: employeeSubdivision,
     } = employee;
 
-    const {
-      inside: hrInside
-    } = hr;
+    const { inside: hrInside } = hr;
 
     const {
       firstName: chiefFirstName,
       middleName: chiefMiddleName,
       lastName: chiefLastName,
-      inside: chiefInside
+      inside: chiefInside,
     } = chief;
 
     const employmentDate = this.dateFormat(empDate);
@@ -369,7 +385,9 @@ class EmployeePage extends React.Component {
         <Row className="mb-4">
           <Col sm={{ size: 5, offset: 1 }}>
             <h3 className="mb-0 font-weight-bold">
-              {`${employeeLastName} ${employeeFirstName} ${employeeMiddleName ? employeeMiddleName : ''}`}
+              {`${employeeLastName} ${employeeFirstName} ${
+                employeeMiddleName ? employeeMiddleName : ''
+              }`}
             </h3>
             <div className="mb-1 ml-2 text-info">
               {employeeEmail}{' '}
@@ -396,22 +414,23 @@ class EmployeePage extends React.Component {
           <Col sm={{ size: 5, offset: 1 }}>
             <div className="ml-4">
               <p className="mb-2 text-muted">
-                {`Руководитель: ${chiefLastName} ${chiefFirstName} ${chiefMiddleName ? chiefMiddleName : ''}`}
-                {' '}
+                {`Руководитель: ${chiefLastName} ${chiefFirstName} ${
+                  chiefMiddleName ? chiefMiddleName : ''
+                }`}{' '}
                 <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + chiefInside}>(inside)</a>
               </p>
               {mentor != null && (
                 <p className="mb-2 text-muted">
-                  {`Куратор: ${mentor.lastName} ${mentor.firstName} ${mentor.middleName ? mentor.middleName : ''}`}
-                  {' '}
+                  {`Куратор: ${mentor.lastName} ${mentor.firstName} ${
+                    mentor.middleName ? mentor.middleName : ''
+                  }`}{' '}
                   <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + mentor.inside}>
                     (inside)
                   </a>
                 </p>
               )}
               <p className="text-muted">
-                {`HR: ${hrName}`}
-                {' '}
+                {`HR: ${hrName}`}{' '}
                 <a href={'https://inside.hh.ru/Pages/profile.aspx?user=' + hrInside}>(inside)</a>
               </p>
             </div>
@@ -488,7 +507,7 @@ class EmployeePage extends React.Component {
                   }}
                 >
                   <h6>
-                    <span className="text-muted">Приложения (4)</span>
+                    <span className="text-muted">Приложения (5)</span>
                   </h6>
                 </NavLink>
               </NavItem>
