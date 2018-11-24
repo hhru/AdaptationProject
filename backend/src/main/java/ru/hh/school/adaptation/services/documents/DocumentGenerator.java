@@ -2,8 +2,8 @@ package ru.hh.school.adaptation.services.documents;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.TextSegment;
 import org.apache.poi.xwpf.usermodel.PositionInParagraph;
-import org.apache.poi.xwpf.usermodel.TextSegement;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -35,7 +35,7 @@ public abstract class DocumentGenerator {
       for (Map.Entry<String, String> replPair : replacements.entrySet()) {
         String find = replPair.getKey();
         String repl = replPair.getValue();
-        TextSegement found;
+        TextSegment found;
         try {
           found = paragraph.searchText(find, new PositionInParagraph());
         } catch (NullPointerException e) {
