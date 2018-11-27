@@ -154,7 +154,8 @@ class ListEmployees extends React.Component {
       });
   }
 
-  makeName = person => `${person.lastName} ${person.firstName} ${person.middleName ? person.middleName : ''}`;
+  makeName = (person) =>
+    `${person.lastName} ${person.firstName} ${person.middleName ? person.middleName : ''}`;
 
   render() {
     const fullTextToDisplay = {
@@ -186,19 +187,19 @@ class ListEmployees extends React.Component {
         Header: 'ФИО',
         id: 'fullName',
         minWidth: 150,
-        accessor: row => this.makeName(row.employee)
+        accessor: (row) => this.makeName(row.employee),
       },
       {
         Header: 'HR',
         id: 'hrName',
         width: 280,
-        accessor: row => this.makeName(row.hr)
+        accessor: (row) => this.makeName(row.hr),
       },
       {
         Header: 'Этап',
         id: 'progress',
         width: 350,
-        accessor: row => {
+        accessor: (row) => {
           const cut = row.workflow.filter((x) => x.status == 'CURRENT');
           const curStep = cut.length == 0 ? 'NONE' : cut[0].type;
           const color = cut.length == 0 ? 'success' : cut[0].overdue ? 'danger' : 'success';
@@ -223,9 +224,8 @@ class ListEmployees extends React.Component {
             month: 'long',
             day: 'numeric',
           };
-          let endTime = new Date(row.employmentDate);
-          endTime = new Date(endTime.setMonth(endTime.getMonth() + 3));
-          return <div className="text-center">{endTime.toLocaleString('ru', dateOptions)}</div>;
+          const endTime = new Date(row.finalDate).toLocaleString('ru', dateOptions);
+          return <div className="text-center">{endTime}</div>;
         },
       },
     ];
