@@ -508,7 +508,7 @@ class EmployeePage extends React.Component {
                   }}
                 >
                   <h6>
-                    <span className="text-muted">Приложения (4)</span>
+                    <span className="text-muted">Приложения (5)</span>
                   </h6>
                 </NavLink>
               </NavItem>
