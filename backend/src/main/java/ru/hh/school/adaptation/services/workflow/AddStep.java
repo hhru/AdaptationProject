@@ -56,10 +56,15 @@ public class AddStep {
 
   private void taskListMail(Employee employee) {
     TaskForm taskForm = taskService.createTaskForm(employee);
+    String userName = employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName();
     Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName());
+    params.put("{{userName}}", userName);
     params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
-    mailService.sendMail(employee.getChief().getEmail(), "chief_missions.html", "Задачи на испытательный срок", params);
+    mailService.sendMail(
+        employee.getChief().getEmail(),
+        "chief_missions.html",
+        String.format("Задачи на испытательный срок (%s).", userName),
+        params);
   }
 
 }
