@@ -57,7 +57,8 @@ public class TaskService {
           if (!taskDto.deleted){
             task = new Task();
             task.setText(taskDto.text);
-            task.setDeadlineDate(taskDto.deadlineDate);
+            task.setDeadline(taskDto.deadline);
+            task.setIsWeeks(taskDto.isWeeks);
             task.setResources(taskDto.resources);
             task.setTaskForm(taskForm);
             task.setDeleted(false);
@@ -67,7 +68,8 @@ public class TaskService {
         } else {
           task = taskDao.getRecordById(taskDto.id);
           task.setText(taskDto.text);
-          task.setDeadlineDate(taskDto.deadlineDate);
+          task.setDeadline(taskDto.deadline);
+          task.setIsWeeks(taskDto.isWeeks);
           task.setResources(taskDto.resources);
           task.setDeleted(taskDto.deleted);
           taskDao.update(task);
