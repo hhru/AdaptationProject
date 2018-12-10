@@ -6,8 +6,8 @@ import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.TaskForm;
-import ru.hh.school.adaptation.misc.CommonUtils;
 import ru.hh.school.adaptation.services.MailService;
+import ru.hh.school.adaptation.services.MeetingService;
 import ru.hh.school.adaptation.services.ScheduledMailService;
 import ru.hh.school.adaptation.services.TaskService;
 
@@ -23,11 +23,14 @@ public class AddStep {
   private final String addTaskLink;
 
   private MailService mailService;
+  private MeetingService meetingService;
   private TaskService taskService;
   private ScheduledMailService scheduledMailService;
 
-  public AddStep(FileSettings fileSettings, MailService mailService, TaskService taskService, ScheduledMailService scheduledMailService) {
+  public AddStep(FileSettings fileSettings, MailService mailService, MeetingService meetingService, TaskService taskService,
+                 ScheduledMailService scheduledMailService) {
     this.mailService = mailService;
+    this.meetingService = meetingService;
     this.taskService = taskService;
     this.scheduledMailService = scheduledMailService;
 
@@ -49,9 +52,9 @@ public class AddStep {
   }
 
   private void sendMeetings(String[] attendees, Employee employee) {
-      mailService.sendMeeting("Welcome-встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getEmploymentDate()), 30);
-      mailService.sendMeeting("Промежуточная встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getInterimDate()), 30);
-      mailService.sendMeeting("Итоговая встреча", attendees, attendees, employee, CommonUtils.dateConverter(employee.getFinalDate()), 30);
+    meetingService.sendMeeting("Welcome-встреча", attendees, employee, employee.getEmploymentDate());
+    meetingService.sendMeeting("Промежуточная встреча", attendees, employee, employee.getInterimDate());
+    meetingService.sendMeeting("Итоговая встреча", attendees, employee, employee.getFinalDate());
   }
 
   private void taskListMail(Employee employee) {
