@@ -19,6 +19,7 @@ before_install:
   - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_HOST=$ADAPT_TEST_SMTP_HOST
   - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_USER=$ADAPT_TEST_SMTP_USER
   - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_SMTP_PASSWORD=$ADAPT_TEST_SMTP_PASSWORD
+  - test "$ADAPT_BUILD_MODE" = prod || export ADAPT_EWS_URL=$ADAPT_TEST_EWS_URL
   - test "$ADAPT_BUILD_MODE" = prod || echo ADAPT_MOCK_EMAIL=$ADAPT_MOCK_EMAIL >> .env
   - export SSHPASS=$DEPLOY_PASS
   - export SSH_CMD="sshpass -e ssh -p $DEPLOY_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"

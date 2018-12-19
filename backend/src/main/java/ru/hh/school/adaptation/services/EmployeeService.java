@@ -29,7 +29,6 @@ import ru.hh.school.adaptation.misc.Named;
 import ru.hh.school.adaptation.services.documents.ProbationResultDocumentGenerator;
 
 import javax.inject.Singleton;
-import java.time.LocalDateTime;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -54,11 +53,13 @@ public class EmployeeService {
   private ProbationResultDocumentGenerator probationResultDocumentGenerator;
   private AuthService authService;
   private MailService mailService;
+  private MeetingService meetingService;
   private TaskService taskService;
 
   public EmployeeService(FileSettings fileSettings, EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService,
                          TransitionService transitionService, ProbationResultDocumentGenerator probationResultDocumentGenerator,
-                         CommentService commentService, AuthService authService, MailService mailService, TaskService taskService) {
+                         CommentService commentService, AuthService authService, MailService mailService, MeetingService meetingService,
+                         TaskService taskService) {
     this.employeeDao = employeeDao;
     this.authService = authService;
     this.userDao = userDao;
@@ -67,6 +68,7 @@ public class EmployeeService {
     this.commentService = commentService;
     this.probationResultDocumentGenerator = probationResultDocumentGenerator;
     this.mailService = mailService;
+    this.meetingService = meetingService;
     this.taskService = taskService;
 
     adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
@@ -244,10 +246,7 @@ public class EmployeeService {
         "Сопровождение нового сотрудника"
     );
 
-    LocalDateTime welcomeDate = CommonUtils.dateConverter(employee.getEmploymentDate());
-    LocalDateTime interimDate = CommonUtils.dateConverter(employee.getInterimDate());
-    LocalDateTime finalDate = CommonUtils.dateConverter(employee.getFinalDate());
-    LocalDateTime now = LocalDateTime.now();
+    Date now = new Date();
 
     String[] attendees = Stream.of(
         hrEmail,
@@ -256,14 +255,14 @@ public class EmployeeService {
         Optional.ofNullable(employee.getMentor()).orElse(new PersonalInfo()).getEmail()
     ).filter((str) -> str != null).toArray(String[]::new);
 
-    if (welcomeDate.isAfter(now)) {
-      mailService.sendMeeting("Welcome встреча", hrEmail, attendees, employee, welcomeDate, 30);
+    if (employee.getEmploymentDate().after(now)) {
+      meetingService.sendMeeting("Welcome встреча", attendees, employee, employee.getEmploymentDate());
     }
-    if (interimDate.isAfter(now)) {
-      mailService.sendMeeting("Промежуточная встреча", hrEmail, attendees, employee, interimDate, 30);
+    if (employee.getInterimDate().after(now)) {
+      meetingService.sendMeeting("Промежуточная встреча", attendees, employee, employee.getInterimDate());
     }
-    if (finalDate.isAfter(now)) {
-      mailService.sendMeeting("Итоговая встреча", hrEmail, attendees, employee, finalDate, 30);
+    if (employee.getFinalDate().after(now)) {
+      meetingService.sendMeeting("Итоговая встреча", attendees, employee, employee.getFinalDate());
     }
   }
 

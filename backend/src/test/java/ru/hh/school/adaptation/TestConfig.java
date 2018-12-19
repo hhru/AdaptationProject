@@ -12,6 +12,7 @@ import ru.hh.nab.core.util.FileSettings;
 import ru.hh.nab.hibernate.HibernateCommonConfig;
 import ru.hh.nab.hibernate.datasource.DataSourceType;
 import ru.hh.school.adaptation.services.MailService;
+import ru.hh.school.adaptation.services.MeetingService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,11 @@ public class TestConfig {
   @Bean
   MailService mailService() {
     return mock(MailService.class);
+  }
+
+  @Bean
+  MeetingService meetingService() {
+    return mock(MeetingService.class);
   }
 
   @Bean
