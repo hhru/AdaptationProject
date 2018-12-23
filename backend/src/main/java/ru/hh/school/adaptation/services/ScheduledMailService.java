@@ -9,51 +9,71 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.ScheduledMailDao;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Gender;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.ScheduledMail;
+import ru.hh.school.adaptation.entities.TaskForm;
+import ru.hh.school.adaptation.misc.CommonUtils;
 
 @Singleton
 public class ScheduledMailService {
 
+  private final String adaptHost;
   private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
   private ScheduledMailDao scheduledMailDao;
   private EmployeeService employeeService;
   private MailService mailService;
   private CommentService commentService;
+  private TaskService taskService;
 
-  public ScheduledMailService(ScheduledMailDao scheduledMailDao, @Lazy EmployeeService employeeService, MailService mailService,
-                              CommentService commentService) {
+  public ScheduledMailService(FileSettings fileSettings, ScheduledMailDao scheduledMailDao, @Lazy EmployeeService employeeService,
+                              MailService mailService, CommentService commentService, TaskService taskService) {
     this.scheduledMailDao = scheduledMailDao;
     this.employeeService = employeeService;
     this.mailService = mailService;
     this.commentService = commentService;
+    this.taskService = taskService;
+
+    adaptHost = "https://" + fileSettings.getProperties().getProperty("adaptation.host");
   }
 
   @Transactional
   public void scheduleAllMailFromDb() {
-    scheduledMailDao.getAll().forEach(this::scheduleWelcomeMail);
+    scheduledMailDao.getAll().forEach(this::scheduleNewMailLogic);
   }
 
   @Transactional
-  public void scheduleNewMail(Integer employeeId, Date date) {
-    ScheduledMail scheduledMail = new ScheduledMail();
-    scheduledMail.setEmployeeId(employeeId);
-    scheduledMail.setTriggerDate(date);
+  public void scheduleNewMail(ScheduledMail scheduledMail) {
     scheduledMailDao.save(scheduledMail);
-
-    scheduleWelcomeMail(scheduledMail);
+    scheduleNewMailLogic(scheduledMail);
   }
 
-  private void scheduleWelcomeMail(ScheduledMail scheduledMail) {
+  private void scheduleNewMailLogic(ScheduledMail scheduledMail) {
     long delay = 1;
     if (scheduledMail.getTriggerDate().after(new Date())) {
       delay = (scheduledMail.getTriggerDate().getTime() - new Date().getTime())/1000;
     }
-    scheduledExecutorService.schedule(() -> sendWelcomeMail(scheduledMail), delay, TimeUnit.SECONDS);
+
+    scheduledExecutorService.schedule(() -> {
+      switch (scheduledMail.getType()) {
+        case WELCOME:
+          sendWelcomeMail(scheduledMail);
+          break;
+        case CHIEF_TASK:
+          sendTaskMail(scheduledMail);
+          break;
+        case PROBATION_RESULT:
+          sendProbationResultMail(scheduledMail);
+          break;
+        case CUSTOM:
+          sendCustomMail(scheduledMail);
+          break;
+      }
+    }, delay, TimeUnit.SECONDS);
   }
 
   private void sendWelcomeMail(ScheduledMail scheduledMail) {
@@ -75,5 +95,44 @@ public class ScheduledMailService {
     commentService.createLog(log);
 
     scheduledMailDao.delete(scheduledMail);
+  }
+
+  private void sendTaskMail(ScheduledMail scheduledMail) {
+    Employee employee = employeeService.getEmployee(scheduledMail.getEmployeeId());
+
+    TaskForm taskForm = taskService.createTaskForm(employee);
+    String userName = employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName();
+    Map<String, String> params = new HashMap<>();
+    params.put("{{userName}}", userName);
+    params.put("{{url}}", String.format(adaptHost  + "/add_tasks/%s", taskForm.getKey()));
+    mailService.sendMail(
+        employee.getChief().getEmail(),
+        "chief_missions.html",
+        String.format("Задачи на испытательный срок (%s).", userName),
+        params
+    );
+  }
+
+  private void sendProbationResultMail(ScheduledMail scheduledMail) {
+    Employee employee = employeeService.getEmployee(scheduledMail.getEmployeeId());
+
+    String userName = CommonUtils.makeFioFromPersonalInfo(employee.getSelf());
+    String resultLink = String.format("%s/api/employee/%s/probation_result", adaptHost, employee.getId());
+
+    Map<String, String> params = new HashMap<>();
+    params.put("{{userName}}", userName);
+    params.put("{{url}}", resultLink);
+
+    mailService.sendMail(
+        employee.getChief().getEmail(),
+        "probation_result.html",
+        String.format("Итоги испытательного срока (%s).", userName),
+        params
+    );
+  }
+
+  private void sendCustomMail(ScheduledMail scheduledMail) {
+    //TODO otpravlyat v scheduledMail.recepients
+    //  scheduledMail.subject + scheduledMail.text
   }
 }

@@ -49,7 +49,7 @@ public class MailService {
   private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 
   @Inject
-  public MailService(FileSettings fileSettings){
+  public MailService(FileSettings fileSettings) {
     final String username = fileSettings.getProperties().getProperty("mail.smtp.username");
     final String password = fileSettings.getProperties().getProperty("mail.smtp.password");
 
