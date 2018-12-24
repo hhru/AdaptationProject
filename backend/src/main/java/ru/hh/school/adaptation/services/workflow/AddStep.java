@@ -1,40 +1,30 @@
 package ru.hh.school.adaptation.services.workflow;
 
+import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
-import ru.hh.nab.core.util.FileSettings;
 
 import ru.hh.school.adaptation.entities.PersonalInfo;
 import ru.hh.school.adaptation.entities.Employee;
-import ru.hh.school.adaptation.entities.TaskForm;
-import ru.hh.school.adaptation.services.MailService;
+import ru.hh.school.adaptation.entities.ScheduledMail;
+import static ru.hh.school.adaptation.entities.ScheduledMailType.CHIEF_TASK;
+import static ru.hh.school.adaptation.entities.ScheduledMailType.PROBATION_RESULT;
+import static ru.hh.school.adaptation.entities.ScheduledMailType.WELCOME;
 import ru.hh.school.adaptation.services.MeetingService;
 import ru.hh.school.adaptation.services.ScheduledMailService;
-import ru.hh.school.adaptation.services.TaskService;
 
 import javax.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Singleton
 public class AddStep {
 
-  private final String addTaskLink;
-
-  private MailService mailService;
   private MeetingService meetingService;
-  private TaskService taskService;
   private ScheduledMailService scheduledMailService;
 
-  public AddStep(FileSettings fileSettings, MailService mailService, MeetingService meetingService, TaskService taskService,
-                 ScheduledMailService scheduledMailService) {
-    this.mailService = mailService;
+  public AddStep(MeetingService meetingService, ScheduledMailService scheduledMailService) {
     this.meetingService = meetingService;
-    this.taskService = taskService;
     this.scheduledMailService = scheduledMailService;
-
-    addTaskLink = "https://" + fileSettings.getProperties().getProperty("adaptation.host") + "/add_tasks/%s";
   }
 
   public void onAdd(Employee employee) {
@@ -48,7 +38,8 @@ public class AddStep {
     sendMeetings(attendees, employee);
 
     taskListMail(employee);
-    scheduledMailService.scheduleNewMail(employee.getId(), DateUtils.addHours(employee.getEmploymentDate(), 8));
+    welcomeMail(employee);
+    probationResultMail(employee);
   }
 
   private void sendMeetings(String[] attendees, Employee employee) {
@@ -57,17 +48,31 @@ public class AddStep {
     meetingService.sendMeeting("Итоговая встреча", attendees, employee, employee.getFinalDate());
   }
 
+  private void welcomeMail(Employee employee) {
+    ScheduledMail scheduledMail = new ScheduledMail();
+    scheduledMail.setEmployeeId(employee.getId());
+    scheduledMail.setType(WELCOME);
+    scheduledMail.setRecipients(employee.getSelf().getEmail());
+    scheduledMail.setTriggerDate(DateUtils.addHours(employee.getEmploymentDate(), 8));
+    scheduledMailService.scheduleNewMail(scheduledMail);
+  }
+
   private void taskListMail(Employee employee) {
-    TaskForm taskForm = taskService.createTaskForm(employee);
-    String userName = employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName();
-    Map<String, String> params = new HashMap<>();
-    params.put("{{userName}}", userName);
-    params.put("{{url}}", String.format(addTaskLink, taskForm.getKey()));
-    mailService.sendMail(
-        employee.getChief().getEmail(),
-        "chief_missions.html",
-        String.format("Задачи на испытательный срок (%s).", userName),
-        params);
+    ScheduledMail scheduledMail = new ScheduledMail();
+    scheduledMail.setEmployeeId(employee.getId());
+    scheduledMail.setType(CHIEF_TASK);
+    scheduledMail.setRecipients(employee.getChief().getEmail());
+    scheduledMail.setTriggerDate(new Date());
+    scheduledMailService.scheduleNewMail(scheduledMail);
+  }
+
+  private void probationResultMail(Employee employee) {
+    ScheduledMail scheduledMail = new ScheduledMail();
+    scheduledMail.setEmployeeId(employee.getId());
+    scheduledMail.setType(PROBATION_RESULT);
+    scheduledMail.setRecipients(employee.getChief().getEmail());
+    scheduledMail.setTriggerDate(DateUtils.addHours(DateUtils.addDays(employee.getFinalDate(), -3), 8));
+    scheduledMailService.scheduleNewMail(scheduledMail);
   }
 
 }

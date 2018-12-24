@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.nab.core.util.FileSettings;
 import ru.hh.school.adaptation.dao.EmployeeDao;
+import ru.hh.school.adaptation.dao.ScheduledMailDao;
 import ru.hh.school.adaptation.dao.UserDao;
 import ru.hh.school.adaptation.dto.EmployeeBriefDto;
 import ru.hh.school.adaptation.dto.EmployeeCreateDto;
@@ -19,6 +20,7 @@ import ru.hh.school.adaptation.entities.Comment;
 import ru.hh.school.adaptation.entities.Employee;
 import ru.hh.school.adaptation.entities.Log;
 import ru.hh.school.adaptation.entities.PersonalInfo;
+import ru.hh.school.adaptation.entities.ScheduledMail;
 import ru.hh.school.adaptation.entities.TaskForm;
 import ru.hh.school.adaptation.entities.User;
 import ru.hh.school.adaptation.exceptions.EntityNotFoundException;
@@ -55,11 +57,12 @@ public class EmployeeService {
   private MailService mailService;
   private MeetingService meetingService;
   private TaskService taskService;
+  private ScheduledMailDao scheduledMailDao;
 
   public EmployeeService(FileSettings fileSettings, EmployeeDao employeeDao, UserDao userDao, PersonalInfoService personalInfoService,
                          TransitionService transitionService, ProbationResultDocumentGenerator probationResultDocumentGenerator,
                          CommentService commentService, AuthService authService, MailService mailService, MeetingService meetingService,
-                         TaskService taskService) {
+                         TaskService taskService, ScheduledMailDao scheduledMailDao) {
     this.employeeDao = employeeDao;
     this.authService = authService;
     this.userDao = userDao;
@@ -70,6 +73,7 @@ public class EmployeeService {
     this.mailService = mailService;
     this.meetingService = meetingService;
     this.taskService = taskService;
+    this.scheduledMailDao = scheduledMailDao;
 
     adaptationHost = fileSettings.getProperties().getProperty("adaptation.host");
   }
@@ -146,6 +150,11 @@ public class EmployeeService {
       employee.setEmploymentDate(employeeUpdateDto.employmentDate);
       employee.setInterimDate(employeeUpdateDto.interimDate);
       employee.setFinalDate(employeeUpdateDto.finalDate);
+
+      ScheduledMail scheduledMail = scheduledMailDao.getProbationScheduledMailByEmployeeId(employee.getId());
+      scheduledMail.setTriggerDate(employee.getFinalDate());
+      scheduledMailDao.update(scheduledMail);
+
       if (employee.getHr() != hr) {
         notifyNewHr(hr, employee);
       }

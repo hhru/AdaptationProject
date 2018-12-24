@@ -19,3 +19,5 @@ backend/nbactions.xml
 templates
 .env
 /db
+build_stand.sh
+
