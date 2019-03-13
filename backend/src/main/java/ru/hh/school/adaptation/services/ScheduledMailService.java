@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.nab.core.util.FileSettings;
@@ -99,18 +100,31 @@ public class ScheduledMailService {
 
   private void sendTaskMail(ScheduledMail scheduledMail) {
     Employee employee = employeeService.getEmployee(scheduledMail.getEmployeeId());
+    TaskForm taskForm = employee.getTaskForm();
 
-    TaskForm taskForm = taskService.createTaskForm(employee);
-    String userName = employee.getSelf().getFirstName() + " " + employee.getSelf().getLastName();
+    if (taskForm == null) {
+      taskForm = taskService.createTaskForm(employee);
+    }
+
+    if (taskForm.getTasks() != null && !taskForm.getTasks().isEmpty()) {
+      scheduledMailDao.delete(scheduledMail);
+      return;
+    }
+
+    String userName = CommonUtils.makeFioFromPersonalInfo(employee.getSelf());
     Map<String, String> params = new HashMap<>();
     params.put("{{userName}}", userName);
-    params.put("{{url}}", String.format(adaptHost  + "/add_tasks/%s", taskForm.getKey()));
+    params.put("{{url}}", String.format("%s/add_tasks/%s", adaptHost, taskForm.getKey()));
     mailService.sendMail(
         employee.getChief().getEmail(),
         "chief_missions.html",
         String.format("Задачи на испытательный срок (%s).", userName),
         params
     );
+    scheduledMailDao.delete(scheduledMail);
+
+    scheduledMail.setTriggerDate(DateUtils.addDays(scheduledMail.getTriggerDate(), 1));
+    scheduleNewMail(scheduledMail);
   }
 
   private void sendProbationResultMail(ScheduledMail scheduledMail) {
@@ -129,6 +143,7 @@ public class ScheduledMailService {
         String.format("Итоги испытательного срока (%s).", userName),
         params
     );
+    scheduledMailDao.delete(scheduledMail);
   }
 
   private void sendCustomMail(ScheduledMail scheduledMail) {
