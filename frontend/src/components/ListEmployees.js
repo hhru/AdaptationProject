@@ -4,6 +4,8 @@ import FaFilter from 'react-icons/lib/fa/filter';
 import { Progress, Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import ReactTable from 'react-table';
 
+import stepDescription from '../constants/stepDescription';
+
 import '!style-loader!css-loader!react-table/react-table.css';
 import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 import '!style-loader!css-loader!./ListEmployees.css';
@@ -158,30 +160,6 @@ class ListEmployees extends React.Component {
     `${person.lastName} ${person.firstName} ${person.middleName ? person.middleName : ''}`;
 
   render() {
-    const fullTextToDisplay = {
-      ADD: 'Добавление в систему',
-      TASK_LIST: 'Постановка задач',
-      WELCOME_MEETING: 'Welcome встреча',
-      INTERIM_MEETING: 'Промежуточная встреча',
-      INTERIM_MEETING_RESULT: 'Итоги промежуточной встречи',
-      FINAL_MEETING: 'Финальная встреча',
-      FINAL_MEETING_RESULT: 'Итоги финальной встречи',
-      QUESTIONNAIRE: 'Подведение итогов ИС',
-      NONE: 'ИС завершен',
-    };
-
-    const progressPercent = {
-      ADD: 5,
-      TASK_LIST: 10,
-      WELCOME_MEETING: 20,
-      INTERIM_MEETING: 40,
-      INTERIM_MEETING_RESULT: 50,
-      FINAL_MEETING: 70,
-      FINAL_MEETING_RESULT: 80,
-      QUESTIONNAIRE: 90,
-      NONE: 100,
-    };
-
     const columns = [
       {
         Header: 'ФИО',
@@ -203,28 +181,34 @@ class ListEmployees extends React.Component {
           const cut = row.workflow.filter((x) => x.status == 'CURRENT');
           const curStep = cut.length == 0 ? 'NONE' : cut[0].type;
           const color = cut.length == 0 ? 'success' : cut[0].overdue ? 'danger' : 'success';
+
+          return { curStep, color };
+        },
+        Cell: ({ value: { curStep, color } }) => {
           return (
             <div>
               <div className="progress-bar mt-1">
-                <Progress color={color} value={progressPercent[curStep]} />
+                <Progress color={color} value={stepDescription[curStep].progressPercent} />
               </div>
 
-              {fullTextToDisplay[curStep]}
+              {stepDescription[curStep].fullTextToDisplay}
             </div>
           );
         },
+        sortMethod: (a, b) => stepDescription[a.curStep].order - stepDescription[b.curStep].order,
       },
       {
         Header: 'Окончание',
         id: 'date',
         width: 140,
-        accessor: (row) => {
-          let dateOptions = {
+        accessor: (row) => new Date(row.finalDate),
+        Cell: ({ value }) => {
+          const dateOptions = {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
           };
-          const endTime = new Date(row.finalDate).toLocaleString('ru', dateOptions);
+          const endTime = value.toLocaleString('ru', dateOptions);
           return <div className="text-center">{endTime}</div>;
         },
       },
