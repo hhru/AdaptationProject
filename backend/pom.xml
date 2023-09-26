@@ -312,7 +312,7 @@
         <repository>
             <id>hh-public</id>
             <name>hh public releases repository</name>
-            <url>http://m2.hh.ru/content/repositories/public-releases</url>
+            <url>https://m2.hh.ru/content/repositories/public-releases</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -323,7 +323,7 @@
         <repository>
             <id>hh-public-snapshots</id>
             <name>hh public snapshots repository</name>
-            <url>http://m2.hh.ru/content/repositories/snapshots</url>
+            <url>https://m2.hh.ru/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
